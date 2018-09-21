@@ -14,6 +14,12 @@
 #include <glm/mat4x4.hpp> // glm::mat4
 #include <glm/gtc/matrix_transform.hpp> // glm::translate, glm::rotate, glm::scale, glm::perspective
 
+
+extern "C" {
+	_declspec(dllexport) DWORD NvOptimusEnablement = 0x00000001;
+	//makes visual studio use the gpu
+}
+
 #define CAPTION "60 FPS"
 
 int WinX = 640, WinY = 480;
