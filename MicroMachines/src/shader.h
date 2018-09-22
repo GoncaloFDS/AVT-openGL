@@ -23,6 +23,11 @@ public:
   void Bind() const;
   void Unbind() const;
   
+  //Set Uniforms
+  void SetUniform1i(const std::string& name, int v0);
+  void SetUniform1f(const std::string& name, float v0);
+  void SetUniform3fv(const std::string& name, glm::vec3 v);
+  void SetUniform4fv(const std::string& name, glm::vec4 v);
   void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
 private:
