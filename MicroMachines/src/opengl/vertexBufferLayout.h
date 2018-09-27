@@ -3,7 +3,7 @@
 #include <GL/glew.h>
 #include <vector>
 
-#include "common.h"
+#include "Common.h"
 
 struct VertexBufferElement {
   unsigned int type;
@@ -58,5 +58,6 @@ public:
   inline const std::vector<VertexBufferElement> GetElements() const {
     return m_Elements;
   }
+
   inline unsigned int GetStride() const { return m_Stride; }
 };

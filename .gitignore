@@ -28,3 +28,7 @@ intermediates/
 *.app
 
 \.vs/
+
+*.vcxproj
+
+*.filters

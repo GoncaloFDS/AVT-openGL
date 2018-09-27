@@ -16,7 +16,7 @@ class Mesh {
   std::vector<glm::vec3> m_Normals;
 
   VertexArray* m_Va;
-  VertexBuffer* m_Vb;
+ 
   IndexBuffer* m_Ib;
 
  public:

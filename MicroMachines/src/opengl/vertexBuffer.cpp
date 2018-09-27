@@ -1,5 +1,5 @@
-#include "vertexBuffer.h"
-#include "common.h"
+#include "VertexArray.h"
+#include "Common.h"
 
 VertexBuffer::VertexBuffer(const void* data, unsigned int size) {
   GLCall(glGenBuffers(1, &m_RendererID));

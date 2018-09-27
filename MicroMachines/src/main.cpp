@@ -8,7 +8,7 @@
 #include "common.h"
 #include "cube.h"
 #include "shader.h"
-#include "gameEventHandler.h"
+#include "InputEvent.h"
 #include "inputControl.h"
 #include "mesh.h"
 
@@ -16,6 +16,7 @@
 #include <glm/mat4x4.hpp>  
 #include <glm/vec3.hpp>    
 #include <glm/vec4.hpp>    
+#include "camera.h"
 
 
 extern "C" {
@@ -25,36 +26,43 @@ extern "C" {
 
 #define CAPTION "60 FPS"
 
-int WinX = 640, WinY = 480;
+int WinX = 1080, WinY = 720;
 int WindowHandle = 0;
 unsigned int FrameCount = 0;
 
 Shader* basicShader;
 Mesh* mesh;
-GameEventHandler eventHandler;
+InputEvent eventHandler;
 InputControl horizontal, vertical;
+Camera* camera;
+
+glm::vec3 modelPos;
 
 /////////////////////////////////////////////////////////////////////// SCENE
 
 void renderScene() {
-	if (horizontal.GetAmt() != 0) return;
+	//modelPos += glm::vec3(horizontal.GetAmt() * 0.2f, vertical.GetAmt() * 0.2f, 0);
 	basicShader->Bind();
-	glm::mat4 proj = glm::perspective(30.0f, (float)WinX / (float)WinY, 1.0f, 5000.f);
-	glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 2.0f), glm::vec3(0.0f), glm::vec3(0, 0, 1));
+	//glm::mat4 proj = glm::perspective(30.0f, (float)WinX / (float)WinY, 1.0f, 5000.f);
+	//glm::mat4 view = glm::lookAt(glm::vec3(0.0f, 2.0f, 2.0f), glm::vec3(0.0f), glm::vec3(0, 0, 1));
 
-	basicShader->SetUniformMat4f("Matrix", proj * view * glm::mat4(1));
-	mesh->Draw();
+// 	basicShader->SetUniformMat4f("Matrix", proj * view * glm::mat4(1));
+// 	mesh->Draw();
 
-	glm::mat4 model =
-		glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, -1.0f, .0f)) *
-		glm::rotate(glm::mat4(1), glm::radians(.0f), glm::vec3(0.5f, 0.5f, 0.f));
-	auto mvp = proj * view * model;
+	float xT = horizontal.GetAmt();
+	float yT = vertical.GetAmt();
+
+	camera->Translate(Direction::Right, xT);
+	camera->Translate(Direction::Up, yT);
+
+	glm::mat4 model = glm::mat4(1);
+		//glm::translate(glm::mat4(1.0f), modelPos) *
+		//glm::rotate(glm::mat4(1), glm::radians(.0f), glm::vec3(0.5f, 0.5f, 0.f));
+	auto mvp = camera->GetViewProjMatrix() * model;
 	basicShader->SetUniformMat4f("Matrix", mvp);
 
 	mesh->Draw();
 	basicShader->Unbind();
-	GLCall(glBindVertexArray(0));
-
 }
 
 
@@ -100,6 +108,10 @@ void KeyboardUp(unsigned char key, int x, int y) {
 	eventHandler.OnKeyUp(key, false);
 }
 
+void MouseInput(int button, int state, int x, int y) {
+	eventHandler.OnMouseInput(button, state, x, y);
+}
+
 /////////////////////////////////////////////////////////////////////// SETUP
 
 void setupCallbacks() {
@@ -110,6 +122,7 @@ void setupCallbacks() {
 	glutTimerFunc(0, timer, 0);
 	glutKeyboardFunc(KeyboardDown);
 	glutKeyboardUpFunc(KeyboardUp);
+	glutMouseFunc(MouseInput);
 }
 
 void setupOpenGL() {
@@ -169,13 +182,16 @@ void init(int argc, char* argv[]) {
 int main(int argc, char* argv[]) {
 	init(argc, argv);
 
+	camera = new Camera(Projection::Perspective, glm::vec3(0.0f, 0.f, 30.0f));
 	basicShader = new Shader("res/shaders/basic");
 	mesh = new Mesh("res/meshes/suzanne.obj");
 
-	eventHandler.AddKeyControl('a', horizontal, -1.0f);
-	eventHandler.AddKeyControl('d', horizontal, 1.0f);
-	eventHandler.AddKeyControl('w', vertical, -1.0f);
-	eventHandler.AddKeyControl('s', vertical, 1.0f);
+	eventHandler.AddKeyControl('W', vertical, 1.0f);
+	eventHandler.AddKeyControl('S', vertical, -1.0f);
+	eventHandler.AddKeyControl('A', horizontal, -1.0f);
+	eventHandler.AddKeyControl('D', horizontal, 1.0f);
+
+
 
 	glutMainLoop();
 

@@ -48,27 +48,27 @@ bool Mesh::LoadFromFile(const std::string& path) {
       std::string token;
       for (int i = 0; i < 3; i++) {
         std::getline(ss, token, '/');
-        if (!token.empty()) m_VertexIndices.push_back(std::stoi(token) - 1);
+        if (!token.empty()) 
+			m_VertexIndices.push_back(std::stoi(token) - 1);
         std::getline(ss, token, '/');
-        if (!token.empty()) m_UvIndices.push_back(std::stoi(token) - 1);
+        if (!token.empty())
+			m_UvIndices.push_back(std::stoi(token) - 1);
         std::getline(ss, token, ' ');
-        if (!token.empty()) m_NormalIndices.push_back(std::stoi(token) - 1);
+        if (!token.empty()) 
+			m_NormalIndices.push_back(std::stoi(token) - 1);
       }
     }
   }
   file.close();
-
-  // TODO: calculate tangents
-
   return true;
 }
 
 void Mesh::CreateBuffers() {
   m_Va = new VertexArray();
-  m_Vb = new VertexBuffer(&m_Vertices[0], m_Vertices.size() * 3 * sizeof(float));
-  auto layout = new VertexBufferLayout();
-  layout->Push<float>(3);  // xyz
-  m_Va->AddBuffer(*m_Vb, *layout);
+  auto m_Vb = new VertexBuffer(&m_Vertices[0], m_Vertices.size() * 3 * sizeof(float));
+  VertexBufferLayout layout;
+  layout.Push<float>(3);  // xyz
+  m_Va->AddBuffer(*m_Vb, layout);
   m_Ib = new IndexBuffer(&m_VertexIndices[0], m_VertexIndices.size());
 }
 
