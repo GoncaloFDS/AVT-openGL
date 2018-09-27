@@ -1,7 +1,6 @@
 #version 330 core
 
 in vec4 in_Position;
-in vec4 in_Normals;
 uniform mat4 Matrix;
 out vec4 color;
 

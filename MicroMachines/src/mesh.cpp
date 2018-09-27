@@ -4,7 +4,7 @@
 #include <iostream>
 #include <sstream>
 
-#include "common.h"
+#include "Common.h"
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"

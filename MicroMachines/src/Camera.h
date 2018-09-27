@@ -17,6 +17,7 @@ private:
 	float m_Yaw;
 	float m_Pitch;
 
+	Projection m_ProjectionType;
 	glm::mat4 m_ProjMatrix;
 	glm::mat4 m_ViewMatrix;
 
@@ -29,16 +30,17 @@ private:
 	float m_RotationSpeed;
 
 public:
-	Camera(Projection proj, glm::vec3 startingPosition);
+	Camera(Projection proj, float aspectRatio, glm::vec3 startingPosition, glm::vec3 center);
 	~Camera();
 
 	void LookAt(glm::vec3 center);
+	void SetAspectRatio(float aspectRatio);
 	void Translate(Direction dir, float amount);
 	void Rotate(Direction dir, float amount);
 
 	void Update();
 
-	glm::mat4 GetViewProjMatrix() const { return m_ProjMatrix * m_ViewMatrix; }
+	glm::mat4 GetViewProjMatrix();
 
 };
 
