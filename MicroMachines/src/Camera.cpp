@@ -57,7 +57,6 @@ void Camera::Translate(Direction dir, float amount = 1.0f) {
 	}
 	m_Position += directionVec * amount * m_TranslationSpeed;
 	m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
-	//m_ViewMatrix = glm::translate(glm::mat4(1.0f), directionVec * amount * m_TranslationSpeed) * m_ViewMatrix;
 }
 
 void Camera::Rotate(Direction dir, float amount) {

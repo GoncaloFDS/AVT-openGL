@@ -19,7 +19,7 @@
 #include "Window.h"
 #include "Renderer.h"
 #include "Timer.h"
-
+#include "Model.h"
 
 int WinX = 1080, WinY = 720;
 
@@ -38,10 +38,12 @@ int main(int argc, char* argv[]) {
 	renderer.SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	window.SetCallbacks();
 
-	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), glm::vec3(0.0f, 2.0f, 20.f), glm::vec3(0.0f));
+	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), glm::vec3(0.0f, 20.0f, 20.f), glm::vec3(0.0f, 10.0f, 0.0f));
 
-	Mesh mesh("res/meshes/suzanne.obj");
-	Shader shader("res/shaders/basic");
+	Model model("res/models/nanosuit/nanosuit.obj");
+	
+	//Model model("res/models/texturedcube.obj");
+	Shader shader("res/shaders/modelLoader");
 
 	
 	glm::mat4 mvp = mainCamera.GetViewProjMatrix() * glm::mat4(1);
@@ -58,7 +60,7 @@ int main(int argc, char* argv[]) {
 			shader.SetUniformMat4f("Matrix", mvp);
 		}
 		
-		mesh.Draw();
+		model.Draw(shader);
 		
 		
 		//LOG(Timer::elapsedTime);

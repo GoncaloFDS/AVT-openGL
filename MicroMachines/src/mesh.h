@@ -1,30 +1,38 @@
 #pragma once
+
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 #include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include <vector>
 
-#include "glm/glm.hpp"
+#include "shader.h"
+#include "Texture.h"
 
-class VertexArray;
-class VertexBuffer;
-class IndexBuffer;
+struct Vertex {
+	glm::vec3 Position;
+	glm::vec3 Normal;
+	glm::vec2 TexCoords;
+	glm::vec3 Tangent;
+	glm::vec3 Bitangent;
+};
 
 class Mesh {
- private:
-  std::vector<unsigned int> m_VertexIndices, m_UvIndices, m_NormalIndices;
-  std::vector<glm::vec3> m_Vertices;
-  std::vector<glm::vec2> m_Uvs;
-  std::vector<glm::vec3> m_Normals;
+public:
 
-  VertexArray* m_Va;
- 
-  IndexBuffer* m_Ib;
+	std::vector<Vertex> m_Vertices;
+	std::vector<unsigned int> m_Indices;
+	std::vector<Texture> m_Textures;
+	unsigned int VAO;
 
- public:
-  Mesh(const std::string& path);
-  ~Mesh();
-  void Draw();
+	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures);
 
- private:
-  bool LoadFromFile(const std::string& path);
-  void CreateBuffers();
+	void Draw(Shader shader);
+
+private:
+	unsigned int VBO, EBO;
+	void SetupMesh();
 };
