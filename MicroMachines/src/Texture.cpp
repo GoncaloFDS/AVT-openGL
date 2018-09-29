@@ -1,6 +1,5 @@
  #include "Texture.h"
  
-
 #include "stb_image/stb_image.h"
 #include "Common.h"
 
@@ -39,5 +38,14 @@ Texture::Texture(const std::string& path, const std::string& directory, const st
 	}
 	type = typeName;
 	id = textureID;
+}
+
+void Texture::Bind(unsigned int slot /*= 0*/) const {
+	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
+	GLCall(glBindTexture(GL_TEXTURE_2D, id));
+}
+
+void Texture::Unbind() {
+
 }
 

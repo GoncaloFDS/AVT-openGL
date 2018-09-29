@@ -38,4 +38,6 @@ struct Texture {
 	unsigned int id;
 	std::string type;
 	std::string path;
+	void Bind(unsigned int slot = 0) const;
+	void Unbind();
 };
