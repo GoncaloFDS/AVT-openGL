@@ -14,8 +14,6 @@ enum class Direction {
 class Camera {
 private:
 	glm::vec3 m_Position;
-	float m_Yaw;
-	float m_Pitch;
 
 	Projection m_ProjectionType;
 	glm::mat4 m_ProjMatrix;
@@ -26,8 +24,12 @@ private:
 	glm::vec3 m_Up;
 	glm::vec3 m_WorldUp;
 
-	float m_TranslationSpeed;
-	float m_RotationSpeed;
+	float m_MovementSpeed;
+	float m_MouseSensivity;
+	//float m_Zoom;
+
+	float m_Yaw;
+	float m_Pitch;
 
 public:
 	Camera(Projection proj, float aspectRatio, glm::vec3 startingPosition, glm::vec3 center);
@@ -38,12 +40,14 @@ public:
 	void Translate(Direction dir, float amount);
 	void Rotate(Direction dir, float amount);
 
-	void Update();
-
 	glm::mat4 GetViewProjMatrix();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjMatrix();
 	glm::vec3 GetPosition();
 
+	void ProcessMouseMovement(float deltaX, float deltaY);
+	
+private:
+	void UpdateCameraVectors();
 };
 

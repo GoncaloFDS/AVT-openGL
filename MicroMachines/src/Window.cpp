@@ -4,10 +4,12 @@
 #include <GLFW/glfw3.h>
 
 #include "Common.h"
+#include "InputHandler.h"
 
 int Window::m_Width = 500;
 int Window::m_Height = 500;
 bool Window::m_WasResized = false;
+InputHandler* Window::m_InputHandler;
 
 Window::Window(int width, int height, const char* name) {
 
@@ -50,6 +52,10 @@ void Window::Close() {
 	glfwTerminate();
 }
 
+void Window::SetInputHandler(InputHandler* inputHandler) {
+	m_InputHandler = inputHandler;
+}
+
 bool Window::WasResized() {
 	return m_WasResized;
 }
@@ -70,17 +76,33 @@ void Window::OnResize(GLFWwindow* window, int width, int height) {
 	
 }
 
-void Window::OnKey(GLFWwindow* window, int key, int scancode, int actions, int mods) {
-	//Window* windowPtr = (Window*)glfwGetWindowUserPointer(window);
-	//windowPtr->OnKey(key, scancode, actions, mods);
+void Window::OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
+	if (action == GLFW_PRESS)
+		m_InputHandler->OnKeyDown(key, false);
+	if (action == GLFW_RELEASE)
+		m_InputHandler->OnKeyUp(key, false);
+	if (action == GLFW_REPEAT)
+		m_InputHandler->OnKeyDown(key, true);
 }
 
-void Window::OnKey(int key, int scancode, int actions, int mods) {
-	//input.OnKey(key);
+void Window::OnMouseMove(GLFWwindow* window, double xpos, double ypos) {
+	m_InputHandler->OnMouseMove(xpos, ypos);
 }
 
-void Window::SetCallbacks() {
+void Window::OnMouseClick(GLFWwindow* window, int button, int action, int mods) {
+	if (action == GLFW_PRESS)
+		m_InputHandler->pressed = true;
+		//m_InputHandler->OnKeyDown(button, false);
+	if (action == GLFW_RELEASE)
+		m_InputHandler->pressed = false;
+		//m_InputHandler->OnKeyUp(button, false);
+}
+
+void Window::SetCallbacks()
+{
 	glfwSetWindowUserPointer(m_Window, this);
 	glfwSetKeyCallback(m_Window, OnKey);
+	glfwSetCursorPosCallback(m_Window, OnMouseMove);
+	glfwSetMouseButtonCallback(m_Window, OnMouseClick);
 	glfwSetWindowSizeCallback(m_Window, OnResize);
 }

@@ -12,8 +12,8 @@
 
 #include "Common.h"
 #include "Shader.h"
-#include "InputEvent.h"
-#include "inputControl.h"
+#include "InputHandler.h"
+#include "InputBind.h"
 #include "Camera.h"
 #include "Window.h"
 #include "Renderer.h"
@@ -30,26 +30,39 @@ void OnRender() {
 
 }
 
+
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
 	
 	Renderer renderer;
 	renderer.SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	
+	InputHandler inputHandler;
+	InputBind horizontal;
+	InputBind frontal;
+	InputBind vertical;
+
+	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_D, horizontal, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_W, frontal, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_S, frontal, -1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_E, vertical, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_Q, vertical, -1.0f);
+
+	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
 
-	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), glm::vec3(0.0f, 20.0f, 20.f), glm::vec3(0.0f, 10.0f, 0.0f));
+	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), 
+		glm::vec3(0.0f, 10.0f, 10.f), glm::vec3(0.0f, 10.0f, 0.0f));
 
 	Model model("res/models/nanosuit/nanosuit.obj");
-	//Model model("res/models/deadpool/untitled.obj");
-	
-	//Model model("res/models/texturedcube.obj");
 	Shader shader("res/shaders/modelLoader");
 
 	
 	glm::mat4 modelMatrix = glm::mat4(1);
 	shader.Bind();
 	shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
-	shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
+	shader.SetUniform3fv("lightPos", glm::vec3(30.0f));
 	shader.SetUniformMat4f("model", modelMatrix);
 	shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
 	shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
@@ -58,20 +71,25 @@ int main(int argc, char* argv[]) {
 	while (!window.ShouldClose()) {
 		renderer.Clear();
 
-		if (window.WasResized()) {
+		//Update
+		if (window.WasResized())
 			mainCamera.SetAspectRatio(window.GetAspectRatio());
-			glm::mat4 mvp = mainCamera.GetViewProjMatrix() * glm::mat4(1);
-			shader.Bind();
-			shader.SetUniformMat4f("Matrix", mvp);
-		}
-		
+		mainCamera.Translate(Direction::Up, vertical.GetAmt());
+		mainCamera.Translate(Direction::Right, horizontal.GetAmt());
+		mainCamera.Translate(Direction::Front, frontal.GetAmt());
+
+
+		mainCamera.ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
+
+		//OnRender
+		shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
+		shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
+		shader.SetUniformMat4f("model", modelMatrix);
+		shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
+		shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
 		model.Draw(shader);
 		
 		
-		//LOG(Timer::elapsedTime);
-		//OnUpdate(clock.DeltaTime());
-		//OnRender();
-
 		window.SwapBuffers();
 		window.PollEvents();
 		Timer::Tick();
