@@ -13,12 +13,11 @@ void Mesh::Draw(Shader shader) {
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int heightNr = 1;
-	glBindVertexArray(VAO);
 
 	for (unsigned int i = 0; i < m_Textures.size(); i++){
 		GLCall(glActiveTexture(GL_TEXTURE0 + i));
 		std::string number;
-		std::string name = m_Textures[i].GetType();
+		std::string name = m_Textures[i].type;
 		if (name == "texture_diffuse")
 			number = std::to_string(difuseNr++);
 		else if (name == "texture_specular")
@@ -29,12 +28,12 @@ void Mesh::Draw(Shader shader) {
 			number = std::to_string(heightNr++);
 
 		shader.Bind();
-		shader.SetUniform1i(name + number, 1);
+		shader.SetUniform1i(name + number, i);
 		
 		//m_Textures[i].Bind(i);
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_Textures[i].ID()));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_Textures[i].id));
 	}
-
+	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 	glBindVertexArray(0);
 

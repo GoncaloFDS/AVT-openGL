@@ -41,6 +41,9 @@ public:
 	void Update();
 
 	glm::mat4 GetViewProjMatrix();
+	glm::mat4 GetViewMatrix();
+	glm::mat4 GetProjMatrix();
+	glm::vec3 GetPosition();
 
 };
 

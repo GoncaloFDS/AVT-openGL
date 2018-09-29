@@ -1,63 +1,43 @@
-#include "Texture.h"
+ #include "Texture.h"
+ 
 
 #include "stb_image/stb_image.h"
 #include "Common.h"
 
-Texture::Texture(const std::string& path, const std::string& type)
-	: m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), 
-		m_Width(0), m_Height(0), m_BPP(0), m_Type(type){
+Texture::Texture(const std::string& path, const std::string& directory, const std::string& typeName) {
+	std::string filename = path;
+	filename = directory + '/' + filename;
 
-	m_Name = path.substr(path.find_last_of('/')+1, path.size());
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
 
-	stbi_set_flip_vertically_on_load(1); //opengl expects texture to be flipped on the y axis
-	m_LocalBuffer = stbi_load(path.c_str(), &m_Width, &m_Height, &m_BPP, 4);
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
+	if (data) {
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
 
-	GLCall(glGenTextures(1, &m_RendererID));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, m_Width, m_Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, m_LocalBuffer));
-	glGenerateMipmap(GL_TEXTURE_2D);
+		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data));
+		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 
-	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-
-	if (m_LocalBuffer)
-		stbi_image_free(m_LocalBuffer);
+		stbi_image_free(data);
+	}
+	else {
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+	type = typeName;
+	id = textureID;
 }
 
-Texture::~Texture() {
-	GLCall(glDeleteTextures(1, &m_RendererID));
-}
-
-
-void Texture::Bind(unsigned int slot) const {
-	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
-	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
-}
-
-void Texture::Unbind() {
-	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-}
-
-int Texture::GetWidth() const {
-	return m_Width;
-}
-
-int Texture::GetHeight() const {
-	return m_Height;
-}
-
-const std::string& Texture::GetFilePath() {
-	return m_FilePath;
-}
-
-const std::string& Texture::GetType() {
-	return m_Type;
-}
-
-const std::string& Texture::GetName() {
-	return m_Name;
-}

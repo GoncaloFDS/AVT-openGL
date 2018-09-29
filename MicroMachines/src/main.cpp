@@ -14,7 +14,6 @@
 #include "Shader.h"
 #include "InputEvent.h"
 #include "inputControl.h"
-#include "Mesh.h"
 #include "Camera.h"
 #include "Window.h"
 #include "Renderer.h"
@@ -41,14 +40,20 @@ int main(int argc, char* argv[]) {
 	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), glm::vec3(0.0f, 20.0f, 20.f), glm::vec3(0.0f, 10.0f, 0.0f));
 
 	Model model("res/models/nanosuit/nanosuit.obj");
+	//Model model("res/models/deadpool/untitled.obj");
 	
 	//Model model("res/models/texturedcube.obj");
 	Shader shader("res/shaders/modelLoader");
 
 	
-	glm::mat4 mvp = mainCamera.GetViewProjMatrix() * glm::mat4(1);
+	glm::mat4 modelMatrix = glm::mat4(1);
 	shader.Bind();
-	shader.SetUniformMat4f("Matrix", mvp);
+	shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
+	shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
+	shader.SetUniformMat4f("model", modelMatrix);
+	shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
+	shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
+
 
 	while (!window.ShouldClose()) {
 		renderer.Clear();

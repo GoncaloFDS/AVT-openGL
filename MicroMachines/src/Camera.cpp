@@ -70,3 +70,15 @@ void Camera::Update() {
 glm::mat4 Camera::GetViewProjMatrix() {
 	return m_ProjMatrix * m_ViewMatrix;
 }
+
+glm::mat4 Camera::GetViewMatrix() {
+	return m_ViewMatrix;
+}
+
+glm::mat4 Camera::GetProjMatrix() {
+	return m_ProjMatrix;
+}
+
+glm::vec3 Camera::GetPosition() {
+	return m_Position;
+}
