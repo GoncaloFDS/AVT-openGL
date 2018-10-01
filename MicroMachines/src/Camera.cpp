@@ -56,15 +56,15 @@ void Camera::SetAspectRatio(float aspectRatio) {
 void Camera::Translate(Direction dir, float amount = 1.0f) {
 	glm::vec3 directionVec;
 	switch (dir) {
-	case Direction::Front:
-		directionVec = m_Front;
-		break;
-	case Direction::Right:
-		directionVec = m_Right;
-		break;
-	case Direction::Up:
-		directionVec = m_Up;
-		break;
+		case Direction::Front:
+			directionVec = m_Front;
+			break;
+		case Direction::Right:
+			directionVec = m_Right;
+			break;
+		case Direction::Up:
+			directionVec = m_Up;
+			break;
 	}
 	m_Position += directionVec * amount * m_MovementSpeed;
 	m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
@@ -109,7 +109,8 @@ void Camera::ProcessMouseMovement(float deltaX, float deltaY) {
 
 	m_Yaw += deltaX;
 	m_Pitch += deltaY;
-	LOG("Yaw: " << m_Yaw);
+	
+
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (m_Pitch > 89.0f)
 		m_Pitch = 89.0f;
