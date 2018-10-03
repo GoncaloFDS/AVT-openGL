@@ -19,6 +19,7 @@
 #include "Renderer.h"
 #include "Timer.h"
 #include "Model.h"
+#include "SceneGraph.h"
 
 int WinX = 1080, WinY = 720;
 
@@ -55,9 +56,13 @@ int main(int argc, char* argv[]) {
 	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), 
 		glm::vec3(0.0f, 10.0f, 10.f), glm::vec3(0.0f, 10.0f, 0.0f));
 
-	Model model("res/models/nanosuit/nanosuit.obj");
-	Shader shader("res/shaders/modelLoader");
+	SceneGraph* sceneGraph = new SceneGraph();
 
+	//Model model("res/models/Volkswagen/Volkswagen.obj");
+	Model model("nanosuit", "res/models/nanosuit/nanosuit.obj");
+	Shader shader("res/shaders/modelLoader");
+	model.SetShader(shader);
+	sceneGraph->AddNode(&model);
 	
 	glm::mat4 modelMatrix = glm::mat4(1);
 	shader.Bind();
@@ -78,16 +83,16 @@ int main(int argc, char* argv[]) {
 		mainCamera.Translate(Direction::Right, horizontal.GetAmt());
 		mainCamera.Translate(Direction::Front, frontal.GetAmt());
 
-
 		mainCamera.ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
+		sceneGraph->OnUpdate();
 
 		//OnRender
-		shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
-		shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
-		shader.SetUniformMat4f("model", modelMatrix);
+		//shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
+		//shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
+		//shader.SetUniformMat4f("model", modelMatrix);
 		shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
-		shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
-		model.Draw(shader);
+		//shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
+		sceneGraph->OnRender();
 		
 		
 		window.SwapBuffers();

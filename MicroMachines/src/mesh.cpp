@@ -36,7 +36,7 @@ void Mesh::Draw(Shader shader) {
 		
 	}
 	m_VertexArray->Bind();
-	glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+	GLCall(glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr));
 	m_VertexArray->Unbind();
 
 	// always good practice to set everything back to defaults once configured.
