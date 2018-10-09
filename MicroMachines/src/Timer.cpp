@@ -8,6 +8,10 @@ std::clock_t Timer::m_DeltaTime;
 
 Timer::Timer() {}
 
+void Timer::Start() {
+	Timer::Tick();
+}
+
 void Timer::Tick() {
 	if (isPaused)
 		return;

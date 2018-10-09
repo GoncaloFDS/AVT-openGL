@@ -6,6 +6,7 @@
 
 #include "SceneNode.h"
 #include "Mesh.h"
+#include "common.h"
 
 class Model : public SceneNode {
 public:
@@ -15,6 +16,8 @@ public:
 	//virtual void OnUpdate() override;
 
 	void SetShader(Shader& shader);
+
+	void Translate(Direction dir, float amt = 1.0f);
 
 private:
 	std::vector<Mesh> m_Meshes;

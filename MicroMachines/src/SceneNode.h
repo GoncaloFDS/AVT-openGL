@@ -15,17 +15,18 @@ struct Transform {
 
 
 class SceneNode {
+public:
+	Transform transform;
 protected:
 	std::string m_Name;
 	std::vector<SceneNode*> m_ChildNodes;
-	Transform transform;
 	glm::mat4 m_ModelMatrix;
 
 public:
 	SceneNode(const std::string& name);
 	~SceneNode();
 
-	virtual void OnUpdate(glm::mat4 parentMatrix);
+	virtual void OnUpdate(Transform parentTransform);
 	virtual void OnRender();
 
 	void AddChildNode(SceneNode* node);

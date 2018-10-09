@@ -27,7 +27,8 @@ Camera* SceneGraph::GetCamera() {
 }
 
 void SceneGraph::OnUpdate() {
-	m_Root->OnUpdate(glm::mat4(1.0f));
+	Transform t;
+	m_Root->OnUpdate(t);
 }
 
 void SceneGraph::OnRender() {

@@ -5,6 +5,9 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw_gl3.h"
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>  
 #include <glm/vec3.hpp>    
@@ -20,28 +23,26 @@
 #include "Timer.h"
 #include "Model.h"
 #include "SceneGraph.h"
+#include "gameobjects/Car.h"
+#include "gameobjects/Orange.h"
 
-int WinX = 1080, WinY = 720;
-
-void OnUpdate(float deltaTime) {
-
-}
-
-void OnRender() {
-
-}
-
+bool debug_mode = false;
 
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
-	
+
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(window.GetWindow(), true);
+	ImGui::StyleColorsDark();
+
 	Renderer renderer;
-	renderer.SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
-	
+	SceneGraph sceneGraph;
 	InputHandler inputHandler;
 	InputBind horizontal;
 	InputBind frontal;
 	InputBind vertical;
+	InputBind key0, key1, key2, key3;
+	InputBind up, right;
 
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_D, horizontal, 1.0f);
@@ -49,58 +50,126 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_S, frontal, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_E, vertical, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_Q, vertical, -1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_0, key0, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_1, key1, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_2, key2, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_3, key3, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_RIGHT, right, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_LEFT, right, -1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_UP, up, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_DOWN, up, -1.0f);
+	
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
 
-	Camera mainCamera(Projection::Perspective, window.GetAspectRatio(), 
-		glm::vec3(0.0f, 10.0f, 10.f), glm::vec3(0.0f, 10.0f, 0.0f));
-
-	SceneGraph* sceneGraph = new SceneGraph();
-
-	//Model model("res/models/Volkswagen/Volkswagen.obj");
-	Model model("nanosuit", "res/models/nanosuit/nanosuit.obj");
-	Shader shader("res/shaders/modelLoader");
-	model.SetShader(shader);
-	sceneGraph->AddNode(&model);
+	Camera followCamera("MainCamera",	glm::vec3(0.0f, 30.0f, -60.f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	followCamera.SetAspectRatio(window.GetAspectRatio());
+	Camera orthoCamera("OrthoCamera", glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	orthoCamera.SetAspectRatio(window.GetAspectRatio());
+	orthoCamera.SetProjectionType(Projection::Orthographic);
+	Camera topViewCamera("OrthoCamera", glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	topViewCamera.SetAspectRatio(window.GetAspectRatio());
 	
-	glm::mat4 modelMatrix = glm::mat4(1);
+
+	sceneGraph.SetCamera(followCamera);
+	   	 
+	Model table("table", "res/models/table/diningtable.obj");
+	Model carModel("car", "res/models/car/car.obj");
+	Model orangeModel("orange", "res/models/orange/Orange.obj");
+	Shader shader("res/shaders/modelLoader");
+
+	table.transform.scale = glm::vec3(5);
+
+	carModel.AddChildNode(&followCamera);
+	Car car(carModel);
+	table.SetShader(shader);
+	carModel.SetShader(shader);
+	orangeModel.SetShader(shader);
+
+	Orange orange(orangeModel);
+
+	sceneGraph.AddNode(&orangeModel);
+	sceneGraph.AddNode(&table);
+	sceneGraph.AddNode(&carModel);
+	
+	auto currentCamera = sceneGraph.GetCamera();
+
 	shader.Bind();
-	shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
-	shader.SetUniform3fv("lightPos", glm::vec3(30.0f));
-	shader.SetUniformMat4f("model", modelMatrix);
-	shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
-	shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
+	shader.SetUniform3fv("u_cameraPosition", currentCamera->GetPosition());
+	shader.SetUniform3fv("u_lightPosition", glm::vec3(1000.0f));
+	shader.SetUniformMat4f("u_viewMat", currentCamera->GetViewMatrix());
+	shader.SetUniformMat4f("u_projMat", currentCamera->GetProjMatrix());
 
-
+	Timer::Start();
 	while (!window.ShouldClose()) {
+		Timer::Tick();
 		renderer.Clear();
+		window.PollEvents();
 
+		ImGui_ImplGlfwGL3_NewFrame();
+
+		auto currentCamera = sceneGraph.GetCamera();
 		//Update
-		if (window.WasResized())
-			mainCamera.SetAspectRatio(window.GetAspectRatio());
-		mainCamera.Translate(Direction::Up, vertical.GetAmt());
-		mainCamera.Translate(Direction::Right, horizontal.GetAmt());
-		mainCamera.Translate(Direction::Front, frontal.GetAmt());
+		if (window.WasResized()) {
+			followCamera.SetAspectRatio(window.GetAspectRatio());
+			orthoCamera.SetAspectRatio(window.GetAspectRatio());
+			topViewCamera.SetAspectRatio(window.GetAspectRatio());
+		}
 
-		mainCamera.ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
-		sceneGraph->OnUpdate();
+		if (key1.GetAmt() != 0)
+			sceneGraph.SetCamera(followCamera);
+		else if(key2.GetAmt() != 0)
+			sceneGraph.SetCamera(orthoCamera);
+		else if (key3.GetAmt() != 0)
+			sceneGraph.SetCamera(topViewCamera);
+		if (key0.GetAmt() != 0)
+			debug_mode = !debug_mode;
+
+
+		currentCamera->Translate(Direction::Up, vertical.GetAmt());
+		currentCamera->Translate(Direction::Right, horizontal.GetAmt());
+		currentCamera->Translate(Direction::Front, frontal.GetAmt());
+
+		car.Move(up.GetAmt());
+		car.Turn(right.GetAmt());
+		orange.OnUpdate();
+
+		currentCamera->ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
+		sceneGraph.OnUpdate();
 
 		//OnRender
-		//shader.SetUniform3fv("viewPosition", mainCamera.GetPosition());
-		//shader.SetUniform3fv("lightPos", glm::vec3(10.0f));
-		//shader.SetUniformMat4f("model", modelMatrix);
-		shader.SetUniformMat4f("view", mainCamera.GetViewMatrix());
-		//shader.SetUniformMat4f("projection", mainCamera.GetProjMatrix());
-		sceneGraph->OnRender();
+		shader.SetUniform3fv("u_cameraPosition", currentCamera->GetPosition());
+		shader.SetUniformMat4f("u_viewMat", currentCamera->GetViewMatrix());
+		shader.SetUniformMat4f("u_projMat", currentCamera->GetProjMatrix());
+	
+		sceneGraph.OnRender();
+
+		if(debug_mode) {	
+			ImGui::Begin("Debug Window", &debug_mode);
+			static float f = 0.0f;
+			static int counter = 0;
+			ImGui::Text("Hello, world!");                           // Display some text (you can use a format string too)
+			ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f    
+
+			if (ImGui::Button("Button"))                            // Buttons return true when clicked (NB: most widgets return true when edited/activated)
+				counter++;
+			ImGui::SameLine();
+			ImGui::Text("counter = %d", counter);
+
+			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			ImGui::End();
+		}
 		
-		
+		ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		window.SwapBuffers();
-		window.PollEvents();
-		Timer::Tick();
 	}
 	
-
+	ImGui_ImplGlfwGL3_Shutdown();
+	ImGui::DestroyContext();
+	glfwTerminate();
+	return 0;
 }
 
 ///////////////////////////////////////////////////////////////////////

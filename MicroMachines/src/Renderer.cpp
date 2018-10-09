@@ -28,6 +28,7 @@ Renderer::Renderer() {
 	GLCall(glFrontFace(GL_CCW));
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 }
 
 void Renderer::Clear() const {

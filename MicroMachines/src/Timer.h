@@ -6,6 +6,7 @@ struct Timer {
 
 	Timer();
 	
+	static void Start();
 	static float deltaTime;
 	static float elapsedTime;
 

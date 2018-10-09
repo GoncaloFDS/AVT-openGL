@@ -10,7 +10,7 @@ Model::Model(const std::string& name, const std::string& filePath)
 
 void Model::OnRender() {	
 	m_Shader->Bind();
-	m_Shader->SetUniformMat4f("model", m_ModelMatrix);
+	m_Shader->SetUniformMat4f("u_modelMat", m_ModelMatrix);
 
 	for (auto& mesh : m_Meshes) 
 		mesh.Draw(*m_Shader);
@@ -21,6 +21,22 @@ void Model::OnRender() {
 
 void Model::SetShader(Shader& shader) {
 	m_Shader = &shader;
+}
+
+void Model::Translate(Direction dir, float amt /*= 1.0f*/) {
+	glm::vec3 directionVec;
+	switch (dir) {
+		case Direction::Front:
+			directionVec = glm::vec3(0.0f, 0.0f, -1.0f);
+			break;
+		case Direction::Right:
+			directionVec = glm::vec3(1.0f, 0.0f, 0.0f);
+			break;
+		case Direction::Up:
+			directionVec = glm::vec3(0.0f, 1.0f, 0.0f);;
+			break;
+	}
+	transform.position += directionVec * amt * 0.5f;
 }
 
 void Model::LoadModel(const std::string& filePath) {

@@ -8,12 +8,12 @@ SceneNode::SceneNode(const std::string& name)
 SceneNode::~SceneNode() {
 }
 
-void SceneNode::OnUpdate(glm::mat4 parentMatrix) {
-	m_ModelMatrix = parentMatrix * glm::translate(glm::mat4(1.0f), transform.position) *
-		glm::mat4_cast(transform.rotation) * glm::scale(glm::mat4(1.0f), transform.scale);
+void SceneNode::OnUpdate(Transform parentTransform) {
+	m_ModelMatrix = glm::translate(glm::mat4(1.0f), parentTransform.position) * glm::mat4_cast(parentTransform.rotation) * glm::scale(glm::mat4(1.0f), parentTransform.scale) *
+		glm::translate(glm::mat4(1.0f), transform.position) * glm::mat4_cast(transform.rotation) * glm::scale(glm::mat4(1.0f), transform.scale);
 
 	for (auto node : m_ChildNodes)
-		node->OnUpdate(m_ModelMatrix);
+		node->OnUpdate(transform);
 }
 
 void SceneNode::OnRender() {

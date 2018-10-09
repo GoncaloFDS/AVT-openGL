@@ -2,62 +2,74 @@
 
 #include "glm/gtc/matrix_transform.hpp"
 #include "common.h"
+#include "Timer.h"
+#include "glm/gtc/constants.hpp"
+#include "glm/vec4.hpp"
 
 
-Camera::Camera(Projection proj, float aspectRatio, glm::vec3 startingPosition, glm::vec3 center) {
-	m_ProjMatrix = proj == Projection::Orthographic ?
-		glm::ortho(-2.0f * aspectRatio, 2.0f * aspectRatio, -2.0f, 2.0f, 1.0f, 100.0f) :
-		glm::perspective(glm::radians(45.0f), aspectRatio, 1.0f, 5000.f);
 
-	m_ProjectionType = proj;
+Camera::Camera(const std::string& name, glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up) : SceneNode(name) {
 
-	m_Position = startingPosition;
-	m_WorldUp = glm::vec3(0, 1, 0);
+	//m_ProjMatrix = proj == Projection::Orthographic ?
+	//	glm::ortho(-50.0f * aspectRatio, 50.0f * aspectRatio, -50.0f, 50.0f, 1.0f, 5000.0f) :
+	//	glm::perspective(glm::radians(45.0f), aspectRatio, 1.0f, 5000.f);
+	m_ProjMatrix = glm::perspective(glm::radians(45.0f), 1080.0f/720.0f, 1.0f, 5000.f);
+	m_ProjectionType = Projection::Perspective;
+
+	transform.position = startingPosition;
+	m_WorldUp = up;
 
 	LookAt(center);
-	m_Front = glm::normalize(center - m_Position);
-	m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));
-	m_Up = glm::cross(m_Right, m_Front);
-
-	m_Pitch = asin(m_Front.y);
-	m_Yaw = atan2(m_Front.x, m_Front.z);
-	m_Yaw -= 90;
-	if (m_Pitch > 89.0f)
-		m_Pitch = 89.0f;
-	if (m_Pitch < -89.0f)
-		m_Pitch = -89.0f;
+	m_Forward = glm::normalize(center - transform.position);
+	m_Right = glm::normalize(glm::cross(m_Forward, m_WorldUp));
+	m_Up = glm::cross(m_Right, m_Forward);
 
 	m_MouseSensivity = 0.1f;
 	m_MovementSpeed = 0.5f;
-	
-
 }
 
 Camera::~Camera() {
 
 }
 
+void Camera::OnUpdate(Transform parentTransform) {
+	m_ViewMatrix = glm::lookAt(transform.position + parentTransform.position, transform.position + parentTransform.position + m_Forward, m_Up);
+	
+	for (auto node : m_ChildNodes)
+		node->OnUpdate(transform);
+}
+
 void Camera::LookAt(glm::vec3 center) {
-	m_ViewMatrix = glm::lookAt(m_Position, center, m_WorldUp);
+	m_ViewMatrix = glm::lookAt(transform.position, center, m_WorldUp);
 }
 
 void Camera::SetAspectRatio(float aspectRatio) {
+	m_AspectRatio = aspectRatio;
+	CalculateProjectionMatrix(aspectRatio);
+}
+
+void Camera::CalculateProjectionMatrix(float aspectRatio) {
 	if (m_ProjectionType == Projection::Orthographic) {
 		if (aspectRatio >= 1.0f)
-			m_ProjMatrix = glm::ortho(-2.0f * aspectRatio, 2.0f * aspectRatio, -2.0f, 2.0f, 1.0f, 100.0f);
+			m_ProjMatrix = glm::ortho(-50.0f * aspectRatio, 50.0f * aspectRatio, -50.0f, 50.0f, 1.0f, 5000.0f);
 		else
-			m_ProjMatrix = glm::ortho(-2.0f, 2.0f, -2.0f/aspectRatio, 2.0f/aspectRatio, 1.0f, 100.0f);
+			m_ProjMatrix = glm::ortho(-50.0f, 50.0f, -50.0f / aspectRatio, 50.0f / aspectRatio, 1.0f, 00.0f);
 	}
 	else {
 		m_ProjMatrix = glm::perspective(glm::radians(45.0f), aspectRatio, 1.0f, 5000.f);
 	}
 }
 
+void Camera::SetProjectionType(Projection projection) {
+	m_ProjectionType = projection;
+	CalculateProjectionMatrix(m_AspectRatio);
+}
+
 void Camera::Translate(Direction dir, float amount = 1.0f) {
 	glm::vec3 directionVec;
 	switch (dir) {
 		case Direction::Front:
-			directionVec = m_Front;
+			directionVec = m_Forward;
 			break;
 		case Direction::Right:
 			directionVec = m_Right;
@@ -66,26 +78,26 @@ void Camera::Translate(Direction dir, float amount = 1.0f) {
 			directionVec = m_Up;
 			break;
 	}
-	m_Position += directionVec * amount * m_MovementSpeed;
-	m_ViewMatrix = glm::lookAt(m_Position, m_Position + m_Front, m_Up);
+	transform.position += directionVec * amount * m_MovementSpeed;
+	m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_Up);
 }
 
-void Camera::Rotate(Direction dir, float amount) {
-	glm::vec3 directionVec;
-	switch (dir) {
-		case Direction::Front:
-			ASSERT(false);
-			break;
-		case Direction::Right:
-			directionVec = m_Right;
-			break;
-		case Direction::Up:
-			directionVec = m_Up;
-			break;
-	}
-	auto center = (m_Position + m_Front) + directionVec * amount;
-	m_ViewMatrix = glm::lookAt(m_Position, center, m_Up);
-}
+// void Camera::Rotate(Direction dir, float amount) {
+// 	glm::vec3 directionVec;
+// 	switch (dir) {
+// 		case Direction::Front:
+// 			ASSERT(false);
+// 			break;
+// 		case Direction::Right:
+// 			directionVec = m_Right;
+// 			break;
+// 		case Direction::Up:
+// 			directionVec = m_Up;
+// 			break;
+// 	}
+// 	auto center = (transform.position + m_Forward) + directionVec * amount;
+// 	m_ViewMatrix = glm::lookAt(transform.position, center, m_Up);
+// }
 
 glm::mat4 Camera::GetViewProjMatrix() {
 	return m_ProjMatrix * m_ViewMatrix;
@@ -100,33 +112,18 @@ glm::mat4 Camera::GetProjMatrix() {
 }
 
 glm::vec3 Camera::GetPosition() {
-	return m_Position;
+	return transform.position;
 }
 
 void Camera::ProcessMouseMovement(float deltaX, float deltaY) {
-	deltaX *= m_MouseSensivity;
-	deltaY *= m_MouseSensivity;
+	deltaX *= -m_MouseSensivity * Timer::deltaTime;
+	deltaY *= m_MouseSensivity * Timer::deltaTime;
 
-	m_Yaw += deltaX;
-	m_Pitch += deltaY;
-	
 
-	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (m_Pitch > 89.0f)
-		m_Pitch = 89.0f;
-	if (m_Pitch < -89.0f)
-		m_Pitch = -89.0f;
-
-	UpdateCameraVectors();
+	m_Forward = glm::rotate(glm::mat4(1.0f), deltaX, m_Up) * glm::vec4(m_Forward, 1);
+	m_Forward = glm::rotate(glm::mat4(1.0f), deltaY, m_Right) * glm::vec4(m_Forward, 1);
+	m_Forward = glm::normalize(m_Forward);
+	m_Right = glm::cross(m_Forward, m_WorldUp);
+	m_Up = glm::cross(m_Right, m_Forward);
 }
 
-void Camera::UpdateCameraVectors() {
-	glm::vec3 front;
-	front.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-	front.y = sin(glm::radians(m_Pitch));
-	front.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
-	m_Front = glm::normalize(front);
-	
-	m_Right = glm::normalize(glm::cross(m_Front, m_WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
-	m_Up = glm::normalize(glm::cross(m_Right, m_Front));
-}
