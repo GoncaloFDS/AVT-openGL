@@ -30,6 +30,7 @@ bool debug_mode = false;
 
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
+	srand(time(NULL));
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window.GetWindow(), true);
@@ -59,39 +60,55 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_UP, up, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_DOWN, up, -1.0f);
 	
-
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
 
-	Camera followCamera("MainCamera",	glm::vec3(0.0f, 30.0f, -60.f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera followCamera(glm::vec3(0.0f, 30.0f, -60.f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	followCamera.SetAspectRatio(window.GetAspectRatio());
-	Camera orthoCamera("OrthoCamera", glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	Camera orthoCamera(glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	orthoCamera.SetAspectRatio(window.GetAspectRatio());
 	orthoCamera.SetProjectionType(Projection::Orthographic);
-	Camera topViewCamera("OrthoCamera", glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+	Camera topViewCamera(glm::vec3(0.0f, 300.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	topViewCamera.SetAspectRatio(window.GetAspectRatio());
 	
-
 	sceneGraph.SetCamera(followCamera);
-	   	 
-	Model table("table", "res/models/table/diningtable.obj");
-	Model carModel("car", "res/models/car/car.obj");
-	Model orangeModel("orange", "res/models/orange/Orange.obj");
 	Shader shader("res/shaders/modelLoader");
+	
+	SceneNode table;
+	Model tableModel("res/models/table/diningtable.obj");
+	table.SetModel(tableModel);
+	table.SetShader(shader);
 
+	Car car;
+	Model carModel("res/models/car/car.obj");
+	car.GetSceneNode().SetShader(shader);
+	car.GetSceneNode().SetModel(carModel);
+
+	Orange orange;
+	Orange orange2;
+	Model orangeModel("res/models/orange/Orange.obj");
+	orange.GetSceneNode().SetShader(shader);
+	orange2.GetSceneNode().SetShader(shader);
+	orange.GetSceneNode().SetModel(orangeModel);
+	orange2.GetSceneNode().SetModel(orangeModel);
 	table.transform.scale = glm::vec3(5);
 
-	carModel.AddChildNode(&followCamera);
-	Car car(carModel);
-	table.SetShader(shader);
-	carModel.SetShader(shader);
-	orangeModel.SetShader(shader);
+	car.GetSceneNode().AddChildNode(&followCamera);
 
-	Orange orange(orangeModel);
-
-	sceneGraph.AddNode(&orangeModel);
 	sceneGraph.AddNode(&table);
-	sceneGraph.AddNode(&carModel);
+	sceneGraph.AddNode(&car.GetSceneNode());
+	sceneGraph.AddNode(&orange.GetSceneNode());
+	sceneGraph.AddNode(&orange2.GetSceneNode());
+	
+
+
+	//std::vector<Orange> oranges(2);
+	//for (auto& orange : oranges) {
+	//	orange.GetSceneNode().SetShader(shader);
+	//	orange.GetSceneNode().SetModel(orangeModel);
+	//	sceneGraph.AddNode(&orange.GetSceneNode());
+	//}
+	
 	
 	auto currentCamera = sceneGraph.GetCamera();
 
@@ -133,7 +150,11 @@ int main(int argc, char* argv[]) {
 
 		car.Move(up.GetAmt());
 		car.Turn(right.GetAmt());
+		
 		orange.OnUpdate();
+		orange2.OnUpdate();
+		//for(auto& orange : oranges)
+		//	orange.OnUpdate();
 
 		currentCamera->ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
 		sceneGraph.OnUpdate();

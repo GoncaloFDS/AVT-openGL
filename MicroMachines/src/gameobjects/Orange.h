@@ -3,16 +3,17 @@
 
 class Orange {
 private:
-	Model& m_Model;
+	SceneNode m_Node;
 
 	float m_Speed;
 	float m_TurnSpeed;
 
-	glm::vec3 m_Forward;
 	glm::vec3 m_Right;
 public:
-	Orange(Model& model);
+	Orange();
 	~Orange();
+
+	SceneNode& GetSceneNode();
 
 	void OnUpdate();
 };

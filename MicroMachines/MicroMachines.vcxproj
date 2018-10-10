@@ -150,12 +150,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\gameobjects\Orange.cpp" />
-    <ClCompile Include="src\gameobjects\Car.cpp" />
     <ClCompile Include="src\external\imgui\imgui.cpp" />
     <ClCompile Include="src\external\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\external\imgui\imgui_draw.cpp" />
     <ClCompile Include="src\external\imgui\imgui_impl_glfw_gl3.cpp" />
+    <ClCompile Include="src\gameobjects\Car.cpp" />
+    <ClCompile Include="src\gameobjects\Orange.cpp" />
     <ClCompile Include="src\SceneNode.cpp" />
     <ClCompile Include="src\SceneGraph.cpp" />
     <ClCompile Include="src\external\stb_image\stb_image.cpp" />
@@ -175,8 +175,6 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\gameobjects\Orange.h" />
-    <ClInclude Include="src\gameobjects\Car.h" />
     <ClInclude Include="src\external\imgui\imconfig.h" />
     <ClInclude Include="src\external\imgui\imgui.h" />
     <ClInclude Include="src\external\imgui\imgui_impl_glfw_gl3.h" />
@@ -184,6 +182,8 @@
     <ClInclude Include="src\external\imgui\stb_rect_pack.h" />
     <ClInclude Include="src\external\imgui\stb_textedit.h" />
     <ClInclude Include="src\external\imgui\stb_truetype.h" />
+    <ClInclude Include="src\gameobjects\Car.h" />
+    <ClInclude Include="src\gameobjects\Orange.h" />
     <ClInclude Include="src\SceneNode.h" />
     <ClInclude Include="src\SceneGraph.h" />
     <ClInclude Include="src\external\stb_image\stb_image.h" />

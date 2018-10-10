@@ -5,9 +5,9 @@
 #include <iostream>
 #include "GL\glew.h"
 
-#define ASSERT(x) if (!x) __debugbreak();
-#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__));
-#define LOG(x) std::cout << x << std::endl;
+#define ASSERT(x) if (!x) __debugbreak()
+#define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+#define LOG(x) std::cout << x << std::endl
 
 static void GLClearError() {
   while (glGetError() != GL_NO_ERROR);

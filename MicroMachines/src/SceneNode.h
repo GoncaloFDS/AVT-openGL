@@ -6,6 +6,8 @@
 #include <string>
 #include <map>
 
+class Model;
+class Shader;
 
 struct Transform {
 	glm::vec3 position;
@@ -17,19 +19,23 @@ struct Transform {
 class SceneNode {
 public:
 	Transform transform;
+	glm::mat4 m_WorldMatrix;
+	glm::vec3 m_Forward;
 protected:
-	std::string m_Name;
 	std::vector<SceneNode*> m_ChildNodes;
 	glm::mat4 m_ModelMatrix;
+	Model* m_Model;
+	Shader* m_Shader;
 
 public:
-	SceneNode(const std::string& name);
+	SceneNode();
 	~SceneNode();
 
-	virtual void OnUpdate(Transform parentTransform);
+	virtual void OnUpdate(SceneNode& parent);
 	virtual void OnRender();
 
+	void SetShader(Shader& shader);
+	void SetModel(Model& model);
 	void AddChildNode(SceneNode* node);
-	//void RegisterNode(std::map<const std::string&, SceneNode*>& nodeMap);
 };
 

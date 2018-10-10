@@ -3,7 +3,7 @@
 
 
 SceneGraph::SceneGraph() {
-	m_Root = new SceneNode("Root");
+	m_Root = new SceneNode();
 }
 
 
@@ -27,8 +27,7 @@ Camera* SceneGraph::GetCamera() {
 }
 
 void SceneGraph::OnUpdate() {
-	Transform t;
-	m_Root->OnUpdate(t);
+	m_Root->OnUpdate(*m_Root);
 }
 
 void SceneGraph::OnRender() {
