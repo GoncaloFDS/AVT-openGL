@@ -150,6 +150,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SpotLight.cpp" />
+    <ClCompile Include="src\DirectionalLight.cpp" />
+    <ClCompile Include="src\PointLight.cpp" />
+    <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\external\imgui\imgui.cpp" />
     <ClCompile Include="src\external\imgui\imgui_demo.cpp" />
     <ClCompile Include="src\external\imgui\imgui_draw.cpp" />
@@ -175,6 +179,10 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SpotLight.h" />
+    <ClInclude Include="src\DirectionalLight.h" />
+    <ClInclude Include="src\PointLight.h" />
+    <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\external\imgui\imconfig.h" />
     <ClInclude Include="src\external\imgui\imgui.h" />
     <ClInclude Include="src\external\imgui\imgui_impl_glfw_gl3.h" />
@@ -442,6 +450,12 @@
     <ClInclude Include="src\Texture.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\basic.frag" />
+    <None Include="res\shaders\basic.vert" />
+    <None Include="res\shaders\multipleLights.frag" />
+    <None Include="res\shaders\multipleLights.vert" />
+    <None Include="res\shaders\modelLoader.frag" />
+    <None Include="res\shaders\modelLoader.vert" />
     <None Include="src\external\glm\detail\func_common.inl" />
     <None Include="src\external\glm\detail\func_common_simd.inl" />
     <None Include="src\external\glm\detail\func_exponential.inl" />

@@ -9,19 +9,20 @@
 
 Orange::Orange() {
 	m_Speed = 15.0f;
-	m_TurnSpeed = 2.0f;
-	m_Node.transform.scale = glm::vec3(5);
-	glm::vec3 orig(rand() % 200 - 100, 0.0f, rand() % 200 - 100);
-	glm::vec3 dest(rand() % 200 - 100, 0.0f, rand() % 200 - 100);
-	LOG("Orig: " << orig.x << " " << orig.y << " " << orig.z);
-	LOG("Dest: " << dest.x << " " << dest.y << " " << dest.z);
-	LOG("-");
+	m_TurnSpeed = -2.0f;
+	//m_Node.transform.scale = glm::vec3(5);
+	glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+	glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+// 	LOG("Orig: " << orig.x << " " << orig.y << " " << orig.z);
+// 	LOG("Dest: " << dest.x << " " << dest.y << " " << dest.z);
+// 	LOG("-");
 	m_Node.m_Forward = glm::normalize(dest - orig);
 	m_Right = glm::cross(m_Node.m_Forward, glm::vec3(0, 1, 0));
 	m_Node.transform.position = orig;	
 }
 
 Orange::~Orange() {
+	LOG("Orange Destroyed");
 }
 
 SceneNode& Orange::GetSceneNode() {
@@ -31,4 +32,17 @@ SceneNode& Orange::GetSceneNode() {
 void Orange::OnUpdate() {
 	m_Node.transform.position += m_Node.m_Forward * m_Speed * Timer::deltaTime;
 	m_Node.transform.rotation = glm::rotate(glm::mat4(1.0f), m_TurnSpeed * Timer::deltaTime, m_Right) * glm::mat4_cast(m_Node.transform.rotation);
+	auto dist = glm::distance(m_Node.transform.position, glm::vec3(0.0f));
+	if (dist * dist > 350 * 350) {
+		m_Speed *= 1.2f;	
+		m_TurnSpeed *= 1.2f;
+		glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+		glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+// 		LOG("Orig: " << orig.x << " " << orig.y << " " << orig.z);
+// 		LOG("Dest: " << dest.x << " " << dest.y << " " << dest.z);
+// 		LOG("-");
+		m_Node.m_Forward = glm::normalize(dest - orig);
+		m_Right = glm::cross(m_Node.m_Forward, glm::vec3(0, 1, 0));
+		m_Node.transform.position = orig;
+	}
 }

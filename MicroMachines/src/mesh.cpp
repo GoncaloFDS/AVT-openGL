@@ -18,19 +18,24 @@ void Mesh::Draw(Shader shader) {
 
 	for (unsigned int i = 0; i < m_Textures.size(); i++){
 		
+		shader.Bind();
 		std::string number;
 		std::string name = m_Textures[i].type;
-		if (name == "texture_diffuse")
+		if (name == "texture_diffuse"){ 
 			number = std::to_string(difuseNr++);
-		else if (name == "texture_specular")
-			number = std::to_string(specularNr++); 
-		else if (name == "texture_normal")
-			number = std::to_string(normalNr++); 
-		else if (name == "texture_height")
-			number = std::to_string(heightNr++);
-
-		shader.Bind();
-		shader.SetUniform1i(name + number, i);
+			shader.SetUniform1i(name + number, i);
+		}
+		else if (name == "texture_specular") {
+ 			number = std::to_string(specularNr++); 
+			shader.SetUniform1i(name + number, i);
+		}
+// 		else if (name == "texture_normal")
+// 			number = std::to_string(normalNr++); 
+// 		else if (name == "texture_height")
+// 			number = std::to_string(heightNr++);
+// 
+// 		shader.Bind();
+// 		shader.SetUniform1i(name + number, i);
 		
 		m_Textures[i].Bind(i);
 		
@@ -39,7 +44,6 @@ void Mesh::Draw(Shader shader) {
 	GLCall(glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr));
 	m_VertexArray->Unbind();
 
-	// always good practice to set everything back to defaults once configured.
 	glActiveTexture(GL_TEXTURE0);
 }
 

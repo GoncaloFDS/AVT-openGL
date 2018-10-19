@@ -25,6 +25,10 @@
 #include "SceneGraph.h"
 #include "gameobjects/Car.h"
 #include "gameobjects/Orange.h"
+#include "glm/ext/scalar_constants.hpp"
+#include "PointLight.h"
+#include "DirectionalLight.h"
+#include "../SpotLight.h"
 
 bool debug_mode = false;
 
@@ -59,7 +63,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_LEFT, right, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_UP, up, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_DOWN, up, -1.0f);
-	
+
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
 
@@ -72,51 +76,45 @@ int main(int argc, char* argv[]) {
 	topViewCamera.SetAspectRatio(window.GetAspectRatio());
 	
 	sceneGraph.SetCamera(followCamera);
-	Shader shader("res/shaders/modelLoader");
+	Shader shader("res/shaders/multipleLights");
 	
 	SceneNode table;
 	Model tableModel("res/models/table/diningtable.obj");
 	table.SetModel(tableModel);
 	table.SetShader(shader);
+	table.transform.scale = glm::vec3(5);
 
 	Car car;
 	Model carModel("res/models/car/car.obj");
 	car.GetSceneNode().SetShader(shader);
 	car.GetSceneNode().SetModel(carModel);
-
-	Orange orange;
-	Orange orange2;
-	Model orangeModel("res/models/orange/Orange.obj");
-	orange.GetSceneNode().SetShader(shader);
-	orange2.GetSceneNode().SetShader(shader);
-	orange.GetSceneNode().SetModel(orangeModel);
-	orange2.GetSceneNode().SetModel(orangeModel);
-	table.transform.scale = glm::vec3(5);
-
 	car.GetSceneNode().AddChildNode(&followCamera);
-
+	car.SetWheelsShader(shader);
+	Model wheelModel("res/models/wheel/wheel.obj");
+	car.SetWheelsModel(wheelModel);
+	
 	sceneGraph.AddNode(&table);
 	sceneGraph.AddNode(&car.GetSceneNode());
-	sceneGraph.AddNode(&orange.GetSceneNode());
-	sceneGraph.AddNode(&orange2.GetSceneNode());
 	
-
-
-	//std::vector<Orange> oranges(2);
-	//for (auto& orange : oranges) {
-	//	orange.GetSceneNode().SetShader(shader);
-	//	orange.GetSceneNode().SetModel(orangeModel);
-	//	sceneGraph.AddNode(&orange.GetSceneNode());
-	//}
-	
+	Model orangeModel("res/models/goodorange/orange.obj");
+	std::vector<Orange*> oranges;
+	for (int i = 0; i < 5; i++) {
+		oranges.push_back(new Orange());
+		oranges[i]->GetSceneNode().SetShader(shader);
+		oranges[i]->GetSceneNode().SetModel(orangeModel);
+		sceneGraph.AddNode(&oranges[i]->GetSceneNode());
+	}
 	
 	auto currentCamera = sceneGraph.GetCamera();
 
-	shader.Bind();
-	shader.SetUniform3fv("u_cameraPosition", currentCamera->GetPosition());
-	shader.SetUniform3fv("u_lightPosition", glm::vec3(1000.0f));
-	shader.SetUniformMat4f("u_viewMat", currentCamera->GetViewMatrix());
-	shader.SetUniformMat4f("u_projMat", currentCamera->GetProjMatrix());
+	PointLight pointLight;
+	pointLight.transform.position = glm::vec3(0, 30, 0);
+	DirectionalLight sunLight(glm::vec3(-1, -1, 0));
+	SpotLight spotLightL, spotLightR;
+	spotLightL.transform.position = glm::vec3(-3.f, -1, 10);
+	spotLightR.transform.position = glm::vec3(3.f, -1, 10);
+	car.GetSceneNode().AddChildNode(&spotLightL);
+	car.GetSceneNode().AddChildNode(&spotLightR);
 
 	Timer::Start();
 	while (!window.ShouldClose()) {
@@ -148,21 +146,23 @@ int main(int argc, char* argv[]) {
 		currentCamera->Translate(Direction::Right, horizontal.GetAmt());
 		currentCamera->Translate(Direction::Front, frontal.GetAmt());
 
+		pointLight.transform.position += glm::vec3(5, 0, 0) * Timer::deltaTime;
+		//LOG("Light position: " << pointLight.transform.position.x << " " << pointLight.transform.position.y << " " << pointLight.transform.position.z);
+		pointLight.UpdateShader(shader);
+		sunLight.UpdateShader(shader);
+		spotLightL.UpdateShader(shader);
+		spotLightR.UpdateShader(shader);
+
 		car.Move(up.GetAmt());
 		car.Turn(right.GetAmt());
 		
-		orange.OnUpdate();
-		orange2.OnUpdate();
-		//for(auto& orange : oranges)
-		//	orange.OnUpdate();
+		for(auto orange : oranges)
+			orange->OnUpdate();
 
 		currentCamera->ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
 		sceneGraph.OnUpdate();
 
 		//OnRender
-		shader.SetUniform3fv("u_cameraPosition", currentCamera->GetPosition());
-		shader.SetUniformMat4f("u_viewMat", currentCamera->GetViewMatrix());
-		shader.SetUniformMat4f("u_projMat", currentCamera->GetProjMatrix());
 	
 		sceneGraph.OnRender();
 

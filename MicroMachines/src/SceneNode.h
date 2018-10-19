@@ -8,6 +8,7 @@
 
 class Model;
 class Shader;
+class Camera;
 
 struct Transform {
 	glm::vec3 position;
@@ -32,7 +33,7 @@ public:
 	~SceneNode();
 
 	virtual void OnUpdate(SceneNode& parent);
-	virtual void OnRender();
+	virtual void OnRender(Camera& camera);
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
