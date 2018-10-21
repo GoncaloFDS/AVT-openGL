@@ -97,17 +97,13 @@ int main(int argc, char* argv[]) {
 	Model wheelModel("res/models/wheel/wheel.obj");
 	car.SetWheelsModel(wheelModel);
 	
-	Cheerio cheerio;
-	Model cheerioModel("res/models/cheerio/cheerio.obj");
-	cheerio.SetModel(cheerioModel);
-	cheerio.SetShader(shader);
+
 
 	SceneNode butter;
 	Model butterModel("res/models/butter/butter.obj");
 	butter.SetModel(butterModel);
 	butter.SetShader(shader);
 
-	sceneGraph.AddNode(&cheerio);
 	sceneGraph.AddNode(&butter);
 	sceneGraph.AddNode(&table);
 	sceneGraph.AddNode(&car);
@@ -121,29 +117,30 @@ int main(int argc, char* argv[]) {
 		sceneGraph.AddNode(oranges[i]);
 	}
 
+	Model cheerioModel("res/models/cheerio/cheerio.obj");
 	std::vector<Cheerio*> innerCheerios;
-	int cheerioCount = 30;
+	int cheerioCount = 15;
 	float increment = 360 / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
 		float angle = increment * i;
 		float x = 150 * cos(glm::radians(angle));
 		float z = 150 * sin(glm::radians(angle));
-
+	
 		innerCheerios.push_back(new Cheerio());
 		innerCheerios[i]->SetShader(shader);
 		innerCheerios[i]->SetModel(cheerioModel);
 		sceneGraph.AddNode(innerCheerios[i]);
 		innerCheerios[i]->transform.position = glm::vec3(x, -3, z);
 	}
-
+	
 	std::vector<Cheerio*> outterCheerios;
-	cheerioCount = 50;
+	cheerioCount = 25;
 	increment = 360 / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
 		float angle = increment * i;
 		float x = 300 * cos(glm::radians(angle));
 		float z = 300 * sin(glm::radians(angle));
-
+	
 		outterCheerios.push_back(new Cheerio());
 		outterCheerios[i]->SetShader(shader);
 		outterCheerios[i]->SetModel(cheerioModel);
@@ -164,6 +161,11 @@ int main(int argc, char* argv[]) {
 	car.AddChildNode(&spotLightL);
 	car.AddChildNode(&spotLightR);
 
+	pointLight.SetupShader(shader);
+	sunLight.UpdateShader(shader);
+	spotLightL.SetupShader(shader);
+	spotLightR.SetupShader(shader);
+
 	Timer::Start();
 	while (!window.ShouldClose()) {
 		Timer::Tick();
@@ -172,7 +174,6 @@ int main(int argc, char* argv[]) {
 
 		ImGui_ImplGlfwGL3_NewFrame();
 
-		auto currentCamera = sceneGraph.GetCamera();
 		//Update
 		if (window.WasResized()) {
 			followCamera.SetAspectRatio(window.GetAspectRatio());
@@ -180,31 +181,31 @@ int main(int argc, char* argv[]) {
 			topViewCamera.SetAspectRatio(window.GetAspectRatio());
 		}
 
-		if (key1.isPressed())
+		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
-		else if(key2.isPressed())
+			currentCamera = sceneGraph.GetCamera();
+		}
+		else if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
-		else if (key3.isPressed())
+			currentCamera = sceneGraph.GetCamera();
+		}
+		else if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
+			currentCamera = sceneGraph.GetCamera();
+		}
 		if (key0.isPressed())
 			debug_mode = !debug_mode;
 		if (keyP.isPressed()) 
 			Timer::Pause();				
-		
-		
-
-		
 
 		currentCamera->Translate(Direction::Up, vertical.GetAmt());
 		currentCamera->Translate(Direction::Right, horizontal.GetAmt());
 		currentCamera->Translate(Direction::Front, frontal.GetAmt());
 
-		pointLight.transform.position += glm::vec3(5, 0, 0) * Timer::deltaTime;
-		//LOG("Light position: " << pointLight.transform.position.x << " " << pointLight.transform.position.y << " " << pointLight.transform.position.z);
-		pointLight.UpdateShader(shader);
-		sunLight.UpdateShader(shader);
-		spotLightL.UpdateShader(shader);
-		spotLightR.UpdateShader(shader);
+ 		pointLight.UpdateShader(shader);
+ 		sunLight.UpdateShader(shader);
+ 		spotLightL.UpdateShader(shader);
+ 		spotLightR.UpdateShader(shader);
 
 		car.Move(up.GetAmt());
 		car.Turn(right.GetAmt());
@@ -229,7 +230,7 @@ int main(int argc, char* argv[]) {
 				car.Stop();
 				cheerio->OnCollision(car);
 			}
-
+		
 		}
 		for (auto cheerio : outterCheerios) {
 			CollisionData cdata = car.CheckCollision(*cheerio);

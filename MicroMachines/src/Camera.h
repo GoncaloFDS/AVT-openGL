@@ -28,6 +28,7 @@ private:
 	float m_MovementSpeed;
 	float m_MouseSensivity;
 
+	glm::mat4 m_ViewProjMatrix;
 public:
 	Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up);
 	~Camera();

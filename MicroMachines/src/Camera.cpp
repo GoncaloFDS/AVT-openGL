@@ -40,7 +40,7 @@ void Camera::OnUpdate(SceneNode& parent) {
 	m_Right = glm::cross(m_Forward, m_WorldUp);
 	m_Up = glm::cross(m_Right, m_Forward);
 	m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_Up);
-
+	m_ViewProjMatrix = m_ProjMatrix * m_ViewMatrix;
 	for (auto node : m_ChildNodes)
 		node->OnUpdate(parent); //skip the camera
 }
@@ -85,11 +85,11 @@ void Camera::Translate(Direction dir, float amount = 1.0f) {
 			break;
 	}
 	transform.position += directionVec * amount * m_MovementSpeed;
-	m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_Up);
+	//m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_Up);
 }
 
 glm::mat4 Camera::GetViewProjMatrix() {
-	return m_ProjMatrix * m_ViewMatrix;
+	return m_ViewProjMatrix;
 }
 
 glm::mat4 Camera::GetViewMatrix() {
