@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "AABB.h"
 
 SceneNode::SceneNode() {
 	m_WorldMatrix = glm::mat4(1.0f);
@@ -16,6 +17,8 @@ void SceneNode::OnUpdate(SceneNode& parent) {
 
 	for (auto node : m_ChildNodes)
 		node->OnUpdate(*this);
+
+	m_AABB.OnUpdate(transform.position);
 }
 
 void SceneNode::OnRender(Camera& camera)
@@ -49,6 +52,14 @@ void SceneNode::SetModel(Model& model) {
 	m_Model = &model;
 }
 
+AABB& SceneNode::GetAABB() {
+	return m_AABB;
+}
+
 void SceneNode::AddChildNode(SceneNode* node) {
 	m_ChildNodes.push_back(node);
+}
+
+CollisionData SceneNode::CheckCollision(SceneNode& other) {
+	return m_AABB.CheckCollision(other.GetAABB());
 }

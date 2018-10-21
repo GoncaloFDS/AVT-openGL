@@ -28,9 +28,11 @@
 #include "glm/ext/scalar_constants.hpp"
 #include "PointLight.h"
 #include "DirectionalLight.h"
-#include "../SpotLight.h"
+#include "SpotLight.h"
+#include "gameobjects/Cheerio.h"
 
 bool debug_mode = false;
+bool isPaused = false;
 
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
@@ -43,26 +45,27 @@ int main(int argc, char* argv[]) {
 	Renderer renderer;
 	SceneGraph sceneGraph;
 	InputHandler inputHandler;
-	InputBind horizontal;
-	InputBind frontal;
-	InputBind vertical;
-	InputBind key0, key1, key2, key3;
+	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
+	InputBind key0, key1, key2, key3, keyP;
 
+	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_D, horizontal, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_W, frontal, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_S, frontal, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_E, vertical, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_Q, vertical, -1.0f);
-	inputHandler.AddKeyControl(GLFW_KEY_0, key0, 1.0f);
-	inputHandler.AddKeyControl(GLFW_KEY_1, key1, 1.0f);
-	inputHandler.AddKeyControl(GLFW_KEY_2, key2, 1.0f);
-	inputHandler.AddKeyControl(GLFW_KEY_3, key3, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_RIGHT, right, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_LEFT, right, -1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_UP, up, 1.0f);
 	inputHandler.AddKeyControl(GLFW_KEY_DOWN, up, -1.0f);
+	//Keys
+	inputHandler.AddKeyControl(GLFW_KEY_0, key0, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_1, key1, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_2, key2, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_3, key3, 1.0f);
+	inputHandler.AddKeyControl(GLFW_KEY_P, keyP, 1.0f);
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
@@ -86,24 +89,69 @@ int main(int argc, char* argv[]) {
 
 	Car car;
 	Model carModel("res/models/car/car.obj");
-	car.GetSceneNode().SetShader(shader);
-	car.GetSceneNode().SetModel(carModel);
-	car.GetSceneNode().AddChildNode(&followCamera);
+	car.SetShader(shader);
+	car.SetModel(carModel);
+	car.AddChildNode(&followCamera);
+	car.transform.position = glm::vec3(200, 0, 0);
 	car.SetWheelsShader(shader);
 	Model wheelModel("res/models/wheel/wheel.obj");
 	car.SetWheelsModel(wheelModel);
 	
+	Cheerio cheerio;
+	Model cheerioModel("res/models/cheerio/cheerio.obj");
+	cheerio.SetModel(cheerioModel);
+	cheerio.SetShader(shader);
+
+	SceneNode butter;
+	Model butterModel("res/models/butter/butter.obj");
+	butter.SetModel(butterModel);
+	butter.SetShader(shader);
+
+	sceneGraph.AddNode(&cheerio);
+	sceneGraph.AddNode(&butter);
 	sceneGraph.AddNode(&table);
-	sceneGraph.AddNode(&car.GetSceneNode());
+	sceneGraph.AddNode(&car);
 	
 	Model orangeModel("res/models/goodorange/orange.obj");
 	std::vector<Orange*> oranges;
 	for (int i = 0; i < 5; i++) {
 		oranges.push_back(new Orange());
-		oranges[i]->GetSceneNode().SetShader(shader);
-		oranges[i]->GetSceneNode().SetModel(orangeModel);
-		sceneGraph.AddNode(&oranges[i]->GetSceneNode());
+		oranges[i]->SetShader(shader);
+		oranges[i]->SetModel(orangeModel);
+		sceneGraph.AddNode(oranges[i]);
 	}
+
+	std::vector<Cheerio*> innerCheerios;
+	int cheerioCount = 30;
+	float increment = 360 / cheerioCount;
+	for (int i = 0; i < cheerioCount; i++) {
+		float angle = increment * i;
+		float x = 150 * cos(glm::radians(angle));
+		float z = 150 * sin(glm::radians(angle));
+
+		innerCheerios.push_back(new Cheerio());
+		innerCheerios[i]->SetShader(shader);
+		innerCheerios[i]->SetModel(cheerioModel);
+		sceneGraph.AddNode(innerCheerios[i]);
+		innerCheerios[i]->transform.position = glm::vec3(x, -3, z);
+	}
+
+	std::vector<Cheerio*> outterCheerios;
+	cheerioCount = 50;
+	increment = 360 / cheerioCount;
+	for (int i = 0; i < cheerioCount; i++) {
+		float angle = increment * i;
+		float x = 300 * cos(glm::radians(angle));
+		float z = 300 * sin(glm::radians(angle));
+
+		outterCheerios.push_back(new Cheerio());
+		outterCheerios[i]->SetShader(shader);
+		outterCheerios[i]->SetModel(cheerioModel);
+		sceneGraph.AddNode(outterCheerios[i]);
+		outterCheerios[i]->transform.position = glm::vec3(x, -3, z);
+	}
+
+	
 	
 	auto currentCamera = sceneGraph.GetCamera();
 
@@ -113,8 +161,8 @@ int main(int argc, char* argv[]) {
 	SpotLight spotLightL, spotLightR;
 	spotLightL.transform.position = glm::vec3(-3.f, -1, 10);
 	spotLightR.transform.position = glm::vec3(3.f, -1, 10);
-	car.GetSceneNode().AddChildNode(&spotLightL);
-	car.GetSceneNode().AddChildNode(&spotLightR);
+	car.AddChildNode(&spotLightL);
+	car.AddChildNode(&spotLightR);
 
 	Timer::Start();
 	while (!window.ShouldClose()) {
@@ -132,15 +180,20 @@ int main(int argc, char* argv[]) {
 			topViewCamera.SetAspectRatio(window.GetAspectRatio());
 		}
 
-		if (key1.GetAmt() != 0)
+		if (key1.isPressed())
 			sceneGraph.SetCamera(followCamera);
-		else if(key2.GetAmt() != 0)
+		else if(key2.isPressed())
 			sceneGraph.SetCamera(orthoCamera);
-		else if (key3.GetAmt() != 0)
+		else if (key3.isPressed())
 			sceneGraph.SetCamera(topViewCamera);
-		if (key0.GetAmt() != 0)
+		if (key0.isPressed())
 			debug_mode = !debug_mode;
+		if (keyP.isPressed()) 
+			Timer::Pause();				
+		
+		
 
+		
 
 		currentCamera->Translate(Direction::Up, vertical.GetAmt());
 		currentCamera->Translate(Direction::Right, horizontal.GetAmt());
@@ -161,6 +214,30 @@ int main(int argc, char* argv[]) {
 
 		currentCamera->ProcessMouseMovement(inputHandler.GetMouseDeltaX(), -inputHandler.GetMouseDeltaY());
 		sceneGraph.OnUpdate();
+
+		for (auto orange : oranges) {
+			CollisionData cdata = car.CheckCollision(*orange);
+			if (cdata.isColliding) {
+				car.Reset();
+			}
+				
+		}
+
+		for (auto cheerio : innerCheerios) {
+			CollisionData cdata = car.CheckCollision(*cheerio);
+			if (cdata.isColliding) {
+				car.Stop();
+				cheerio->OnCollision(car);
+			}
+
+		}
+		for (auto cheerio : outterCheerios) {
+			CollisionData cdata = car.CheckCollision(*cheerio);
+			if (cdata.isColliding) {
+				car.Stop();
+				cheerio->OnCollision(car);
+			}
+		}
 
 		//OnRender
 	

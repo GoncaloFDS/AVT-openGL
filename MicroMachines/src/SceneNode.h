@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include "AABB.h"
 
 class Model;
 class Shader;
@@ -22,11 +23,13 @@ public:
 	Transform transform;
 	glm::mat4 m_WorldMatrix;
 	glm::vec3 m_Forward;
+
 protected:
 	std::vector<SceneNode*> m_ChildNodes;
 	glm::mat4 m_ModelMatrix;
 	Model* m_Model;
 	Shader* m_Shader;
+	AABB m_AABB;
 
 public:
 	SceneNode();
@@ -37,6 +40,10 @@ public:
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
+
+	AABB& GetAABB();
+
+	CollisionData CheckCollision(SceneNode& other);
 	void AddChildNode(SceneNode* node);
 };
 

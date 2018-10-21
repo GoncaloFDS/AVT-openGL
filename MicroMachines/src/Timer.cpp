@@ -24,12 +24,13 @@ void Timer::Tick() {
 }
 
 void Timer::Pause() {
-	isPaused = true;
+	isPaused = !isPaused;
+	Tick();
+	m_DeltaTime = 0;
 	deltaTime = 0;
 }
 
 void Timer::Unpause() {
 	isPaused = false;
-	Tick();
 }
 

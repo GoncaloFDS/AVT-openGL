@@ -29,13 +29,13 @@ void Mesh::Draw(Shader shader) {
  			number = std::to_string(specularNr++); 
 			shader.SetUniform1i(name + number, i);
 		}
-// 		else if (name == "texture_normal")
-// 			number = std::to_string(normalNr++); 
-// 		else if (name == "texture_height")
-// 			number = std::to_string(heightNr++);
-// 
-// 		shader.Bind();
-// 		shader.SetUniform1i(name + number, i);
+		// 		else if (name == "texture_normal")
+		// 			number = std::to_string(normalNr++); 
+		// 		else if (name == "texture_height")
+		// 			number = std::to_string(heightNr++);
+		// 
+		// 		shader.Bind();
+		// 		shader.SetUniform1i(name + number, i);
 		
 		m_Textures[i].Bind(i);
 		

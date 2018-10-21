@@ -3,10 +3,8 @@
 #include "SceneNode.h"
 
 
-class Car {
+class Car : public SceneNode{
 private:
-	SceneNode m_Node;
-
 	float m_Speed;
 	float m_MaxSpeed;
 	float m_Acceleration;
@@ -20,12 +18,13 @@ public:
 	Car();
 	~Car();
 
-	SceneNode& GetSceneNode();
 	glm::vec3 GetRightVector();
 	void SetWheelsModel(Model& model);
 	void SetWheelsShader(Shader& shader);
 	float GetSpeed();
+	void Stop();
 	void Move(float amount);
 	void Turn(float amount);
+	void Reset();
 };
 

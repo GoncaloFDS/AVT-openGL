@@ -1,9 +1,8 @@
 #pragma once
 #include "Model.h"
 
-class Orange {
+class Orange : public SceneNode{
 private:
-	SceneNode m_Node;
 
 	float m_Speed;
 	float m_TurnSpeed;
@@ -12,8 +11,6 @@ private:
 public:
 	Orange();
 	~Orange();
-
-	SceneNode& GetSceneNode();
 
 	void OnUpdate();
 };
