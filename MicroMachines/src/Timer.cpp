@@ -23,7 +23,7 @@ void Timer::Tick() {
 	elapsedTime += deltaTime;
 }
 
-void Timer::Pause() {
+void Timer::TooglePause() {
 	isPaused = !isPaused;
 	Tick();
 	m_DeltaTime = 0;
@@ -32,5 +32,14 @@ void Timer::Pause() {
 
 void Timer::Unpause() {
 	isPaused = false;
+	Tick();
+	m_DeltaTime = 0;
+	deltaTime = 0;
+}
+
+void Timer::Pause() {
+	isPaused = true;
+	m_DeltaTime = 0;
+	deltaTime = 0;
 }
 

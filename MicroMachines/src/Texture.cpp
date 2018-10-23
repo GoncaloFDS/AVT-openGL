@@ -46,6 +46,6 @@ void Texture::Bind(unsigned int slot /*= 0*/) const {
 }
 
 void Texture::Unbind() {
-
+	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }
 

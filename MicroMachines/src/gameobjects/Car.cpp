@@ -12,6 +12,7 @@ Car::Car()
 	m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
 	m_AABB = AABB(glm::vec3(-9), glm::vec3(9));
+	m_HP = m_MaxHP = 3;
 }
 
 Car::~Car() {
@@ -59,6 +60,16 @@ float Car::GetSpeed() {
 	return m_Speed;
 }
 
+int Car::GetHP() {
+	return m_HP;
+}
+
+void Car::LoseHP() {
+	m_HP--;
+	if (m_HP < 0)
+		m_HP = 0;
+}
+
 void Car::Stop() {
 	m_Speed = 0;
 }
@@ -104,6 +115,8 @@ void Car::Reset() {
 	m_Speed = 0;
 }
 
-void Car::OnCollision(SceneNode& node) {
-
+void Car::Restart() {
+	Reset();
+	m_HP = m_MaxHP;
 }
+

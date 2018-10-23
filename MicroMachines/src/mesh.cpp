@@ -10,48 +10,49 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 	SetupMesh();
 }
 
-void Mesh::Draw(Shader shader) {
+void Mesh::Draw(Shader& shader) {
+	BindTextures(shader);
+
+	m_VertexArray->Bind();
+	GLCall(glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr));
+	m_VertexArray->Unbind();
+
+}
+
+void Mesh::BindTextures(Shader &shader) {
 	unsigned int difuseNr = 1;
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 
-	for (unsigned int i = 0; i < m_Textures.size(); i++){
+	for (unsigned int i = 0; i < m_Textures.size(); i++) {
 		bool supported = false;
 		std::string number;
 		std::string name;
 		switch (m_Textures[i]->type) {
 			case TextureType::Diffuse:
-				number = std::to_string(difuseNr++);
-				name = "texture_diffuse" + number;
+				name = "texture_diffuse1";
 				supported = true;
 				break;
 			case TextureType::Specular:
-				number = std::to_string(specularNr++);
-				name = "texture_specular" + number;
+				name = "texture_specular1";
 				supported = true;
 				break;
 			case TextureType::Normal:
-				number = std::to_string(normalNr++);
-				name = "texture_normal" + number;
+				name = "texture_normal1";
 				supported = true;
 				break;
 			case TextureType::Mask:
 				name = "texture_mask1";
 				supported = true;
 				break;
-		
+
 		}
 		shader.Bind();
-		if(supported)
+		if (supported)
 			shader.SetUniform1i(name, i);
 		m_Textures[i]->Bind(i);
-		
-	}
-	m_VertexArray->Bind();
-	GLCall(glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, nullptr));
-	m_VertexArray->Unbind();
 
-	glActiveTexture(GL_TEXTURE0);
+	}
 }
 
 void Mesh::SetupMesh() {

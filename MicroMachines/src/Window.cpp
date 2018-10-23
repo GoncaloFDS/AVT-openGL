@@ -68,6 +68,14 @@ GLFWwindow* Window::GetWindow() {
 	return m_Window;
 }
 
+int Window::GetWidth() {
+	return m_Width;
+}
+
+int Window::GetHeight() {
+	return m_Height;
+}
+
 void Window::OnResize(GLFWwindow* window, int width, int height) {
 	m_Width = width;
 	m_Height = height;

@@ -13,6 +13,7 @@ public:
 	Model(const std::string& filePath);
 
 	virtual void Draw(Shader& shader);
+	void BindTextures(Shader &shader);
 	
 private:
 	std::vector<Mesh> m_Meshes;

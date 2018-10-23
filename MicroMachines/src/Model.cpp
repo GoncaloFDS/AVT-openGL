@@ -162,3 +162,8 @@ std::vector<Texture*> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType
 	return textures;
 }
 
+void Model::BindTextures(Shader &shader) {
+	for(auto& mesh : m_Meshes)
+		mesh.BindTextures(shader);
+}
+

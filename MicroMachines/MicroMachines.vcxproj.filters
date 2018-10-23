@@ -108,6 +108,9 @@
     <ClCompile Include="src\gameobjects\Butter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\TextRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\external\glm\detail\_features.hpp">
@@ -929,6 +932,9 @@
     <ClInclude Include="src\gameobjects\Butter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\external\glm\detail\func_common.inl">
@@ -1326,5 +1332,7 @@
     <None Include="res\shaders\multipleLights.frag" />
     <None Include="res\shaders\multiTexture.frag" />
     <None Include="res\shaders\multiTexture.vert" />
+    <None Include="res\shaders\hud.vert" />
+    <None Include="res\shaders\hud.frag" />
   </ItemGroup>
 </Project>

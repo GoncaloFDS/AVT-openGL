@@ -6,7 +6,7 @@ AABB::~AABB() {
 
 CollisionData AABB::CheckCollision(AABB& other) {
 	glm::vec3 distances1 = other.GetMinExtents() - m_MaxExtents;
-	glm::vec3 distances2 = m_MinExtents - other.GetMinExtents();
+	glm::vec3 distances2 = m_MinExtents - other.GetMaxExtents();
 	glm::vec3 distances = glm::max(distances1, distances2);
 	
 	float maxDistance = glm::max(glm::max(distances.x, distances.y), distances.z);

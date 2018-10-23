@@ -36,7 +36,9 @@ private:
 
 public:
 	Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures);
-	void Draw(Shader shader);
+	void Draw(Shader& shader);
+
+	void BindTextures(Shader &shader);
 
 private:
 	void SetupMesh();

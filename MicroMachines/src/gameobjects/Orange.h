@@ -13,6 +13,9 @@ public:
 	~Orange();
 
 	virtual void OnUpdate(SceneNode& parent) override;
+
+	void Reset();
+
 	virtual void OnCollision(SceneNode& other) override;
 
 };

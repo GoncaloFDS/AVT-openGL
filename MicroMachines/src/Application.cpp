@@ -32,12 +32,15 @@
 #include "SpotLight.h"
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Butter.h"
+#include "TextRenderer.h"
 
 extern "C" {
 	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
 }
 
 bool debug_mode = false;
+bool gameover = false;
+float points = 0;
 
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
@@ -48,12 +51,14 @@ int main(int argc, char* argv[]) {
 	ImGui::StyleColorsDark();
 
 	Renderer renderer;
+	auto Text = new TextRenderer(window.GetWidth(), window.GetHeight());
+	Text->Load("res/fonts/Roboto-Medium.ttf", 24);
 	SceneGraph sceneGraph;
 	std::vector<SceneNode*> colliders;
 	InputHandler inputHandler;
 	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
-	InputBind key0, key1, key2, key3, keyP, keyC, keyN, keyH;
+	InputBind key0, key1, key2, key3, keyP, keyC, keyN, keyH, keyR;
 
 	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
@@ -75,6 +80,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_C, keyC);
 	inputHandler.AddKeyControl(GLFW_KEY_H, keyH);
 	inputHandler.AddKeyControl(GLFW_KEY_N, keyN);
+	inputHandler.AddKeyControl(GLFW_KEY_R, keyR);
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
@@ -86,10 +92,14 @@ int main(int argc, char* argv[]) {
 	orthoCamera.SetProjectionType(Projection::Orthographic);
 	Camera topViewCamera(glm::vec3(0.0f, 800.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	topViewCamera.SetAspectRatio(window.GetAspectRatio());
+	Camera HUDCamera(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+	HUDCamera.SetAspectRatio(window.GetAspectRatio());
+	HUDCamera.SetProjectionType(Projection::Orthographic);
 	
 	sceneGraph.SetCamera(followCamera);
 	Shader basicShader("res/shaders/multipleLights");
 	Shader tableShader("res/shaders/multiTexture");
+	Shader hudShader("res/shaders/hud");
 	
 	SceneNode table;
 	Model tableModel("res/models/mTable/table.obj");
@@ -112,13 +122,32 @@ int main(int argc, char* argv[]) {
 	butter->SetModel(butterModel);
 	butter->SetShader(basicShader);
 	butter->transform.position = glm::vec3(200, 0, 50);
+	butter->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(0, 1, 0));
 	colliders.push_back(butter);
 
+	auto butter2 = new Butter();
+	butter2->SetModel(butterModel);
+	butter2->SetShader(basicShader);
+	butter2->transform.position = glm::vec3(-200, 0, 50);
+	butter2->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(0, 1, 0));
+	colliders.push_back(butter2);
+
+	auto butter3 = new Butter();
+	butter3->SetModel(butterModel);
+	butter3->SetShader(basicShader);
+	butter3->transform.position = glm::vec3(0, 0, -200);
+	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
+	colliders.push_back(butter3);
+
+
 	sceneGraph.AddNode(butter);
+	sceneGraph.AddNode(butter2);
+	sceneGraph.AddNode(butter3);
 	sceneGraph.AddNode(&table);
 	sceneGraph.AddNode(&car);
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
+
 	
 	Model orangeModel("res/models/goodorange/orange.obj");
 	for (int i = 0; i < 10; i++) {
@@ -128,6 +157,11 @@ int main(int argc, char* argv[]) {
 		sceneGraph.AddNode(orange);
 		colliders.push_back(orange);
 	}
+	
+	
+	Model hpHUD("res/models/hud/heart.obj");
+	Model gameoverHUD("res/models/hud/gameover.obj");
+	
 
 	Model cheerioModel("res/models/cheerio/cheerio.obj");
 	int cheerioCount = 15;
@@ -175,8 +209,8 @@ int main(int argc, char* argv[]) {
 	DirectionalLight sunLight(glm::vec3(-1, -1, 0));
 	lights.push_back(&sunLight);
 	SpotLight spotLightL, spotLightR;
-	spotLightL.transform.position = glm::vec3(-3.f, 1, 10);
-	spotLightR.transform.position = glm::vec3(3.f, 1, 10);
+	spotLightL.transform.position = glm::vec3(-2.f, 0, 10);
+	spotLightR.transform.position = glm::vec3(2.f, 0, 10);
 	car.AddChildNode(&spotLightL);
 	car.AddChildNode(&spotLightR);
 	lights.push_back(&spotLightL);
@@ -189,8 +223,13 @@ int main(int argc, char* argv[]) {
 
 	Timer::Start();
 	auto currentCamera = sceneGraph.GetCamera();
+	glm::vec2 pos(0, 0);
+	//////////////////////////////////////////////////////////////////////////////////////////////////
+	// GameLoop
+	//////////////////////////////////////////////////////////////////////////////////////////////////
 	while (!window.ShouldClose()) {
 		Timer::Tick();
+		points += Timer::deltaTime;
 		renderer.Clear();
 		window.PollEvents();
 
@@ -201,6 +240,8 @@ int main(int argc, char* argv[]) {
 			followCamera.SetAspectRatio(window.GetAspectRatio());
 			orthoCamera.SetAspectRatio(window.GetAspectRatio());
 			topViewCamera.SetAspectRatio(window.GetAspectRatio());
+			HUDCamera.SetAspectRatio(window.GetAspectRatio());
+			Text->Resize(window.GetWidth(), window.GetHeight());
 		}
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
@@ -217,8 +258,8 @@ int main(int argc, char* argv[]) {
 		if (key0.isPressed()){ 
 			debug_mode = !debug_mode;
 		}
-		if (keyP.isPressed()) {
-			Timer::Pause();				
+		if (keyP.isPressed() & !gameover) {
+			Timer::TooglePause();				
 		}
 		if (keyC.isPressed()) {
 			for (int i = 0; i < 6; i++)
@@ -230,6 +271,12 @@ int main(int argc, char* argv[]) {
 		if (keyH.isPressed()) {
 			spotLightL.ToogleLight();
 			spotLightR.ToogleLight();
+		}
+		if (keyR.isPressed() && gameover) {
+			gameover = false;
+			car.Restart();
+			Timer::Unpause();
+			points = 0;
 		}
 
 		car.Move(up.GetAmt());
@@ -254,12 +301,33 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		
 		//Render Scene
 		sceneGraph.OnRender();
-	
+		
+		//update HUD
+		hudShader.Bind();
+		glm::vec3 p(-200 * window.GetAspectRatio(), 0, -180);
+		for (int i = 0; i < car.GetHP(); i++) {
+			p.x += 50;
+			auto mvp = HUDCamera.GetProjMatrix() * HUDCamera.GetViewMatrix() * glm::translate(glm::mat4(1), p) * glm::scale(glm::mat4(1), glm::vec3(20));
+			hudShader.SetUniformMat4f("MVPMat", mvp);
+			hpHUD.Draw(hudShader);
+		}
+
+		if (car.GetHP() == 0) {
+			auto mvp = HUDCamera.GetProjMatrix() * HUDCamera.GetViewMatrix() * glm::scale(glm::mat4(1), glm::vec3(210));
+			hudShader.SetUniformMat4f("MVPMat", mvp);
+			gameoverHUD.Draw(hudShader);
+			Timer::Pause();
+			gameover = true;
+
+		}
+		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.8 + pos.x , 20 + pos.y, 1.0f);
 
 		if(debug_mode) {	
 			ImGui::Begin("Debug Window", &debug_mode);
+			ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}

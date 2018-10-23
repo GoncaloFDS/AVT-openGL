@@ -38,11 +38,12 @@ public:
 	virtual void OnUpdate(SceneNode& parent);
 	virtual void OnRender(Camera& camera);
 	virtual void OnCollision(SceneNode& other);
+	virtual void BindTextures(Shader& shader);
 	CollisionData CheckCollision(SceneNode& other);
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
-
+	
 	AABB& GetAABB();
 
 	void AddChildNode(SceneNode* node);

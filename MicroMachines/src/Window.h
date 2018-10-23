@@ -28,6 +28,8 @@ public:
 	bool WasResized();
 	float GetAspectRatio();
 	GLFWwindow* GetWindow();
+	int GetWidth();
+	int GetHeight();
 
 private:
 	static void OnResize(GLFWwindow* window, int width, int height);

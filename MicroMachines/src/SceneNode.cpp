@@ -49,6 +49,11 @@ void SceneNode::OnCollision(SceneNode& other) {
 
 }
 
+void SceneNode::BindTextures(Shader& shader) {
+	if (m_Model)
+		m_Model->BindTextures(shader);
+}
+
 void SceneNode::SetShader(Shader& shader) {
 	m_Shader = &shader;
 }

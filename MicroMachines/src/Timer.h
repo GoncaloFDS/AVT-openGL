@@ -11,8 +11,9 @@ struct Timer {
 	static float elapsedTime;
 
 	static void Tick();
-	static void Pause();
+	static void TooglePause();
 	static void Unpause();
+	static void Pause();
 
 private:
 	static std::clock_t m_CurrentTime;

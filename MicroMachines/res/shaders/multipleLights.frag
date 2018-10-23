@@ -25,7 +25,7 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_specular1;
 
-uniform float Shininess = 32;
+uniform float Shininess = 12;
 
 in vec3 FragPosition;
 in vec3 Normal;
@@ -46,15 +46,15 @@ void main(){
 			continue;
 
 		if(Lights[light].isLocal) {
-				vec3 lightDir = normalize(Lights[light].position - FragPosition);
-				float diff = max(dot(norm, lightDir), 0.0);
-				vec3 reflectedDir = reflect(-lightDir, norm);
-				float spec = pow(max(dot(viewDir, reflectedDir), 0.0), Shininess);
-				float dist = length(Lights[light].position - FragPosition);
-				float attenuation = 1.0 / 
-					(Lights[light].constantAttenuation + 
-					Lights[light].linearAttenuation * dist + 
-					Lights[light].quadraticAttenuation * (dist * dist));   
+			vec3 lightDir = normalize(Lights[light].position - FragPosition);
+			float diff = max(dot(norm, lightDir), 0.0);
+			vec3 reflectedDir = reflect(-lightDir, norm);
+			float spec = pow(max(dot(viewDir, reflectedDir), 0.0), Shininess);
+			float dist = length(Lights[light].position - FragPosition);
+			float attenuation = 1.0 / 
+				(Lights[light].constantAttenuation + 
+				Lights[light].linearAttenuation * dist + 
+				Lights[light].quadraticAttenuation * (dist * dist));   
 
 			if(Lights[light].isSpot){
 				
@@ -62,18 +62,19 @@ void main(){
 				float theta = dot(lightDir, normalize(-Lights[light].direction)); 
 				float epsilon = Lights[light].spotCutoff - Lights[light].spotOutterCutOff;
 				float intensity = clamp((theta - Lights[light].spotOutterCutOff) / epsilon, 0.0, 1.0);
-				// combine results
-				vec3 ambient = Lights[light].ambient * diffTex * attenuation * intensity;
-				vec3 diffuse = Lights[light].diffuse * diff * diffTex * attenuation * intensity;
-				vec3 specular = Lights[light].specular * spec * specTex * attenuation * intensity;
-				result += ambient + diffuse + specular;
+				// combine results 
+				attenuation *= intensity;
+				vec3 ambient = Lights[light].ambient * diffTex ;
+				vec3 diffuse = Lights[light].diffuse * diff * diffTex;
+				vec3 specular = Lights[light].specular * spec * specTex ;
+				result += (ambient + diffuse + specular) * attenuation;
 			}
 			else { 
 				//combine results
-				vec3 ambient = Lights[light].ambient * diffTex * attenuation;
-				vec3 diffuse = Lights[light].diffuse * diff * diffTex * attenuation;
-				vec3 specular = Lights[light].specular * spec * specTex * attenuation;
-				result += ambient + diffuse + specular;
+				vec3 ambient = Lights[light].ambient * diffTex;
+				vec3 diffuse = Lights[light].diffuse * diff * diffTex;
+				vec3 specular = Lights[light].specular * spec * specTex;
+				result += (ambient + diffuse + specular) * attenuation;
 			}
 		}
 		else { 
@@ -85,11 +86,9 @@ void main(){
 			vec3 reflectDir = reflect(-lightDir, norm);
 			float spec = pow(max(dot(viewDir, reflectDir), 0.0), Shininess);
 			//combine results
-			vec3 ambient = Lights[light].ambient * diffTex;
-			vec3 diffuse = Lights[light].diffuse * diff * diffTex;
-			vec3 specular = Lights[light].specular * spec * specTex;
-
-			result += ambient + diffuse + specular;
+			result += Lights[light].ambient * diffTex;
+			result += Lights[light].diffuse * diff * diffTex;
+			result += Lights[light].specular * spec * specTex;
 		}
 
 		

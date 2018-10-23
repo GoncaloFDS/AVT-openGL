@@ -5,7 +5,6 @@
 #include "Timer.h"
 #include "glm/gtc/constants.hpp"
 #include "glm/vec4.hpp"
-#include "glm/gtc/constants.hpp"
 
 
 Camera::Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up) 
@@ -79,7 +78,6 @@ void Camera::Translate(Direction dir, float amount = 1.0f) {
 			break;
 	}
 	transform.position += directionVec * amount * m_MovementSpeed;
-	//m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_Up);
 }
 
 glm::mat4 Camera::GetViewProjMatrix() {
