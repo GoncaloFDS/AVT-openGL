@@ -24,6 +24,7 @@ uniform vec3 viewPos;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_specular1;
+uniform sampler2D texture_mask1;
 
 uniform float Shininess = 32;
 
@@ -38,7 +39,10 @@ void main(){
 	vec3 viewDir = normalize(viewPos - FragPosition);
 
 	vec3 result;
-	vec3 diffTex = vec3(texture(texture_diffuse1, TexCoords));
+	vec4 text1 = texture(texture_diffuse1, TexCoords);
+	vec4 text2 = texture(texture_normal1, TexCoords);
+	vec4 mask = texture(texture_mask1, TexCoords);
+	vec3 diffTex = vec3(mix(text1, text2, mask.r));
 	vec3 specTex = vec3(texture(texture_specular1, TexCoords));
 
 	for(int light = 0; light < MaxLights; light++){
@@ -91,8 +95,6 @@ void main(){
 
 			result += ambient + diffuse + specular;
 		}
-
-		
 	}
 	
 	FragColor = vec4(result, 1.0);

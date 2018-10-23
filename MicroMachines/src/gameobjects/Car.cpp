@@ -11,7 +11,7 @@ Car::Car()
 	: m_Speed(0), m_MaxSpeed(80), m_Acceleration(20) , m_Breaking(60), m_TurnSpeed(1.0f){
 	m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
-	m_AABB = AABB(glm::vec3(-7), glm::vec3(7));
+	m_AABB = AABB(glm::vec3(-9), glm::vec3(9));
 }
 
 Car::~Car() {
@@ -102,4 +102,8 @@ void Car::Reset() {
 	m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
 	m_Speed = 0;
+}
+
+void Car::OnCollision(SceneNode& node) {
+
 }

@@ -102,6 +102,12 @@
     <ClCompile Include="src\gameobjects\Cheerio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\FollowCamera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameobjects\Butter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\external\glm\detail\_features.hpp">
@@ -917,6 +923,12 @@
     <ClInclude Include="src\gameobjects\Cheerio.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\FollowCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameobjects\Butter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\external\glm\detail\func_common.inl">
@@ -1312,5 +1324,7 @@
     <None Include="res\shaders\modelLoader.frag" />
     <None Include="res\shaders\multipleLights.vert" />
     <None Include="res\shaders\multipleLights.frag" />
+    <None Include="res\shaders\multiTexture.frag" />
+    <None Include="res\shaders\multiTexture.vert" />
   </ItemGroup>
 </Project>

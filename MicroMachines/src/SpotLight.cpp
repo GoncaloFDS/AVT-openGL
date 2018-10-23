@@ -15,6 +15,7 @@ SpotLight::~SpotLight() {
 
 void SpotLight::UpdateShader(Shader& shader) {
 	shader.Bind();
+	shader.SetUniform1i("Lights[" + std::to_string(ID) + "].isEnabled", isEnabled);
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position", m_WorldMatrix * glm::vec4(transform.position, 1));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].direction", m_Forward);
 	shader.Unbind();
@@ -29,10 +30,10 @@ void SpotLight::SetupShader(Shader& shader) {
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position", m_WorldMatrix * glm::vec4(transform.position, 1));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].direction", m_Forward);
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 0.05f);
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].linearAttenuation", 0.01f);
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].quadraticAttenuation", 0.001f);
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].spotCutoff", glm::cos(glm::radians(12.5f)));
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].spotOutterCutOff", glm::cos(glm::radians(15.0f)));
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 0.5f);
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].linearAttenuation", 0.09f);
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].quadraticAttenuation", 0.032f);
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].spotCutoff", glm::cos(glm::radians(2.f)));
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].spotOutterCutOff", glm::cos(glm::radians(30.f)));
 	shader.Unbind();
 }

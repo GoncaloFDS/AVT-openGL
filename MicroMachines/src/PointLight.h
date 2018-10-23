@@ -11,6 +11,6 @@ public:
 
 	virtual void UpdateShader(Shader& shader) override;
 
-	void SetupShader(Shader& shader);
+	virtual void SetupShader(Shader& shader) override;
 };
 

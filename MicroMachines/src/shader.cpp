@@ -113,8 +113,8 @@ int Shader::GetUniformLocation(const std::string& name) {
 		return m_UniformLocationCache[name];
 
 	GLCall(int location = glGetUniformLocation(m_RendererID, name.c_str()));
-	if (location == -1)
-		LOG("Warning: uniform '" << name << "' doesn't exist!");
+	//if (location == -1)
+	//	LOG("Warning: uniform '" << name << "' doesn't exist!");
 
 	m_UniformLocationCache[name] = location;
 	return location;

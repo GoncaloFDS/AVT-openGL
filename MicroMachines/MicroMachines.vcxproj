@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameobjects\Butter.cpp" />
+    <ClCompile Include="src\FollowCamera.cpp" />
     <ClCompile Include="src\gameobjects\Cheerio.cpp" />
     <ClCompile Include="src\AABB.cpp" />
     <ClCompile Include="src\SpotLight.cpp" />
@@ -181,6 +183,8 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameobjects\Butter.h" />
+    <ClInclude Include="src\FollowCamera.h" />
     <ClInclude Include="src\gameobjects\Cheerio.h" />
     <ClInclude Include="src\AABB.h" />
     <ClInclude Include="src\SpotLight.h" />
@@ -460,6 +464,8 @@
     <None Include="res\shaders\multipleLights.vert" />
     <None Include="res\shaders\modelLoader.frag" />
     <None Include="res\shaders\modelLoader.vert" />
+    <None Include="res\shaders\multiTexture.frag" />
+    <None Include="res\shaders\multiTexture.vert" />
     <None Include="src\external\glm\detail\func_common.inl" />
     <None Include="src\external\glm\detail\func_common_simd.inl" />
     <None Include="src\external\glm\detail\func_exponential.inl" />

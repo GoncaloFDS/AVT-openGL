@@ -7,6 +7,7 @@
 
 #include "Timer.h"
 #include "AABB.h"
+#include "Car.h"
 
 Orange::Orange() {
 	m_Speed = 15.0f;
@@ -14,34 +15,42 @@ Orange::Orange() {
 	transform.scale = glm::vec3(1);
 	glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
 	glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
-// 	LOG("Orig: " << orig.x << " " << orig.y << " " << orig.z);
-// 	LOG("Dest: " << dest.x << " " << dest.y << " " << dest.z);
-// 	LOG("-");
-	 m_Forward = glm::normalize(dest - orig);
-	 m_Right = glm::cross( m_Forward, glm::vec3(0, 1, 0));
-	 transform.position = orig;	
-	 m_AABB = AABB(glm::vec3(-3.5, -3.5, -3.5), glm::vec3(3.5, 3.5, 3.5));
+	if (dest != orig)
+		m_Forward = glm::normalize(dest - orig);
+	else
+		m_Forward = glm::vec3(1, 0, 0);
+	m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0, 1, 0)));
+	transform.position = orig;	
+	m_AABB = AABB(glm::vec3(-3.5, -3.5, -3.5), glm::vec3(3.5, 3.5, 3.5));
 }
 
 Orange::~Orange() {
 	LOG("Orange Destroyed");
 }
 
-void Orange::OnUpdate() {
-	 transform.position +=  m_Forward * m_Speed * Timer::deltaTime;
-	 transform.rotation = glm::rotate(glm::mat4(1.0f), m_TurnSpeed * Timer::deltaTime, m_Right) * glm::mat4_cast( transform.rotation);
-	 transform.scale = glm::vec3(1);
-	auto dist = glm::distance( transform.position, glm::vec3(0.0f));
+void Orange::OnUpdate(SceneNode& parent) {
+	transform.position += m_Forward * m_Speed * Timer::deltaTime;
+	ASSERT((m_Right != glm::vec3(0.0f)));
+	turningAngle += m_TurnSpeed * Timer::deltaTime;
+	transform.rotation = glm::rotate(glm::mat4(1.0f), turningAngle, m_Right);
+	//transform.scale = glm::vec3(1);
+	auto dist = glm::distance(transform.position, glm::vec3(0.0f));
 	if (dist * dist > 350 * 350) {
-		m_Speed += 1.5f;	
+		m_Speed += 1.5f;
 		m_TurnSpeed -= 1.5f;
 		glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
 		glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
-// 		LOG("Orig: " << orig.x << " " << orig.y << " " << orig.z);
-// 		LOG("Dest: " << dest.x << " " << dest.y << " " << dest.z);
-// 		LOG("-");
-		m_Forward = glm::normalize(dest - orig);
-		m_Right = glm::cross( m_Forward, glm::vec3(0, 1, 0));
+		if (dest != orig)
+			m_Forward = glm::normalize(dest - orig);
+		else
+			m_Forward = glm::vec3(1, 0, 0);
+		m_Right = glm::normalize(glm::cross(m_Forward, glm::vec3(0, 1, 0)));
 		transform.position = orig;
 	}
+	SceneNode::OnUpdate(parent);
+}
+
+void Orange::OnCollision(SceneNode& other) {
+	auto& car = dynamic_cast<Car&>(other);
+	car.Reset();
 }

@@ -10,7 +10,7 @@ enum class Projection {
 
 
 class Camera : public SceneNode{
-private:
+protected:
 
 	Projection m_ProjectionType;
 	glm::mat4 m_ProjMatrix;

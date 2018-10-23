@@ -12,8 +12,8 @@ class Shader;
 class Camera;
 
 struct Transform {
-	glm::vec3 position;
-	glm::quat rotation;
+	glm::vec3 position = glm::vec3(0.0f);
+	glm::quat rotation = glm::quat(1, 0, 0, 0);
 	glm::vec3 scale = glm::vec3(1.0f);
 };
 
@@ -37,13 +37,14 @@ public:
 
 	virtual void OnUpdate(SceneNode& parent);
 	virtual void OnRender(Camera& camera);
+	virtual void OnCollision(SceneNode& other);
+	CollisionData CheckCollision(SceneNode& other);
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
 
 	AABB& GetAABB();
 
-	CollisionData CheckCollision(SceneNode& other);
 	void AddChildNode(SceneNode* node);
 };
 

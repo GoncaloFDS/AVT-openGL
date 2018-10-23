@@ -3,7 +3,7 @@
 #include "stb_image/stb_image.h"
 #include "Common.h"
 
-Texture::Texture(const std::string& path, const std::string& directory, const std::string& typeName) {
+Texture::Texture(const std::string& path, const std::string& directory, TextureType t) {
 	std::string filename = path;
 	filename = directory + '/' + filename;
 
@@ -36,7 +36,7 @@ Texture::Texture(const std::string& path, const std::string& directory, const st
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
-	type = typeName;
+	type = t;
 	id = textureID;
 }
 

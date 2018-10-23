@@ -6,6 +6,7 @@
 
 SceneNode::SceneNode() {
 	m_WorldMatrix = glm::mat4(1.0f);
+	m_ModelMatrix = glm::mat4(1.0f);
 }
 
 SceneNode::~SceneNode() {
@@ -42,6 +43,10 @@ void SceneNode::OnRender(Camera& camera)
 	
 	for (auto& node : m_ChildNodes)
 		node->OnRender(camera);
+}
+
+void SceneNode::OnCollision(SceneNode& other) {
+
 }
 
 void SceneNode::SetShader(Shader& shader) {

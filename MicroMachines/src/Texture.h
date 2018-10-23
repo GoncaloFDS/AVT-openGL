@@ -5,38 +5,19 @@
 #include "Common.h"
 
 
-// class Texture {
-// private:
-// 	unsigned int m_RendererID;
-// 	std::string m_Type;
-// 	std::string m_FilePath;
-// 	std::string m_Name;
-// 	unsigned char* m_LocalBuffer;
-// 	int m_Width, m_Height, m_BPP; // bits per pixel
-// 
-// public:
-// 	Texture(const std::string& path, const std::string&);
-// 	~Texture();
-// 
-// 	void Bind(unsigned int slot = 0) const;
-// 	void Unbind();
-// 
-// 	int GetWidth() const;
-// 	int GetHeight() const;
-// 	const std::string& GetFilePath();
-// 	const std::string& GetType();
-// 	const std::string& GetName();
-// 	unsigned int ID() {
-// 		return m_RendererID;
-// 	}
-// 	
-// };
+enum class TextureType {
+	NotSupported = 0,
+	Diffuse = 1,
+	Specular = 2,
+	Normal = 3,
+	Mask = 4,
+};
 
 struct Texture {
-	Texture(const std::string& path, const std::string& directory, const std::string& type);
+	Texture(const std::string& path, const std::string& directory, TextureType type);
 
 	unsigned int id;
-	std::string type;
+	TextureType type;
 	std::string path;
 	void Bind(unsigned int slot = 0) const;
 	void Unbind();

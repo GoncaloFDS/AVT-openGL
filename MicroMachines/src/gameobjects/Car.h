@@ -26,5 +26,6 @@ public:
 	void Move(float amount);
 	void Turn(float amount);
 	void Reset();
+	void OnCollision(SceneNode& node);
 };
 

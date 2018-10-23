@@ -4,7 +4,7 @@
 #include "vertexBufferLayout.h"
 #include <memory>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture> textures) 
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures) 
 	:m_Vertices(vertices), m_Indices(indices), m_Textures(textures){
 
 	SetupMesh();
@@ -14,30 +14,37 @@ void Mesh::Draw(Shader shader) {
 	unsigned int difuseNr = 1;
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
-	unsigned int heightNr = 1;
 
 	for (unsigned int i = 0; i < m_Textures.size(); i++){
-		
-		shader.Bind();
+		bool supported = false;
 		std::string number;
-		std::string name = m_Textures[i].type;
-		if (name == "texture_diffuse"){ 
-			number = std::to_string(difuseNr++);
-			shader.SetUniform1i(name + number, i);
-		}
-		else if (name == "texture_specular") {
- 			number = std::to_string(specularNr++); 
-			shader.SetUniform1i(name + number, i);
-		}
-		// 		else if (name == "texture_normal")
-		// 			number = std::to_string(normalNr++); 
-		// 		else if (name == "texture_height")
-		// 			number = std::to_string(heightNr++);
-		// 
-		// 		shader.Bind();
-		// 		shader.SetUniform1i(name + number, i);
+		std::string name;
+		switch (m_Textures[i]->type) {
+			case TextureType::Diffuse:
+				number = std::to_string(difuseNr++);
+				name = "texture_diffuse" + number;
+				supported = true;
+				break;
+			case TextureType::Specular:
+				number = std::to_string(specularNr++);
+				name = "texture_specular" + number;
+				supported = true;
+				break;
+			case TextureType::Normal:
+				number = std::to_string(normalNr++);
+				name = "texture_normal" + number;
+				supported = true;
+				break;
+			case TextureType::Mask:
+				name = "texture_mask1";
+				supported = true;
+				break;
 		
-		m_Textures[i].Bind(i);
+		}
+		shader.Bind();
+		if(supported)
+			shader.SetUniform1i(name, i);
+		m_Textures[i]->Bind(i);
 		
 	}
 	m_VertexArray->Bind();

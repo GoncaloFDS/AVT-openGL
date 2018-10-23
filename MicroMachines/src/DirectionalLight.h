@@ -13,8 +13,11 @@ public:
 	~DirectionalLight();
 
 	virtual void UpdateShader(Shader& shader) override;
+	virtual void SetupShader(Shader& shader) override;
 
 	void SetDirection(glm::vec3 dir);
+
+
 
 };
 
