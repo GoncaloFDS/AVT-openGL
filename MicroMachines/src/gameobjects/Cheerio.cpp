@@ -3,7 +3,7 @@
 #include "Car.h"
 
 Cheerio::Cheerio() {
-	m_AABB = AABB(glm::vec3(-2), glm::vec3(2));
+	m_AABB = AABB(glm::vec3(-1.5), glm::vec3(1.5));
 
 }
 

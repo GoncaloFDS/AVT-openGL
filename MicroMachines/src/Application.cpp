@@ -163,9 +163,9 @@ int main(int argc, char* argv[]) {
 	Model gameoverHUD("res/models/hud/gameover.obj");
 	
 
-	Model cheerioModel("res/models/cheerio/cheerio.obj");
-	int cheerioCount = 15;
-	float increment = 360 / cheerioCount;
+	Model cheerioModel("res/models/goodcheerio/cheerio.obj");
+	int cheerioCount = 30;
+	float increment = 360.f / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
 		float angle = increment * i;
 		float x = 150 * cos(glm::radians(angle));
@@ -179,8 +179,8 @@ int main(int argc, char* argv[]) {
 		colliders.push_back(cheerio);
 	}
 	
-	cheerioCount = 25;
-	increment = 360 / cheerioCount;
+	cheerioCount = 60;
+	increment = 360.f / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
 		float angle = increment * i;
 		float x = 300 * cos(glm::radians(angle));
