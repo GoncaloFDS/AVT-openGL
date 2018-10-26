@@ -4,8 +4,8 @@
 #include "vertexBufferLayout.h"
 #include <memory>
 
-Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures) 
-	:m_Vertices(vertices), m_Indices(indices), m_Textures(textures){
+Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture*> textures)
+	:m_Vertices(vertices), m_Indices(indices), m_Textures(textures) {
 
 	SetupMesh();
 }
@@ -29,22 +29,22 @@ void Mesh::BindTextures(Shader &shader) {
 		std::string number;
 		std::string name;
 		switch (m_Textures[i]->type) {
-			case TextureType::Diffuse:
-				name = "texture_diffuse1";
-				supported = true;
-				break;
-			case TextureType::Specular:
-				name = "texture_specular1";
-				supported = true;
-				break;
-			case TextureType::Normal:
-				name = "texture_normal1";
-				supported = true;
-				break;
-			case TextureType::Mask:
-				name = "texture_mask1";
-				supported = true;
-				break;
+		case TextureType::Diffuse:
+			name = "texture_diffuse1";
+			supported = true;
+			break;
+		case TextureType::Specular:
+			name = "texture_specular1";
+			supported = true;
+			break;
+		case TextureType::Normal:
+			name = "texture_normal1";
+			supported = true;
+			break;
+		case TextureType::Mask:
+			name = "texture_mask1";
+			supported = true;
+			break;
 
 		}
 		shader.Bind();

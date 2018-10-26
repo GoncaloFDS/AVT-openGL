@@ -29,7 +29,7 @@ private:
 	std::vector<Vertex> m_Vertices;
 	std::vector<unsigned int> m_Indices;
 	std::vector<Texture*> m_Textures;
-	
+
 	std::unique_ptr<VertexArray> m_VertexArray;
 	std::unique_ptr<VertexBuffer> m_VertexBuffer;
 	std::unique_ptr<IndexBuffer> m_IndexBuffer;

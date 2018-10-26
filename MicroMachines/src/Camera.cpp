@@ -7,10 +7,10 @@
 #include "glm/vec4.hpp"
 
 
-Camera::Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up) 
-	: SceneNode(){
+Camera::Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up)
+	: SceneNode() {
 
-	m_ProjMatrix = glm::perspective(glm::radians(45.0f), 1080.0f/720.0f, 1.0f, 5000.f);
+	m_ProjMatrix = glm::perspective(glm::radians(45.0f), 1080.0f / 720.0f, 1.0f, 5000.f);
 	m_ProjectionType = Projection::Perspective;
 
 	transform.position = startingPosition;
@@ -67,15 +67,15 @@ void Camera::SetProjectionType(Projection projection) {
 void Camera::Translate(Direction dir, float amount = 1.0f) {
 	glm::vec3 directionVec;
 	switch (dir) {
-		case Direction::Front:
-			directionVec = m_Forward;
-			break;
-		case Direction::Right:
-			directionVec = m_Right;
-			break;
-		case Direction::Up:
-			directionVec = m_Up;
-			break;
+	case Direction::Front:
+		directionVec = m_Forward;
+		break;
+	case Direction::Right:
+		directionVec = m_Right;
+		break;
+	case Direction::Up:
+		directionVec = m_Up;
+		break;
 	}
 	transform.position += directionVec * amount * m_MovementSpeed;
 }
@@ -100,15 +100,9 @@ void Camera::ProcessMouseMovement(float deltaX, float deltaY) {
 	deltaX *= -m_MouseSensivity * Timer::deltaTime;
 	deltaY *= m_MouseSensivity * Timer::deltaTime;
 
-	//m_ForwardOffset = glm::rotate(m_ForwardOffset, deltaX, m_Up);
-	//m_ForwardOffset = glm::rotate(m_ForwardOffset, deltaY, m_Right);
-
 	m_Pitch += deltaY;
 	m_Yaw += deltaX;
 
-	//m_Forward = glm::rotate(glm::mat4(1.0f), deltaX, m_Up) * glm::vec4(m_Forward, 1);
-	//m_Forward = glm::rotate(glm::mat4(1.0f), deltaY, m_Right) * glm::vec4(m_Forward, 1);
-	//m_Forward = glm::normalize(m_Forward);
 	m_Right = glm::cross(m_Forward, m_WorldUp);
 	m_Up = glm::cross(m_Right, m_Forward);
 }

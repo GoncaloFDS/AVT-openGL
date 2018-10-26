@@ -22,7 +22,7 @@ public:
 
 	void Bind() const;
 	void Unbind() const;
-  
+
 	//Set Uniforms
 	void SetUniform1i(const std::string& name, int v0);
 	void SetUniform1f(const std::string& name, float v0);

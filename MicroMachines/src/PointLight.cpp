@@ -4,7 +4,7 @@
 #include <string> 
 
 
-PointLight::PointLight() 
+PointLight::PointLight()
 	:Light() {
 }
 
@@ -15,7 +15,7 @@ PointLight::~PointLight() {
 void PointLight::UpdateShader(Shader& shader) {
 	shader.Bind();
 	shader.SetUniform1i("Lights[" + std::to_string(ID) + "].isEnabled", isEnabled);
-	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position",transform.position);
+	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position", transform.position);
 	shader.Unbind();
 }
 

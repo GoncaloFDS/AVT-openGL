@@ -1,9 +1,9 @@
 #include "DirectionalLight.h"
 #include "Shader.h"
 
-DirectionalLight::DirectionalLight(glm::vec3 dir) 
+DirectionalLight::DirectionalLight(glm::vec3 dir)
 	: Light(), m_Direction(dir) {
-	
+
 }
 
 DirectionalLight::~DirectionalLight() {

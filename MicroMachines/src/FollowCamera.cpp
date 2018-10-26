@@ -1,7 +1,7 @@
 #include "FollowCamera.h"
 
 
-FollowCamera::FollowCamera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up) 
+FollowCamera::FollowCamera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up)
 	: Camera(startingPosition, center, up) {
 
 }
@@ -16,7 +16,7 @@ void FollowCamera::OnUpdate(SceneNode& parent) {
 	m_Forward = glm::normalize(m_Forward);
 	m_Right = glm::cross(m_Forward, m_WorldUp);
 	m_Up = glm::cross(m_Right, m_Forward);
-	
+
 	Camera::OnUpdate(parent);
 
 }

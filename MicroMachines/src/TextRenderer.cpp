@@ -21,10 +21,10 @@ TextRenderer::TextRenderer(GLuint width, GLuint height) {
 	TextShader->SetUniformMat4f("projection", glm::ortho(0.0f, static_cast<GLfloat>(width), static_cast<GLfloat>(height), 0.0f));
 	TextShader->SetUniform1i("text", 0);
 	// Configure VAO/VBO for texture quads
-	glGenVertexArrays(1, & VAO);
-	glGenBuffers(1, & VBO);
-	glBindVertexArray( VAO);
-	glBindBuffer(GL_ARRAY_BUFFER,  VBO);
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+	glBindVertexArray(VAO);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
@@ -34,7 +34,7 @@ TextRenderer::TextRenderer(GLuint width, GLuint height) {
 
 void TextRenderer::Load(std::string font, GLuint fontSize) {
 	// First clear the previously loaded Characters
-	 Characters.clear();
+	Characters.clear();
 	// Then initialize and load the FreeType library
 	FT_Library ft;
 	if (FT_Init_FreeType(&ft)) // All functions return a value different than 0 whenever an error occurred
@@ -96,7 +96,7 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 	TextShader->Bind();
 	TextShader->SetUniform3fv("textColor", color);
 	glActiveTexture(GL_TEXTURE0);
-	glBindVertexArray( VAO);
+	glBindVertexArray(VAO);
 
 	// Iterate through all characters
 	std::string::const_iterator c;
@@ -104,7 +104,7 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 		Character ch = Characters[*c];
 
 		GLfloat xpos = x + ch.Bearing.x * scale;
-		GLfloat ypos = y + ( Characters['H'].Bearing.y - ch.Bearing.y) * scale;
+		GLfloat ypos = y + (Characters['H'].Bearing.y - ch.Bearing.y) * scale;
 
 		GLfloat w = ch.Size.x * scale;
 		GLfloat h = ch.Size.y * scale;
@@ -121,7 +121,7 @@ void TextRenderer::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat sc
 		// Render glyph texture over quad
 		glBindTexture(GL_TEXTURE_2D, ch.TextureID);
 		// Update content of VBO memory
-		glBindBuffer(GL_ARRAY_BUFFER,  VBO);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // Be sure to use glBufferSubData and not glBufferData
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);

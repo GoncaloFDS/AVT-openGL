@@ -5,7 +5,7 @@
 struct Timer {
 
 	Timer();
-	
+
 	static void Start();
 	static float deltaTime;
 	static float elapsedTime;
@@ -19,6 +19,6 @@ private:
 	static std::clock_t m_CurrentTime;
 	static std::clock_t m_DeltaTime;
 	static bool isPaused;
-	
+
 };
 

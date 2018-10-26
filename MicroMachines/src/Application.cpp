@@ -13,30 +13,28 @@
 #include <glm/vec3.hpp>    
 #include <glm/vec4.hpp>    
 
-#include "Common.h"
-#include "Shader.h"
-#include "InputHandler.h"
-#include "InputBind.h"
 #include "Camera.h"
+#include "Common.h"
+#include "DirectionalLight.h"
 #include "FollowCamera.h"
-#include "Window.h"
-#include "Renderer.h"
-#include "Timer.h"
+#include "InputBind.h"
+#include "InputHandler.h"
 #include "Model.h"
+#include "PointLight.h"
+#include "Renderer.h"
 #include "SceneGraph.h"
+#include "Shader.h"
+#include "SpotLight.h"
+#include "TextRenderer.h"
+#include "Timer.h"
+#include "Window.h"
+#include "gameobjects/Butter.h"
 #include "gameobjects/Car.h"
+#include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "glm/ext/scalar_constants.hpp"
-#include "PointLight.h"
-#include "DirectionalLight.h"
-#include "SpotLight.h"
-#include "gameobjects/Cheerio.h"
-#include "gameobjects/Butter.h"
-#include "TextRenderer.h"
 
-extern "C" {
-	__declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001;
-}
+extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
 bool debug_mode = false;
 bool gameover = false;
@@ -44,7 +42,7 @@ float points = 0;
 
 int main(int argc, char* argv[]) {
 	Window window(1080, 720, "MicroMachines");
-	srand(time(NULL));
+	srand(static_cast<unsigned int>(time(nullptr)));
 
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window.GetWindow(), true);
@@ -76,10 +74,10 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_1, key1);
 	inputHandler.AddKeyControl(GLFW_KEY_2, key2);
 	inputHandler.AddKeyControl(GLFW_KEY_3, key3);
-	inputHandler.AddKeyControl(GLFW_KEY_P, keyP);
 	inputHandler.AddKeyControl(GLFW_KEY_C, keyC);
 	inputHandler.AddKeyControl(GLFW_KEY_H, keyH);
 	inputHandler.AddKeyControl(GLFW_KEY_N, keyN);
+	inputHandler.AddKeyControl(GLFW_KEY_P, keyP);
 	inputHandler.AddKeyControl(GLFW_KEY_R, keyR);
 
 	window.SetInputHandler(&inputHandler);
@@ -95,12 +93,12 @@ int main(int argc, char* argv[]) {
 	Camera HUDCamera(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 	HUDCamera.SetAspectRatio(window.GetAspectRatio());
 	HUDCamera.SetProjectionType(Projection::Orthographic);
-	
+
 	sceneGraph.SetCamera(followCamera);
 	Shader basicShader("res/shaders/multipleLights");
 	Shader tableShader("res/shaders/multiTexture");
 	Shader hudShader("res/shaders/hud");
-	
+
 	SceneNode table;
 	Model tableModel("res/models/mTable/table.obj");
 	table.SetModel(tableModel);
@@ -116,7 +114,7 @@ int main(int argc, char* argv[]) {
 	car.SetWheelsShader(basicShader);
 	Model wheelModel("res/models/wheel/wheel.obj");
 	car.SetWheelsModel(wheelModel);
-	
+
 	auto butter = new Butter();
 	Model butterModel("res/models/butter/butter.obj");
 	butter->SetModel(butterModel);
@@ -148,7 +146,7 @@ int main(int argc, char* argv[]) {
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
 
-	
+
 	Model orangeModel("res/models/goodorange/orange.obj");
 	for (int i = 0; i < 10; i++) {
 		auto orange = new Orange();
@@ -157,11 +155,11 @@ int main(int argc, char* argv[]) {
 		sceneGraph.AddNode(orange);
 		colliders.push_back(orange);
 	}
-	
-	
+
+
 	Model hpHUD("res/models/hud/heart.obj");
 	Model gameoverHUD("res/models/hud/gameover.obj");
-	
+
 
 	Model cheerioModel("res/models/goodcheerio/cheerio.obj");
 	int cheerioCount = 30;
@@ -170,7 +168,7 @@ int main(int argc, char* argv[]) {
 		float angle = increment * i;
 		float x = 150 * cos(glm::radians(angle));
 		float z = 150 * sin(glm::radians(angle));
-		
+
 		auto cheerio = new Cheerio();
 		cheerio->SetShader(basicShader);
 		cheerio->SetModel(cheerioModel);
@@ -178,14 +176,14 @@ int main(int argc, char* argv[]) {
 		cheerio->transform.position = glm::vec3(x, -3, z);
 		colliders.push_back(cheerio);
 	}
-	
+
 	cheerioCount = 60;
 	increment = 360.f / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
 		float angle = increment * i;
 		float x = 300 * cos(glm::radians(angle));
 		float z = 300 * sin(glm::radians(angle));
-	
+
 		auto cheerio = new Cheerio();
 		cheerio->SetShader(basicShader);
 		cheerio->SetModel(cheerioModel);
@@ -195,7 +193,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::vector<Light*> lights;
-	increment = 360 / 6;
+	increment = 360.f / 6.f;
 	for (int i = 0; i < 6; i++) {
 		float angle = increment * i;
 		float x = 225 * cos(glm::radians(angle));
@@ -216,7 +214,7 @@ int main(int argc, char* argv[]) {
 	lights.push_back(&spotLightL);
 	lights.push_back(&spotLightR);
 
-	for (auto& light : lights){
+	for (auto& light : lights) {
 		light->SetupShader(basicShader);
 		light->SetupShader(tableShader);
 	}
@@ -255,11 +253,11 @@ int main(int argc, char* argv[]) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
 		}
-		if (key0.isPressed()){ 
+		if (key0.isPressed()) {
 			debug_mode = !debug_mode;
 		}
 		if (keyP.isPressed() & !gameover) {
-			Timer::TooglePause();				
+			Timer::TooglePause();
 		}
 		if (keyC.isPressed()) {
 			for (int i = 0; i < 6; i++)
@@ -294,17 +292,17 @@ int main(int argc, char* argv[]) {
 		}
 		sceneGraph.OnUpdate();
 
-		for (auto node : colliders)	{
+		for (auto node : colliders) {
 			CollisionData cdata = car.CheckCollision(*node);
 			if (cdata.isColliding) {
 				node->OnCollision(car);
 			}
 		}
 
-		
+
 		//Render Scene
 		sceneGraph.OnRender();
-		
+
 		//update HUD
 		hudShader.Bind();
 		glm::vec3 p(-200 * window.GetAspectRatio(), 0, -180);
@@ -323,20 +321,20 @@ int main(int argc, char* argv[]) {
 			gameover = true;
 
 		}
-		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.8 + pos.x , 20 + pos.y, 1.0f);
+		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.8f + pos.x, 20 + pos.y, 1.0f);
 
-		if(debug_mode) {	
+		if (debug_mode) {
 			ImGui::Begin("Debug Window", &debug_mode);
 			ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
-		
+
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		window.SwapBuffers();
 	}
-	
+
 	ImGui_ImplGlfwGL3_Shutdown();
 	ImGui::DestroyContext();
 	glfwTerminate();

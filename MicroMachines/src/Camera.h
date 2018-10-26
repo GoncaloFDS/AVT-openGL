@@ -9,7 +9,7 @@ enum class Projection {
 };
 
 
-class Camera : public SceneNode{
+class Camera : public SceneNode {
 protected:
 
 	Projection m_ProjectionType;
@@ -41,7 +41,7 @@ public:
 
 	void SetProjectionType(Projection projection);
 	void Translate(Direction dir, float amount);
-	
+
 
 	glm::mat4 GetViewProjMatrix();
 	glm::mat4 GetViewMatrix();

@@ -43,7 +43,7 @@ public:
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
-	
+
 	AABB& GetAABB();
 
 	void AddChildNode(SceneNode* node);

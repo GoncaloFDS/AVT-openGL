@@ -16,20 +16,19 @@ void SceneNode::OnUpdate(SceneNode& parent) {
 	m_ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position) * glm::mat4_cast(transform.rotation) * glm::scale(glm::mat4(1.0f), transform.scale);
 	m_WorldMatrix = parent.m_WorldMatrix * m_ModelMatrix;
 
-	for (auto node : m_ChildNodes)
+	for (const auto& node : m_ChildNodes)
 		node->OnUpdate(*this);
 
 	m_AABB.OnUpdate(transform.position);
 }
 
-void SceneNode::OnRender(Camera& camera)
-{
+void SceneNode::OnRender(Camera& camera) {
 	if (m_Shader) {
 		m_Shader->Bind();
 
 		auto mvpMat = camera.GetViewProjMatrix() * m_WorldMatrix;
 		m_Shader->SetUniformMat4f("MVPMat", mvpMat);
-		
+
 		m_Shader->SetUniformMat4f("ModelMat", m_WorldMatrix);
 
 		auto normalMat = glm::transpose(glm::inverse(m_WorldMatrix));
@@ -38,9 +37,9 @@ void SceneNode::OnRender(Camera& camera)
 		m_Shader->SetUniform3fv("viewPos", camera.transform.position);
 
 	}
-	if(m_Model)
+	if (m_Model)
 		m_Model->Draw(*m_Shader);
-	
+
 	for (auto& node : m_ChildNodes)
 		node->OnRender(camera);
 }

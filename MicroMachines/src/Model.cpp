@@ -8,15 +8,14 @@ Model::Model(const std::string& filePath) {
 	LoadModel(filePath);
 }
 
-void Model::Draw(Shader& shader)
-{
+void Model::Draw(Shader& shader) {
 	for (auto& mesh : m_Meshes)
 		mesh.Draw(shader);
 }
 
 void Model::LoadModel(const std::string& filePath) {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs); 
+	const aiScene* scene = importer.ReadFile(filePath, aiProcess_Triangulate | aiProcess_FlipUVs);
 	// we flip the UVs cause opengl loads them y inverted
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
@@ -140,18 +139,18 @@ std::vector<Texture*> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType
 		if (!skip) {   // if texture hasn't been loaded already, load it
 			TextureType tType;
 			switch (type) {
-				case aiTextureType_DIFFUSE:
-					tType = TextureType::Diffuse;
-					break;
-				case aiTextureType_SPECULAR:
-					tType = TextureType::Specular;
-					break;
-				case aiTextureType_HEIGHT: //TODO
-					tType = TextureType::Normal;
-					break;
-				case  aiTextureType_AMBIENT: // Actually used as a mask
-					tType = TextureType::Mask;
-					break;
+			case aiTextureType_DIFFUSE:
+				tType = TextureType::Diffuse;
+				break;
+			case aiTextureType_SPECULAR:
+				tType = TextureType::Specular;
+				break;
+			case aiTextureType_HEIGHT: //TODO
+				tType = TextureType::Normal;
+				break;
+			case  aiTextureType_AMBIENT: // Actually used as a mask
+				tType = TextureType::Mask;
+				break;
 
 			}
 			auto texture = new Texture(str.C_Str(), m_Directory, tType);
@@ -163,7 +162,7 @@ std::vector<Texture*> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType
 }
 
 void Model::BindTextures(Shader &shader) {
-	for(auto& mesh : m_Meshes)
+	for (auto& mesh : m_Meshes)
 		mesh.BindTextures(shader);
 }
 

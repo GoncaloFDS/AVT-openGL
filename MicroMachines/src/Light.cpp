@@ -4,7 +4,7 @@
 
 int Light::numberOfLights;
 
-Light::Light(){
+Light::Light() {
 	ID = numberOfLights;
 	numberOfLights = numberOfLights + 1;
 	isEnabled = true;

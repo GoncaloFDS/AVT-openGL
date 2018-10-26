@@ -61,7 +61,7 @@ bool Window::WasResized() {
 }
 
 float Window::GetAspectRatio() {
-	return (float) m_Width / (float) m_Height;
+	return (float)m_Width / (float)m_Height;
 }
 
 GLFWwindow* Window::GetWindow() {
@@ -81,7 +81,7 @@ void Window::OnResize(GLFWwindow* window, int width, int height) {
 	m_Height = height;
 	m_WasResized = true;
 	GLCall(glViewport(0, 0, width, height));
-	
+
 }
 
 void Window::OnKey(GLFWwindow* window, int key, int scancode, int action, int mods) {
@@ -100,14 +100,13 @@ void Window::OnMouseMove(GLFWwindow* window, double xpos, double ypos) {
 void Window::OnMouseClick(GLFWwindow* window, int button, int action, int mods) {
 	if (action == GLFW_PRESS)
 		m_InputHandler->pressed = true;
-		//m_InputHandler->OnKeyDown(button, false);
+	//m_InputHandler->OnKeyDown(button, false);
 	if (action == GLFW_RELEASE)
 		m_InputHandler->pressed = false;
-		//m_InputHandler->OnKeyUp(button, false);
+	//m_InputHandler->OnKeyUp(button, false);
 }
 
-void Window::SetCallbacks()
-{
+void Window::SetCallbacks() {
 	glfwSetWindowUserPointer(m_Window, this);
 	glfwSetKeyCallback(m_Window, OnKey);
 	glfwSetCursorPosCallback(m_Window, OnMouseMove);

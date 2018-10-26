@@ -22,7 +22,7 @@ public:
 	void SwapBuffers();
 	void PollEvents();
 	void Close();
-	
+
 	void SetInputHandler(InputHandler* inputHandler);
 
 	bool WasResized();

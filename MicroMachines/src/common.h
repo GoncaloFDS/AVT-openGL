@@ -10,16 +10,16 @@
 #define LOG(x) std::cout << x << std::endl
 
 static void GLClearError() {
-  while (glGetError() != GL_NO_ERROR);
+	while (glGetError() != GL_NO_ERROR);
 }
 
 static bool GLLogCall(const char* function, const char* file, int line) {
-  while (GLenum error = glGetError()) {
-    std::cout << "[OpenGL ERROR] (" << error << "): " << function << " " << file
-              << ": " << line << std::endl;
-    return false;
-  }
-  return true;
+	while (GLenum error = glGetError()) {
+		std::cout << "[OpenGL ERROR] (" << error << "): " << function << " " << file
+			<< ": " << line << std::endl;
+		return false;
+	}
+	return true;
 }
 
 enum class Direction {
