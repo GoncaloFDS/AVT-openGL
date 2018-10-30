@@ -5,8 +5,15 @@
 #include <iostream>
 #include "GL\glew.h"
 
-#define ASSERT(x) if (!x) __debugbreak()
+#define ASSERT(expr) \
+	if (expr) {} \
+	else { \
+		ReportAssertionFailure(#expr, __FILE__, __LINE__); \
+        __debugbreak(); \
+	}
+
 #define GLCall(x) GLClearError(); x; ASSERT(GLLogCall(#x, __FILE__, __LINE__))
+
 #define LOG(x) std::cout << x << std::endl
 
 static void GLClearError() {
@@ -20,6 +27,11 @@ static bool GLLogCall(const char* function, const char* file, int line) {
 		return false;
 	}
 	return true;
+}
+
+static void ReportAssertionFailure(const char* expr, const char* file, int line) {
+	std::cout << "[Assertion Failure] " << expr << " " << file
+		<< ": " << line << std::endl;
 }
 
 enum class Direction {

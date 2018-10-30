@@ -1334,5 +1334,9 @@
     <None Include="res\shaders\multiTexture.vert" />
     <None Include="res\shaders\hud.vert" />
     <None Include="res\shaders\hud.frag" />
+    <None Include="res\shaders\singleColor.frag" />
+    <None Include="res\shaders\singleColor.vert" />
+    <None Include="res\shaders\text.frag" />
+    <None Include="res\shaders\text.vert" />
   </ItemGroup>
 </Project>

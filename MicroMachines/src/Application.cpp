@@ -97,6 +97,7 @@ int main(int argc, char* argv[]) {
 	sceneGraph.SetCamera(followCamera);
 	Shader basicShader("res/shaders/multipleLights");
 	Shader tableShader("res/shaders/multiTexture");
+	Shader singleColorShader("res/shaders/singleColor");
 	Shader hudShader("res/shaders/hud");
 
 	SceneNode table;
@@ -218,16 +219,18 @@ int main(int argc, char* argv[]) {
 		light->SetupShader(basicShader);
 		light->SetupShader(tableShader);
 	}
-
 	Timer::Start();
 	auto currentCamera = sceneGraph.GetCamera();
 	glm::vec2 pos(0, 0);
+	glm::vec3 scale(1.0f);
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// GameLoop
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	while (!window.ShouldClose()) {
 		Timer::Tick();
 		points += Timer::deltaTime;
+		glEnable(GL_DEPTH_TEST);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		renderer.Clear();
 		window.PollEvents();
 
@@ -301,7 +304,32 @@ int main(int argc, char* argv[]) {
 
 
 		//Render Scene
+		
+		glStencilMask(0x00);
+		
+		car.SetEnabled(false);
 		sceneGraph.OnRender();
+		
+		// 1st. render pass, draw objects as normal, writing to the stencil buffer
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+		car.SetEnabled(true);
+		car.SetShader(basicShader);
+		car.OnRender(*currentCamera);
+
+		// 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		car.SetShader(singleColorShader);
+		//scale *= 1.1f;
+		car.transform.scale *= 1.1f;
+		car.OnRender(*currentCamera);
+		
+		car.transform.scale /= 1.1f;
+	
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 		//update HUD
 		hudShader.Bind();

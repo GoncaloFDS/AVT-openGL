@@ -26,10 +26,12 @@ public:
 
 protected:
 	std::vector<SceneNode*> m_ChildNodes;
+	bool m_Enabled;
 	glm::mat4 m_ModelMatrix;
 	Model* m_Model;
 	Shader* m_Shader;
 	AABB m_AABB;
+
 
 public:
 	SceneNode();
@@ -43,7 +45,8 @@ public:
 
 	void SetShader(Shader& shader);
 	void SetModel(Model& model);
-
+	void SetEnabled(bool b);
+	bool GetEnabled();
 	AABB& GetAABB();
 
 	void AddChildNode(SceneNode* node);

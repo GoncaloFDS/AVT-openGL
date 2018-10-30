@@ -7,6 +7,7 @@
 SceneNode::SceneNode() {
 	m_WorldMatrix = glm::mat4(1.0f);
 	m_ModelMatrix = glm::mat4(1.0f);
+	m_Enabled = true;
 }
 
 SceneNode::~SceneNode() {
@@ -23,6 +24,9 @@ void SceneNode::OnUpdate(SceneNode& parent) {
 }
 
 void SceneNode::OnRender(Camera& camera) {
+	if (!m_Enabled)
+		return;
+	
 	if (m_Shader) {
 		m_Shader->Bind();
 
@@ -59,6 +63,16 @@ void SceneNode::SetShader(Shader& shader) {
 
 void SceneNode::SetModel(Model& model) {
 	m_Model = &model;
+}
+
+
+void SceneNode::SetEnabled(bool b) {
+	m_Enabled = b;
+}
+
+
+bool SceneNode::GetEnabled() {
+	return m_Enabled;
 }
 
 AABB& SceneNode::GetAABB() {

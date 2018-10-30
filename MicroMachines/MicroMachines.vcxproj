@@ -472,6 +472,10 @@
     <None Include="res\shaders\modelLoader.vert" />
     <None Include="res\shaders\multiTexture.frag" />
     <None Include="res\shaders\multiTexture.vert" />
+    <None Include="res\shaders\singleColor.frag" />
+    <None Include="res\shaders\singleColor.vert" />
+    <None Include="res\shaders\text.frag" />
+    <None Include="res\shaders\text.vert" />
     <None Include="src\external\glm\detail\func_common.inl" />
     <None Include="src\external\glm\detail\func_common_simd.inl" />
     <None Include="src\external\glm\detail\func_exponential.inl" />

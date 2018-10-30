@@ -19,7 +19,8 @@ Renderer::Renderer() {
 	printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LEQUAL));
+	GLCall(glEnable(GL_STENCIL_TEST));
+	GLCall(glDepthFunc(GL_LESS));
 	GLCall(glDepthMask(GL_TRUE));
 	GLCall(glDepthRange(0.0, 1.0));
 	GLCall(glClearDepth(1.0));
@@ -28,11 +29,15 @@ Renderer::Renderer() {
 	GLCall(glFrontFace(GL_CCW));
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+
 	SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	
 }
 
 void Renderer::Clear() const {
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));
 }
 
 void Renderer::SetClearColor(glm::vec4 color) const {
