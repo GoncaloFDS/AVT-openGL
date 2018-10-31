@@ -137,7 +137,7 @@ int main(int argc, char* argv[]) {
 	butter3->transform.position = glm::vec3(0, 0, -200);
 	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
 	colliders.push_back(butter3);
-
+	
 
 	sceneGraph.AddNode(butter);
 	sceneGraph.AddNode(butter2);
@@ -146,6 +146,8 @@ int main(int argc, char* argv[]) {
 	sceneGraph.AddNode(&car);
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
+	glm::vec3 position(0.f);
+	glm::vec3 scalea(15.f);
 
 
 	Model orangeModel("res/models/goodorange/orange.obj");
@@ -161,6 +163,13 @@ int main(int argc, char* argv[]) {
 	Model hpHUD("res/models/hud/heart.obj");
 	Model gameoverHUD("res/models/hud/gameover.obj");
 
+	SceneNode lamp;
+	Model lampModel("res/models/lamp/lamp.obj");
+	lamp.SetModel(lampModel);
+	lamp.SetShader(basicShader);
+	lamp.transform.scale = glm::vec3(25.f);
+	lamp.transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0));
+	sceneGraph.AddNode(&lamp);
 
 	Model cheerioModel("res/models/goodcheerio/cheerio.obj");
 	int cheerioCount = 30;
@@ -353,7 +362,9 @@ int main(int argc, char* argv[]) {
 
 		if (debug_mode) {
 			ImGui::Begin("Debug Window", &debug_mode);
-			ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
+			//ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
+			ImGui::DragFloat3("Position", &position[0], 1, -1000, 10000);
+			ImGui::DragFloat3("Scale", &scalea[0], 1, -1000, 10000);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}

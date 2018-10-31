@@ -38,8 +38,8 @@ void main(){
 	vec3 viewDir = normalize(viewPos - FragPosition);
 
 	vec3 result;
-	vec3 diffTex = vec3(texture(texture_diffuse1, TexCoords));
-	vec3 specTex = vec3(texture(texture_specular1, TexCoords));
+	vec4 diffTex = texture(texture_diffuse1, TexCoords);
+	vec4 specTex = texture(texture_specular1, TexCoords);
 
 	for(int light = 0; light < MaxLights; light++){
 		if(!Lights[light].isEnabled)
@@ -64,16 +64,16 @@ void main(){
 				float intensity = clamp((theta - Lights[light].spotOutterCutOff) / epsilon, 0.0, 1.0);
 				// combine results 
 				attenuation *= intensity;
-				vec3 ambient = Lights[light].ambient * diffTex ;
-				vec3 diffuse = Lights[light].diffuse * diff * diffTex;
-				vec3 specular = Lights[light].specular * spec * specTex ;
+				vec3 ambient = Lights[light].ambient * vec3(diffTex) ;
+				vec3 diffuse = Lights[light].diffuse * diff * vec3(diffTex);
+				vec3 specular = Lights[light].specular * spec * vec3(specTex) ;
 				result += (ambient + diffuse + specular) * attenuation;
 			}
 			else { 
 				//combine results
-				vec3 ambient = Lights[light].ambient * diffTex;
-				vec3 diffuse = Lights[light].diffuse * diff * diffTex;
-				vec3 specular = Lights[light].specular * spec * specTex;
+				vec3 ambient = Lights[light].ambient * vec3(diffTex);
+				vec3 diffuse = Lights[light].diffuse * diff * vec3(diffTex);
+				vec3 specular = Lights[light].specular * spec * vec3(specTex);
 				result += (ambient + diffuse + specular) * attenuation;
 			}
 		}
@@ -86,13 +86,13 @@ void main(){
 			vec3 reflectDir = reflect(-lightDir, norm);
 			float spec = pow(max(dot(viewDir, reflectDir), 0.0), Shininess);
 			//combine results
-			result += Lights[light].ambient * diffTex;
-			result += Lights[light].diffuse * diff * diffTex;
-			result += Lights[light].specular * spec * specTex;
+			result += Lights[light].ambient * vec3(diffTex);
+			result += Lights[light].diffuse * diff * vec3(diffTex);
+			result += Lights[light].specular * spec * vec3(specTex);
 		}
 
 		
 	}
 	
-	FragColor = vec4(result, 1.0);
+	FragColor = vec4(result, diffTex.a);
 }
