@@ -11,7 +11,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>  
 #include <glm/vec3.hpp>    
-#include <glm/vec4.hpp>    
+#include <glm/vec4.hpp>
 
 #include "Camera.h"
 #include "Common.h"
@@ -41,10 +41,10 @@ bool gameover = false;
 float points = 0;
 
 int main(int argc, char* argv[]) {
-	Window window(1080, 720, "MicroMachines");
-	srand(static_cast<unsigned int>(time(nullptr)));
+    Window window(1080, 720, "MicroMachines");
+    srand(static_cast<unsigned int>(time(nullptr)));
 
-	ImGui::CreateContext();
+    ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window.GetWindow(), true);
 	ImGui::StyleColorsDark();
 
