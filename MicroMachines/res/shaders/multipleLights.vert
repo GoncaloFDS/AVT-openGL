@@ -6,21 +6,19 @@ layout(location = 1) in vec3 i_normal;	// xyz - normal
 layout(location = 2) in vec2 i_texcoords;	// xy - texture coords
 
 // matrices
-uniform mat4 MVPMat;
-uniform mat4 ModelMat;
-uniform mat3 NormalMat; // to transform normals, pre-perspective
+uniform mat4 projection, model, view, normalMat;
 
-
-// data for fragment shader
-out vec3 FragPosition;
-out vec3 Normal;
-out vec2 TexCoords;
+out vec3 normalInterp;
+out vec3 vertPos;
+out vec2 texCoords;
 
 ///////////////////////////////////////////////////////////////////
 
-void main(void) {
-	FragPosition = vec3(ModelMat * vec4(i_position, 1.0));
-	Normal = NormalMat * i_normal;
-	TexCoords = i_texcoords;
-	gl_Position = MVPMat * vec4(i_position, 1.0);
+void main(void) { 
+	
+	gl_Position = projection * view * model * vec4(i_position, 1.0);
+	vec4 vertPos4 = model * vec4(i_position, 1.0);
+	vertPos = vec3(vertPos4) /vertPos4.w;
+	normalInterp = vec3(normalMat * vec4(i_normal, 0.0));
+	texCoords = i_texcoords;
 }

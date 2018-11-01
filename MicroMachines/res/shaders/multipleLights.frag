@@ -4,9 +4,9 @@ struct LightProperties {
 	bool isEnabled;
 	bool isLocal;				//true for a point or spot light, false for directional lights
 	bool isSpot;
-	vec3 ambient;				//lights contribution to ambient light
+	//vec3 ambient;				//lights contribution to ambient light
 	vec3 diffuse;
-	vec3 specular;
+	//vec3 specular;
 	vec3 position;
 	vec3 direction;			//direction of highlights for directional light and spotlight
 	float spotCutoff;
@@ -18,81 +18,78 @@ struct LightProperties {
 
 const int MaxLights = 10;
 uniform LightProperties Lights[MaxLights];
-uniform vec3 viewPos;
 
 // textures of the object
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_specular1;
 
-uniform float Shininess = 12;
+uniform float shininess = 16;
+uniform vec3 eyePos;
 
-in vec3 FragPosition;
-in vec3 Normal;
-in vec2 TexCoords;
+in vec3 normalInterp;
+in vec3 vertPos;
+in vec2 texCoords;
 
-out vec4 FragColor;
+out vec4 fragColor;
 
 void main(){
-	vec3 norm = normalize(Normal);
-	vec3 viewDir = normalize(viewPos - FragPosition);
+	vec3 normal = normalize(normalInterp);
+	vec3 ambientColor = vec3(0.0, 0.0, 0.0);
+	vec3 diffuseColor = texture(texture_diffuse1, texCoords).xyz;
+	vec3 specColor = vec3(1.0, 1.0, 1.0);
+	vec3 lightDir;
+	float distance = 1;
+	float distance2 = 1;
+	vec3 resultingColor = vec3(0.0, 0.0, 0.0);
 
-	vec3 result;
-	vec4 diffTex = texture(texture_diffuse1, TexCoords);
-	vec4 specTex = texture(texture_specular1, TexCoords);
-
-	for(int light = 0; light < MaxLights; light++){
-		if(!Lights[light].isEnabled)
+	for(int i = 0; i < MaxLights; i++){
+		if(!Lights[i].isEnabled)
 			continue;
 
-		if(Lights[light].isLocal) {
-			vec3 lightDir = normalize(Lights[light].position - FragPosition);
-			float diff = max(dot(norm, lightDir), 0.0);
-			vec3 reflectedDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectedDir), 0.0), Shininess);
-			float dist = length(Lights[light].position - FragPosition);
-			float attenuation = 1.0 / 
-				(Lights[light].constantAttenuation + 
-				Lights[light].linearAttenuation * dist + 
-				Lights[light].quadraticAttenuation * (dist * dist));   
-
-			if(Lights[light].isSpot){
-				
-				// spotlight intensity
-				float theta = dot(lightDir, normalize(-Lights[light].direction)); 
-				float epsilon = Lights[light].spotCutoff - Lights[light].spotOutterCutOff;
-				float intensity = clamp((theta - Lights[light].spotOutterCutOff) / epsilon, 0.0, 1.0);
-				// combine results 
-				attenuation *= intensity;
-				vec3 ambient = Lights[light].ambient * vec3(diffTex) ;
-				vec3 diffuse = Lights[light].diffuse * diff * vec3(diffTex);
-				vec3 specular = Lights[light].specular * spec * vec3(specTex) ;
-				result += (ambient + diffuse + specular) * attenuation;
-			}
-			else { 
-				//combine results
-				vec3 ambient = Lights[light].ambient * vec3(diffTex);
-				vec3 diffuse = Lights[light].diffuse * diff * vec3(diffTex);
-				vec3 specular = Lights[light].specular * spec * vec3(specTex);
-				result += (ambient + diffuse + specular) * attenuation;
-			}
+		if(Lights[i].isLocal){
+			//vec3 eyespaceLightPos =  (mvMat * vec4(Lights[i].position, 1)).xyz;
+			lightDir = Lights[i].position - vertPos;
+			distance = length(lightDir);
+			distance2 = distance * distance;
+			lightDir = normalize(lightDir);
 		}
-		else { 
-			// directional
-			vec3 lightDir = normalize(-Lights[light].direction);
-			//diffuse shading
-			float diff = max(dot(norm, lightDir), 0.0); 
-			//speculat shading
-			vec3 reflectDir = reflect(-lightDir, norm);
-			float spec = pow(max(dot(viewDir, reflectDir), 0.0), Shininess);
-			//combine results
-			result += Lights[light].ambient * vec3(diffTex);
-			result += Lights[light].diffuse * diff * vec3(diffTex);
-			result += Lights[light].specular * spec * vec3(specTex);
-		}
+		else
+			lightDir = Lights[i].direction;
 
 		
+		float lambertian = max(dot(lightDir, normal), 0.0);
+		float specular = 0.0;
+
+		if(lambertian > 0.0) {
+
+			vec3 viewDir = normalize(eyePos - vertPos);
+			//blinn phong
+			vec3 halfDir = normalize(lightDir + viewDir);
+			float specAngle = max(dot(normal, halfDir), 0.0);
+			specular = pow(specAngle, shininess);
+		}
+		float attenuation = 1.0;
+
+		if(Lights[i].isLocal)
+			attenuation = 1.0 / 
+					(Lights[i].constantAttenuation + 
+					Lights[i].linearAttenuation * distance + 
+					Lights[i].quadraticAttenuation * distance2);
+
+		if(Lights[i].isSpot){
+			float lightAngle = acos(dot(Lights[i].position, normalize(Lights[i].direction)));
+			if(lightAngle > Lights[i].spotCutoff)
+				attenuation = 0.0;
+		}
+					
+		vec3 colorLinear = ambientColor + diffuseColor * lambertian * Lights[i].diffuse * attenuation 
+			+ specColor * specular * Lights[i].diffuse * attenuation;
+
+		resultingColor += colorLinear;
 	}
-	
-	FragColor = vec4(result, diffTex.a);
+
+	fragColor = vec4(resultingColor, texture(texture_diffuse1, texCoords).a);
+
+////////////////////
 }

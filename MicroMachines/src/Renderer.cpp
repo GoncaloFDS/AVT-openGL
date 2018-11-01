@@ -19,7 +19,7 @@ Renderer::Renderer() {
 	printf("GLSL: %s\n", glGetString(GL_SHADING_LANGUAGE_VERSION));
 
 	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glEnable(GL_STENCIL_TEST));
+	//GLCall(glEnable(GL_STENCIL_TEST));
 	GLCall(glDepthFunc(GL_LEQUAL));
 	GLCall(glDepthMask(GL_TRUE));
 	GLCall(glDepthRange(0.0, 1.0));
@@ -29,8 +29,8 @@ Renderer::Renderer() {
 	GLCall(glFrontFace(GL_CCW));
 	GLCall(glEnable(GL_BLEND));
 	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-	GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
-	GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
+	//GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
+	//GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
 
 	SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 	
