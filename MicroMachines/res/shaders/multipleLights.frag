@@ -58,10 +58,10 @@ void main(){
 			lightDir = Lights[i].direction;
 
 		
-		float lambertian = max(dot(lightDir, normal), 0.0);
+		float diffuse = max(dot(lightDir, normal), 0.0);
 		float specular = 0.0;
 
-		if(lambertian > 0.0) {
+		if(diffuse > 0.0) {
 
 			vec3 viewDir = normalize(eyePos - vertPos);
 			//blinn phong
@@ -78,12 +78,15 @@ void main(){
 					Lights[i].quadraticAttenuation * distance2);
 
 		if(Lights[i].isSpot){
-			float lightAngle = acos(dot(Lights[i].position, normalize(Lights[i].direction)));
-			if(lightAngle > Lights[i].spotCutoff)
-				attenuation = 0.0;
+			float theta = dot(lightDir, normalize(-Lights[i].direction));
+			float epsilon = Lights[i].spotCutoff - Lights[i].spotOutterCutOff;
+			float intensity = clamp((theta - Lights[i].spotOutterCutOff) / epsilon, 0.0, 1.0);
+			diffuse *= intensity;
+			specular *= intensity;
+			
 		}
 					
-		vec3 colorLinear = ambientColor + diffuseColor * lambertian * Lights[i].diffuse * attenuation 
+		vec3 colorLinear = ambientColor + diffuseColor * diffuse * Lights[i].diffuse * attenuation 
 			+ specColor * specular * Lights[i].diffuse * attenuation;
 
 		resultingColor += colorLinear;

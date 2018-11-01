@@ -218,8 +218,8 @@ int main(int argc, char* argv[]) {
 	DirectionalLight sunLight(glm::vec3(1, 1, 0));
 	lights.push_back(&sunLight);
 	SpotLight spotLightL, spotLightR;
-	spotLightL.transform.position = glm::vec3(-2.f, 0, 10);
-	spotLightR.transform.position = glm::vec3(2.f, 0, 10);
+	spotLightL.transform.position = glm::vec3(-2.f, 0, 5);
+	spotLightR.transform.position = glm::vec3(2.f, 0, 5);
 	car.AddChildNode(&spotLightL);
 	car.AddChildNode(&spotLightR);
 	lights.push_back(&spotLightL);
