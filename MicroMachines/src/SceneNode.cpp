@@ -111,3 +111,11 @@ void SceneNode::AddChildNode(SceneNode* node) {
 CollisionData SceneNode::CheckCollision(SceneNode& other) {
 	return m_AABB.CheckCollision(other.GetAABB());
 }
+
+void SceneNode::LookAt(SceneNode target) {
+	glm::vec3 dir = target.transform.position - transform.position;
+	dir.y = 0;
+	dir = glm::normalize(dir);
+	glm::quat rot = glm::quatLookAt(dir, glm::vec3(0, 1, 0));
+	transform.rotation = rot * m_DefaultRotation;
+}

@@ -153,6 +153,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\cameras\DebugCamera.cpp" />
+    <ClCompile Include="src\gameobjects\Billboard.cpp" />
     <ClCompile Include="src\gameobjects\Butter.cpp" />
     <ClCompile Include="src\cameras\FollowCamera.cpp" />
     <ClCompile Include="src\gameobjects\Cheerio.cpp" />
@@ -189,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cameras\DebugCamera.h" />
+    <ClInclude Include="src\gameobjects\Billboard.h" />
     <ClInclude Include="src\gameobjects\Butter.h" />
     <ClInclude Include="src\cameras\FollowCamera.h" />
     <ClInclude Include="src\gameobjects\Cheerio.h" />

@@ -8,6 +8,7 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.h"
 
+#include "glm/ext/scalar_constants.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/mat4x4.hpp>  
 #include <glm/vec3.hpp>    
@@ -33,7 +34,7 @@
 #include "gameobjects/Car.h"
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
-#include "glm/ext/scalar_constants.hpp"
+#include "gameobjects/Billboard.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -168,13 +169,12 @@ int main(int argc, char* argv[]) {
 	Model hpHUD("res/models/hud/heart.obj");
 	Model gameoverHUD("res/models/hud/gameover.obj");
 
-	SceneNode lamp;
-	Model lampModel("res/models/lamp/lamp.obj");
-	lamp.SetModel(lampModel);
-	lamp.SetShader(basicShader);
-	lamp.transform.scale = glm::vec3(25.f);
-	lamp.transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0));
-	sceneGraph.AddNode(&lamp);
+	//auto* lamp = new SceneNode();
+	//lamp->SetModel(lampModel);
+	//lamp->SetShader(basicShader);
+	//lamp->transform.scale = glm::vec3(25.f);
+	//lamp->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0));
+	//sceneGraph.AddNode(lamp);
 
 	Model cheerioModel("res/models/goodcheerio/cheerio.obj");
 	int cheerioCount = 30;
@@ -208,6 +208,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::vector<Light*> lights;
+	Model lampModel("res/models/lamp/lamp.obj");
 	increment = 360.f / 6.f;
 	for (int i = 0; i < 6; i++) {
 		float angle = increment * i;
@@ -217,6 +218,12 @@ int main(int argc, char* argv[]) {
 		auto pointLight = new PointLight();
 		pointLight->transform.position = glm::vec3(x, 30, z);
 		lights.push_back(pointLight);
+
+		auto* lamp = new Billboard(glm::vec3(x*1.1f, 5, z*1.1f), &followCamera);
+		lamp->SetModel(lampModel);
+		lamp->SetShader(basicShader);
+		colliders.push_back(lamp);
+		sceneGraph.AddNode(lamp);
 	}
 
 	DirectionalLight sunLight(glm::vec3(1, 1, 0));
@@ -242,14 +249,11 @@ int main(int argc, char* argv[]) {
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	while (!window.ShouldClose()) {
 		Timer::Tick();
-		points += Timer::deltaTime;
-		glEnable(GL_DEPTH_TEST);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 		renderer.Clear();
 		window.PollEvents();
-
 		ImGui_ImplGlfwGL3_NewFrame();
 
+		points += Timer::deltaTime;
 		//Input Control
 		if (window.WasResized()) {
 			followCamera.SetAspectRatio(window.GetAspectRatio());
@@ -321,7 +325,7 @@ int main(int argc, char* argv[]) {
 				node->OnCollision(car);
 			}
 		}
-
+		//lamp->LookAt(car);
 
 		//Render Scene
 		

@@ -117,6 +117,9 @@
     <ClCompile Include="src\opengl\vertexBufflerLayout.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\gameobjects\Billboard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\external\glm\detail\_features.hpp">
@@ -942,6 +945,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cameras\DebugCamera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameobjects\Billboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

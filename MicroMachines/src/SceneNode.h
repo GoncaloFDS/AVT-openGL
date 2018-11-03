@@ -36,6 +36,7 @@ protected:
 	glm::vec3 m_Up;
 	glm::vec3 m_WorldUp;
 
+	glm::quat m_DefaultRotation = glm::quat(1, 0, 0, 0);
 
 public:
 	SceneNode();
@@ -46,6 +47,7 @@ public:
 	virtual void OnCollision(SceneNode& other);
 	virtual void BindTextures(Shader& shader);
 	CollisionData CheckCollision(SceneNode& other);
+	void LookAt(SceneNode target);
 
 	void SetShader(Shader& shader, bool propagate = false);
 	void SetModel(Model& model);
