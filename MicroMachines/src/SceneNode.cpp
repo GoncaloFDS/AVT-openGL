@@ -1,7 +1,7 @@
 #include "SceneNode.h"
 #include "Shader.h"
 #include "Model.h"
-#include "Camera.h"
+#include "cameras/Camera.h"
 #include "AABB.h"
 
 SceneNode::SceneNode() {
@@ -63,8 +63,12 @@ void SceneNode::BindTextures(Shader& shader) {
 		m_Model->BindTextures(shader);
 }
 
-void SceneNode::SetShader(Shader& shader) {
+void SceneNode::SetShader(Shader& shader, bool propagate) {
 	m_Shader = &shader;
+	if (propagate) {
+		for (auto child : m_ChildNodes)
+			child->SetShader(shader, true);
+	}
 }
 
 void SceneNode::SetModel(Model& model) {
@@ -83,6 +87,21 @@ bool SceneNode::GetEnabled() {
 
 AABB& SceneNode::GetAABB() {
 	return m_AABB;
+}
+
+
+glm::vec3 SceneNode::GetForwardVector() {
+	return m_Forward;
+}
+
+
+glm::vec3 SceneNode::GetRightVector() {
+	return m_Right;
+}
+
+
+glm::vec3 SceneNode::GetUpVector() {
+	return m_Up;
 }
 
 void SceneNode::AddChildNode(SceneNode* node) {

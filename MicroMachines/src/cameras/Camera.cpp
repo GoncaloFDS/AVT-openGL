@@ -16,7 +16,7 @@ Camera::Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up)
 	transform.position = startingPosition;
 	m_WorldUp = up;
 
-	LookAt(center);
+	m_ViewMatrix = glm::lookAt(transform.position, center, m_WorldUp);
 	m_Forward = glm::normalize(center - transform.position);
 	m_Right = glm::normalize(glm::cross(m_Forward, m_WorldUp));
 	m_Up = glm::cross(m_Right, m_Forward);
@@ -38,8 +38,8 @@ void Camera::OnUpdate(SceneNode& parent) {
 		node->OnUpdate(parent); //skip the camera
 }
 
-void Camera::LookAt(glm::vec3 center) {
-	m_ViewMatrix = glm::lookAt(transform.position, center, m_WorldUp);
+void Camera::LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
+	m_ViewMatrix = glm::lookAt(eye, center, up);
 }
 
 void Camera::SetAspectRatio(float aspectRatio) {

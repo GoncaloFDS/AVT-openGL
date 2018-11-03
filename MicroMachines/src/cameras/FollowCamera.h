@@ -6,6 +6,5 @@ public:
 	~FollowCamera();
 
 	virtual void OnUpdate(SceneNode& parent) override;
-
 };
 

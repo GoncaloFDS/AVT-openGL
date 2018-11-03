@@ -50,7 +50,7 @@ void Car::SetWheelsModel(Model& wheelModel) {
 }
 
 void Car::SetWheelsShader(Shader& shader) {
-	wheelRF.SetShader(shader);	
+	wheelRF.SetShader(shader);
 	wheelLF.SetShader(shader);
 	wheelRB.SetShader(shader);
 	wheelLB.SetShader(shader);

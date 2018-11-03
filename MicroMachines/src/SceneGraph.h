@@ -3,7 +3,7 @@
 #include <vector>
 #include <map>
 
-#include "Camera.h"
+#include "cameras/Camera.h"
 #include "SceneNode.h"
 #include "shader.h"
 

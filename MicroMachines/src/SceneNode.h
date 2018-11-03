@@ -22,7 +22,6 @@ class SceneNode {
 public:
 	Transform transform;
 	glm::mat4 m_WorldMatrix;
-	glm::vec3 m_Forward;
 
 protected:
 	std::vector<SceneNode*> m_ChildNodes;
@@ -31,6 +30,11 @@ protected:
 	Model* m_Model;
 	Shader* m_Shader;
 	AABB m_AABB;
+
+	glm::vec3 m_Forward;
+	glm::vec3 m_Right;
+	glm::vec3 m_Up;
+	glm::vec3 m_WorldUp;
 
 
 public:
@@ -43,11 +47,15 @@ public:
 	virtual void BindTextures(Shader& shader);
 	CollisionData CheckCollision(SceneNode& other);
 
-	void SetShader(Shader& shader);
+	void SetShader(Shader& shader, bool propagate = false);
 	void SetModel(Model& model);
 	void SetEnabled(bool b);
 	bool GetEnabled();
 	AABB& GetAABB();
+
+	glm::vec3 GetForwardVector(); 
+	glm::vec3 GetRightVector();
+	glm::vec3 GetUpVector();
 
 	void AddChildNode(SceneNode* node);
 };

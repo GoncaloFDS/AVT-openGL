@@ -13,10 +13,8 @@
 #include <glm/vec3.hpp>    
 #include <glm/vec4.hpp>
 
-#include "Camera.h"
 #include "Common.h"
 #include "DirectionalLight.h"
-#include "FollowCamera.h"
 #include "InputBind.h"
 #include "InputHandler.h"
 #include "Model.h"
@@ -28,6 +26,9 @@
 #include "TextRenderer.h"
 #include "Timer.h"
 #include "Window.h"
+#include "cameras/Camera.h"
+#include "cameras/FollowCamera.h"
+#include "cameras/DebugCamera.h"
 #include "gameobjects/Butter.h"
 #include "gameobjects/Car.h"
 #include "gameobjects/Cheerio.h"
@@ -56,7 +57,7 @@ int main(int argc, char* argv[]) {
 	InputHandler inputHandler;
 	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
-	InputBind key0, key1, key2, key3, keyP, keyC, keyN, keyH, keyR;
+	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR;
 
 	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
@@ -74,6 +75,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_1, key1);
 	inputHandler.AddKeyControl(GLFW_KEY_2, key2);
 	inputHandler.AddKeyControl(GLFW_KEY_3, key3);
+	inputHandler.AddKeyControl(GLFW_KEY_ESCAPE, keyESC);
 	inputHandler.AddKeyControl(GLFW_KEY_C, keyC);
 	inputHandler.AddKeyControl(GLFW_KEY_H, keyH);
 	inputHandler.AddKeyControl(GLFW_KEY_N, keyN);
@@ -93,6 +95,7 @@ int main(int argc, char* argv[]) {
 	Camera HUDCamera(glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 	HUDCamera.SetAspectRatio(window.GetAspectRatio());
 	HUDCamera.SetProjectionType(Projection::Orthographic);
+	DebugCamera debugCamera(glm::vec3(0.0f, 30.0f, -60.f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
 	sceneGraph.SetCamera(followCamera);
 	Shader basicShader("res/shaders/multipleLights");
@@ -147,6 +150,7 @@ int main(int argc, char* argv[]) {
 	sceneGraph.AddNode(&car);
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
+	sceneGraph.AddNode(&debugCamera);
 	glm::vec3 position(0.f);
 	glm::vec3 scalea(15.f);
 
@@ -251,6 +255,7 @@ int main(int argc, char* argv[]) {
 			followCamera.SetAspectRatio(window.GetAspectRatio());
 			orthoCamera.SetAspectRatio(window.GetAspectRatio());
 			topViewCamera.SetAspectRatio(window.GetAspectRatio());
+			debugCamera.SetAspectRatio(window.GetAspectRatio());
 			HUDCamera.SetAspectRatio(window.GetAspectRatio());
 			Text->Resize(window.GetWidth(), window.GetHeight());
 		}
@@ -264,6 +269,11 @@ int main(int argc, char* argv[]) {
 		}
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
+			currentCamera = sceneGraph.GetCamera();
+		}		
+		if (keyESC.isPressed()) {
+			debugCamera.DetachFrom(*currentCamera);
+			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
 		}
 		if (key0.isPressed()) {

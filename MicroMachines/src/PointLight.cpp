@@ -1,6 +1,6 @@
 #include "PointLight.h"
 #include "Shader.h"
-#include "Camera.h"
+#include "cameras/Camera.h"
 #include <string> 
 
 

@@ -16,10 +16,6 @@ protected:
 	glm::mat4 m_ProjMatrix;
 	glm::mat4 m_ViewMatrix;
 
-	//glm::vec3 m_Forward;
-	glm::vec3 m_Right;
-	glm::vec3 m_Up;
-	glm::vec3 m_WorldUp;
 	glm::mat4 m_ForwardOffset;
 
 	float m_AspectRatio;
@@ -35,12 +31,12 @@ public:
 
 	virtual void OnUpdate(SceneNode& parent) override;
 
-	void LookAt(glm::vec3 center);
+	void LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 	void SetAspectRatio(float aspectRatio);
 
 
 	void SetProjectionType(Projection projection);
-	void Translate(Direction dir, float amount);
+	virtual void Translate(Direction dir, float amount);
 
 
 	glm::mat4 GetViewProjMatrix();
@@ -48,7 +44,7 @@ public:
 	glm::mat4 GetProjMatrix();
 	glm::vec3 GetPosition();
 
-	void ProcessMouseMovement(float deltaX, float deltaY);
+	virtual void ProcessMouseMovement(float deltaX, float deltaY);
 
 private:
 	void CalculateProjectionMatrix(float aspectRatio);
