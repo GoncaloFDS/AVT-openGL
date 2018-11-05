@@ -31,7 +31,7 @@ void SpotLight::SetupShader(Shader& shader) {
 	//shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position", m_WorldMatrix * glm::vec4(transform.position, 1));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].direction", m_WorldMatrix * glm::vec4(m_Forward, 0));
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 2.0f);
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 0.3f);
 	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].linearAttenuation", 0.0001f);
 	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].quadraticAttenuation", 0.00002f);
 	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].spotCutoff", glm::cos(glm::radians(10.5f)));

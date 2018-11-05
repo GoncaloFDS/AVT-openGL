@@ -32,7 +32,7 @@ Renderer::Renderer() {
 	//GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xFF));
 	//GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
 
-	SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+	SetClearColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
 	
 }
 

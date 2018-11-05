@@ -27,6 +27,7 @@ uniform sampler2D texture_specular1;
 
 uniform float shininess = 128;
 uniform vec3 eyePos;
+uniform bool fogIsEnabled = true;
 
 in vec3 normalInterp;
 in vec3 vertPos;
@@ -49,10 +50,14 @@ void main(){
 		discard;
 
 	//Fog
-	float distanceEF = length(vertPos - eyePos);
-	float scattering = exp(-distanceEF * 0.004);
-	float extinction = exp(-distanceEF * 0.01);
-
+	float distanceEF;
+	float scattering = 1;
+	float extinction = 1;
+	if(fogIsEnabled) {
+		distanceEF = length(vertPos - eyePos);
+		scattering = exp(-distanceEF * 0.004);
+		extinction = exp(-distanceEF * 0.01);
+	}
 	for(int i = 0; i < MaxLights; i++){
 		if(!Lights[i].isEnabled)
 			continue;

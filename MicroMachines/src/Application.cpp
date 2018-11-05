@@ -40,6 +40,7 @@ extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x0000000
 
 bool debug_mode = false;
 bool gameover = false;
+bool fogIsEnabled = true;
 float points = 0;
 
 int main(int argc, char* argv[]) {
@@ -58,7 +59,7 @@ int main(int argc, char* argv[]) {
 	InputHandler inputHandler;
 	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
-	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR;
+	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR, keyF;
 
 	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
@@ -82,6 +83,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_N, keyN);
 	inputHandler.AddKeyControl(GLFW_KEY_P, keyP);
 	inputHandler.AddKeyControl(GLFW_KEY_R, keyR);
+	inputHandler.AddKeyControl(GLFW_KEY_F, keyF);
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
@@ -290,6 +292,12 @@ int main(int argc, char* argv[]) {
 			for (int i = 0; i < 6; i++)
 				lights[i]->ToogleLight();
 		}
+		if (keyF.isPressed()) {
+			fogIsEnabled = !fogIsEnabled;
+			basicShader.Bind();
+			basicShader.SetUniform1i("fogIsEnabled", fogIsEnabled);
+			basicShader.Unbind();
+		}
 		if (keyN.isPressed()) {
 			sunLight.ToogleLight();
 		}
@@ -370,7 +378,7 @@ int main(int argc, char* argv[]) {
 			gameover = true;
 
 		}
-		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.8f + pos.x, 20 + pos.y, 1.0f);
+		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f + pos.x, 20 + pos.y, 1.0f);
 
 		if (debug_mode) {
 			ImGui::Begin("Debug Window", &debug_mode);
