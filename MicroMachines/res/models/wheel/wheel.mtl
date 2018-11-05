@@ -21,6 +21,6 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-disp wheel_dis.png
-map_Bump wheel_dis.png
+#disp wheel_dis.png
+#map_Bump wheel_dis.png
 map_Kd wheel_dif.png

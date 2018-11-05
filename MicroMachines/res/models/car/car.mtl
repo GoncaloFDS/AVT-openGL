@@ -10,8 +10,8 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-disp default_Normal_DirectX.png
-map_Bump default_Normal_DirectX.png
+#disp default_Normal_DirectX.png
+#map_Bump default_Normal_DirectX.png
 map_Kd default_Base_Color.png
-map_Ks default_Metallic.png
-map_Ns default_Metallic.png
+#map_Ks default_Metallic.png
+#map_Ns default_Metallic.png

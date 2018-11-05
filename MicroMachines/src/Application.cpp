@@ -105,24 +105,24 @@ int main(int argc, char* argv[]) {
 	Shader hudShader("res/shaders/hud");
 
 	SceneNode table;
-	Model tableModel("res/models/mTable/table.obj");
+	Model tableModel("res/models/Table/table.obj");
 	table.SetModel(tableModel);
 	//table.SetShader(tableShader);
 	table.SetShader(basicShader);
 	table.transform.scale = glm::vec3(5);
 
 	Car car;
-	Model carModel("res/models/car/car.obj");
+	Model carModel("res/models/Car/car.obj");
 	car.SetShader(basicShader);
 	car.SetModel(carModel);
 	car.AddChildNode(&followCamera);
 	car.transform.position = glm::vec3(200, 0, 0);
 	car.SetWheelsShader(basicShader);
-	Model wheelModel("res/models/wheel/wheel.obj");
+	Model wheelModel("res/models/Wheel/wheel.obj");
 	car.SetWheelsModel(wheelModel);
 
 	auto butter = new Butter();
-	Model butterModel("res/models/butter/butter.obj");
+	Model butterModel("res/models/Butter/butter.obj");
 	butter->SetModel(butterModel);
 	butter->SetShader(basicShader);
 	butter->transform.position = glm::vec3(200, 0, 50);
@@ -156,7 +156,7 @@ int main(int argc, char* argv[]) {
 	glm::vec3 scalea(15.f);
 
 
-	Model orangeModel("res/models/goodorange/orange.obj");
+	Model orangeModel("res/models/Orange/orange.obj");
 	for (int i = 0; i < 10; i++) {
 		auto orange = new Orange();
 		orange->SetShader(basicShader);
@@ -166,8 +166,8 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	Model hpHUD("res/models/hud/heart.obj");
-	Model gameoverHUD("res/models/hud/gameover.obj");
+	Model hpHUD("res/models/HUD/heart.obj");
+	Model gameoverHUD("res/models/HUD/gameover.obj");
 
 	//auto* lamp = new SceneNode();
 	//lamp->SetModel(lampModel);
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
 	//lamp->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0));
 	//sceneGraph.AddNode(lamp);
 
-	Model cheerioModel("res/models/goodcheerio/cheerio.obj");
+	Model cheerioModel("res/models/Cheerio/cheerio.obj");
 	int cheerioCount = 30;
 	float increment = 360.f / cheerioCount;
 	for (int i = 0; i < cheerioCount; i++) {
@@ -208,7 +208,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::vector<Light*> lights;
-	Model lampModel("res/models/lamp/lamp.obj");
+	Model lampModel("res/models/Lamp/lamp.obj");
 	increment = 360.f / 6.f;
 	for (int i = 0; i < 6; i++) {
 		float angle = increment * i;
@@ -219,7 +219,7 @@ int main(int argc, char* argv[]) {
 		pointLight->transform.position = glm::vec3(x, 30, z);
 		lights.push_back(pointLight);
 
-		auto* lamp = new Billboard(glm::vec3(x*1.1f, 5, z*1.1f), &followCamera);
+		auto* lamp = new Billboard(glm::vec3(x*1.1f, 15, z*1.1f), &followCamera);
 		lamp->SetModel(lampModel);
 		lamp->SetShader(basicShader);
 		colliders.push_back(lamp);

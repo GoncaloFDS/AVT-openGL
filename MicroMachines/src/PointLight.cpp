@@ -27,7 +27,7 @@ void PointLight::SetupShader(Shader& shader) {
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
 	//shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].specular", glm::vec3(1.0f, 1.0f, 1.0f));
 	shader.SetUniform3fv("Lights[" + std::to_string(ID) + "].position", transform.position);
-	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 0.02f);
+	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].constantAttenuation", 0.1f);
 	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].linearAttenuation", 0.01f);
 	shader.SetUniform1f("Lights[" + std::to_string(ID) + "].quadraticAttenuation", 0.001f);
 	shader.Unbind();

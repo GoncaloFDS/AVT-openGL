@@ -24,7 +24,7 @@ uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_normal1;
 uniform sampler2D texture_specular1;
 
-uniform float shininess = 16;
+uniform float shininess = 128;
 uniform vec3 eyePos;
 
 in vec3 normalInterp;
@@ -35,13 +35,17 @@ out vec4 fragColor;
 
 void main(){
 	vec3 normal = normalize(normalInterp);
-	vec3 ambientColor = vec3(0.0, 0.0, 0.0);
-	vec3 diffuseColor = texture(texture_diffuse1, texCoords).xyz;
+	//vec3 normal = texture(texture_normal1, texCoords).xyz;
+	vec4 diffuseColor = texture(texture_diffuse1, texCoords);
+	vec3 ambientColor = diffuseColor.xyz * 0.01;
 	vec3 specColor = vec3(1.0, 1.0, 1.0);
 	vec3 lightDir;
 	float distance = 1;
 	float distance2 = 1;
 	vec3 resultingColor = vec3(0.0, 0.0, 0.0);
+
+	if(diffuseColor.a == 0)
+		discard;
 
 	for(int i = 0; i < MaxLights; i++){
 		if(!Lights[i].isEnabled)
@@ -86,8 +90,9 @@ void main(){
 			
 		}
 					
-		vec3 colorLinear = ambientColor + diffuseColor * diffuse * Lights[i].diffuse * attenuation 
-			+ specColor * specular * Lights[i].diffuse * attenuation;
+		vec3 colorLinear = ambientColor + 
+			diffuseColor.xyz * diffuse * Lights[i].diffuse * attenuation +
+			specColor * specular * Lights[i].diffuse * attenuation * 0.2;
 
 		resultingColor += colorLinear;
 	}
