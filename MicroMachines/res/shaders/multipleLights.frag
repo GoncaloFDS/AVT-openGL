@@ -16,6 +16,7 @@ struct LightProperties {
 	float quadraticAttenuation;
 };
 
+const vec3 fogColor = vec3(0.5, 0.5, 0.5);
 const int MaxLights = 10;
 uniform LightProperties Lights[MaxLights];
 
@@ -46,6 +47,11 @@ void main(){
 
 	if(diffuseColor.a == 0)
 		discard;
+
+	//Fog
+	float distanceEF = length(vertPos - eyePos);
+	float scattering = exp(-distanceEF * 0.004);
+	float extinction = exp(-distanceEF * 0.01);
 
 	for(int i = 0; i < MaxLights; i++){
 		if(!Lights[i].isEnabled)
@@ -97,6 +103,8 @@ void main(){
 		resultingColor += colorLinear;
 	}
 
+	resultingColor = resultingColor * extinction + fogColor * (1 - scattering); 
+	
 	fragColor = vec4(resultingColor, texture(texture_diffuse1, texCoords).a);
 
 ////////////////////

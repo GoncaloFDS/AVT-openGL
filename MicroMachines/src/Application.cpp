@@ -329,31 +329,28 @@ int main(int argc, char* argv[]) {
 
 		//Render Scene
 		
-// 		glStencilMask(0x00);
-// 		
-// 		car.SetEnabled(false);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_STENCIL_TEST);
+
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+		glStencilMask(0xFF);
+		car.SetEnabled(false);
 		sceneGraph.OnRender();
-		
-// 		// 1st. render pass, draw objects as normal, writing to the stencil buffer
-// 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-// 		glStencilMask(0xFF);
-// 		car.SetEnabled(true);
-// 		car.SetShader(basicShader);
-// 		car.OnRender(*currentCamera);
-// 
-// 		// 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
-// 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-// 		glStencilMask(0x00);
-// 		glDisable(GL_DEPTH_TEST);
-// 		car.SetShader(singleColorShader);
-// 		//scale *= 1.1f;
-// 		car.transform.scale *= 20.1f;
-// 		car.OnRender(*currentCamera);
-// 		
-// 		car.transform.scale /= 20.1f;
-// 	
-// 		glStencilMask(0xFF);
-// 		glEnable(GL_DEPTH_TEST);
+
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
+		car.SetEnabled(true);
+		car.SetShader(basicShader);
+		car.OnRender(*currentCamera);
+
+		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		//glStencilMask(0x00);
+		//glDisable(GL_DEPTH_TEST);
+		//car.SetShader(singleColorShader);
+		//car.transform.scale *= 1.2;
+		//car.OnRender(*currentCamera);
+		//glStencilMask(0xFF);
+		//glEnable(GL_DEPTH_TEST);
 
 		//update HUD
 		hudShader.Bind();
