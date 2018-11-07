@@ -21,7 +21,7 @@ public:
 	~Car();
 
 	glm::vec3 GetRightVector();
-	void SetWheelsModel(Model& model);
+	void SetWheelsModel(Model& wheel1, Model& wheel2, Model& wheel3, Model& wheel4);
 	void SetWheelsShader(Shader& shader);
 	float GetSpeed();
 	int GetHP();

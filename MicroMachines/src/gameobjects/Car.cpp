@@ -23,29 +23,19 @@ glm::vec3 Car::GetRightVector() {
 	return m_Right;
 }
 
-void Car::SetWheelsModel(Model& wheelModel) {
+void Car::SetWheelsModel(Model& wheel1, Model& wheel2, Model& wheel3, Model& wheel4) {
 	
 	//Right Front
-	wheelRF.SetModel(wheelModel);
-	wheelRF.transform.position = glm::vec3(-3.f, -1, 4);
-	wheelRF.transform.scale = glm::vec3(0.8f, 0.5f, 0.5f);
+	wheelRF.SetModel(wheel1);
 	AddChildNode(&wheelRF);
 	//Left Front
-	wheelLF.SetModel(wheelModel);
-	wheelLF.transform.position = glm::vec3(3.f, -1, 4);
-	wheelLF.transform.scale = glm::vec3(0.8f, 0.5f, 0.5f);
-	wheelLF.transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0));
+	wheelLF.SetModel(wheel2);
 	AddChildNode(&wheelLF);
 	//Right Back
-	wheelRB.SetModel(wheelModel);
-	wheelRB.transform.position = glm::vec3(-3.f, -1, -4);
-	wheelRB.transform.scale = glm::vec3(0.8f, 0.5f, 0.5f);
+	wheelRB.SetModel(wheel3);
 	AddChildNode(&wheelRB);
 	//LeftBack
-	wheelLB.SetModel(wheelModel);
-	wheelLB.transform.position = glm::vec3(3.f, -1, -4);
-	wheelLB.transform.scale = glm::vec3(0.8f, 0.5f, 0.5f);
-	wheelLB.transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0));
+	wheelLB.SetModel(wheel4);
 	AddChildNode(&wheelLB);
 }
 

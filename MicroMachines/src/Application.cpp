@@ -114,14 +114,19 @@ int main(int argc, char* argv[]) {
 	table.transform.scale = glm::vec3(5);
 
 	Car car;
-	Model carModel("res/models/Car/car.obj");
+	Model carModel("res/models/Lamborginhi/Body.obj");
 	car.SetShader(basicShader);
 	car.SetModel(carModel);
 	car.AddChildNode(&followCamera);
-	car.transform.position = glm::vec3(200, 0, 0);
+	car.transform.position = glm::vec3(200, -3, 0);
+	float carscale = 0.04;
+	car.transform.scale = glm::vec3(carscale);
 	car.SetWheelsShader(basicShader);
-	Model wheelModel("res/models/Wheel/wheel.obj");
-	car.SetWheelsModel(wheelModel);
+	Model wheel1("res/models/Lamborginhi/tire1.obj");
+	Model wheel2("res/models/Lamborginhi/tire2.obj");
+	Model wheel3("res/models/Lamborginhi/tire3.obj");
+	Model wheel4("res/models/Lamborginhi/tire4.obj");
+	car.SetWheelsModel(wheel1, wheel2, wheel3, wheel4);
 
 	auto butter = new Butter();
 	Model butterModel("res/models/Butter/butter.obj");
@@ -350,6 +355,7 @@ int main(int argc, char* argv[]) {
 		car.SetEnabled(true);
 		car.SetShader(basicShader);
 		car.OnRender(*currentCamera);
+		car.transform.scale = glm::vec3(carscale);
 
 		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		//glStencilMask(0x00);
@@ -384,7 +390,7 @@ int main(int argc, char* argv[]) {
 			ImGui::Begin("Debug Window", &debug_mode);
 			//ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
 			ImGui::DragFloat3("Position", &position[0], 1, -1000, 10000);
-			ImGui::DragFloat3("Scale", &scalea[0], 1, -1000, 10000);
+			ImGui::DragFloat("Scale", &carscale, 0.01, 0, 1);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}
