@@ -19,3 +19,7 @@ void Billboard::OnCollision(SceneNode& other) {
 	car.Stop();
 }
 
+void Billboard::SetTarget(SceneNode* target) {
+	m_Target = target;
+}
+

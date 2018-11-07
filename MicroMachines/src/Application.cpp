@@ -118,15 +118,12 @@ int main(int argc, char* argv[]) {
 	car.SetShader(basicShader);
 	car.SetModel(carModel);
 	car.AddChildNode(&followCamera);
-	car.transform.position = glm::vec3(200, -3, 0);
-	float carscale = 0.04;
+	car.transform.position = glm::vec3(200, -4.45, 0);
+	float carscale = 0.04f;
 	car.transform.scale = glm::vec3(carscale);
 	car.SetWheelsShader(basicShader);
-	Model wheel1("res/models/Lamborginhi/tire1.obj");
-	Model wheel2("res/models/Lamborginhi/tire2.obj");
-	Model wheel3("res/models/Lamborginhi/tire3.obj");
-	Model wheel4("res/models/Lamborginhi/tire4.obj");
-	car.SetWheelsModel(wheel1, wheel2, wheel3, wheel4);
+	Model wheel("res/models/Lamborginhi/Wheel.obj");
+	car.SetWheelsModel(wheel);
 
 	auto butter = new Butter();
 	Model butterModel("res/models/Butter/butter.obj");
@@ -215,6 +212,7 @@ int main(int argc, char* argv[]) {
 	}
 
 	std::vector<Light*> lights;
+	std::vector<Billboard*> lamps;
 	Model lampModel("res/models/Lamp/lamp.obj");
 	increment = 360.f / 6.f;
 	for (int i = 0; i < 6; i++) {
@@ -230,6 +228,7 @@ int main(int argc, char* argv[]) {
 		lamp->SetModel(lampModel);
 		lamp->SetShader(basicShader);
 		colliders.push_back(lamp);
+		lamps.push_back(lamp);
 		sceneGraph.AddNode(lamp);
 	}
 
@@ -273,19 +272,27 @@ int main(int argc, char* argv[]) {
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
 			currentCamera = sceneGraph.GetCamera();
+			for (auto lamp : lamps)
+				lamp->SetTarget(currentCamera);
 		}
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
+			for (auto lamp : lamps)
+				lamp->SetTarget(currentCamera);
 		}
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
+			for (auto lamp : lamps)
+				lamp->SetTarget(currentCamera);
 		}		
 		if (keyESC.isPressed()) {
 			debugCamera.DetachFrom(*currentCamera);
 			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
+			for (auto lamp : lamps)
+				lamp->SetTarget(currentCamera);
 		}
 		if (key0.isPressed()) {
 			debug_mode = !debug_mode;
