@@ -23,19 +23,25 @@ glm::vec3 Car::GetRightVector() {
 	return m_Right;
 }
 
-void Car::SetWheelsModel(Model& wheel1, Model& wheel2, Model& wheel3, Model& wheel4) {
+void Car::SetWheelsModel(Model& wheel) {
 	
 	//Right Front
-	wheelRF.SetModel(wheel1);
+	wheelRF.SetModel(wheel);
+	wheelRF.transform.position = glm::vec3(-85.429, 34.599, 128.173);
+	wheelRF.transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0));
 	AddChildNode(&wheelRF);
 	//Left Front
-	wheelLF.SetModel(wheel2);
+	wheelLF.SetModel(wheel);
+	wheelLF.transform.position = glm::vec3(85.429, 34.599, 128.173);
 	AddChildNode(&wheelLF);
 	//Right Back
-	wheelRB.SetModel(wheel3);
+	wheelRB.SetModel(wheel);
+	wheelRB.transform.position = glm::vec3(-85.429, 36.416, -146.734);
+	wheelRB.transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0));
 	AddChildNode(&wheelRB);
 	//LeftBack
-	wheelLB.SetModel(wheel4);
+	wheelLB.SetModel(wheel);
+	wheelLB.transform.position = glm::vec3(85.429, 36.416, -146.734);
 	AddChildNode(&wheelLB);
 }
 

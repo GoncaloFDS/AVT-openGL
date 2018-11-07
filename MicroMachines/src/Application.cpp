@@ -118,15 +118,12 @@ int main(int argc, char* argv[]) {
 	car.SetShader(basicShader);
 	car.SetModel(carModel);
 	car.AddChildNode(&followCamera);
-	car.transform.position = glm::vec3(200, -3, 0);
-	float carscale = 0.04;
+	car.transform.position = glm::vec3(200, -4.45, 0);
+	float carscale = 0.04f;
 	car.transform.scale = glm::vec3(carscale);
 	car.SetWheelsShader(basicShader);
-	Model wheel1("res/models/Lamborginhi/tire1.obj");
-	Model wheel2("res/models/Lamborginhi/tire2.obj");
-	Model wheel3("res/models/Lamborginhi/tire3.obj");
-	Model wheel4("res/models/Lamborginhi/tire4.obj");
-	car.SetWheelsModel(wheel1, wheel2, wheel3, wheel4);
+	Model wheel("res/models/Lamborginhi/Wheel.obj");
+	car.SetWheelsModel(wheel);
 
 	auto butter = new Butter();
 	Model butterModel("res/models/Butter/butter.obj");
