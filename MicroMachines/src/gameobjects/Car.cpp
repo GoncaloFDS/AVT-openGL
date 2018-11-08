@@ -13,6 +13,8 @@ Car::Car()
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
 	m_AABB = AABB(glm::vec3(-8), glm::vec3(8));
 	m_HP = m_MaxHP = 3;
+	transform.position = glm::vec3(200.0f, -4.44f, 0.0f);
+	transform.scale = glm::vec3(0.04f);
 }
 
 Car::~Car() {
@@ -104,7 +106,7 @@ void Car::Turn(float amount) {
 }
 
 void Car::Reset() {
-	transform.position = glm::vec3(200, 0, 0);
+	transform.position = glm::vec3(200.0f, -4.44f, 0.0f);
 	transform.rotation = glm::quat();
 	m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);

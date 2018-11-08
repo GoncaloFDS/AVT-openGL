@@ -30,21 +30,10 @@ void SceneNode::OnRender(Camera& camera) {
 	if (m_Shader) {
 		m_Shader->Bind();
 		m_Shader->SetUniformMat4f("projection", camera.GetProjMatrix());
-
-		//auto modelview = camera.GetViewMatrix() * m_WorldMatrix;
 		m_Shader->SetUniformMat4f("view", camera.GetViewMatrix());
 		m_Shader->SetUniformMat4f("model", m_WorldMatrix);
+		m_Shader->SetUniformMat4f("normalMat", glm::transpose(glm::inverse(m_WorldMatrix)));
 		m_Shader->SetUniform3fv("eyePos", camera.GetPosition());
-
-		//auto mvpMat = camera.GetViewProjMatrix() * m_WorldMatrix;
-		//m_Shader->SetUniformMat4f("MVPMat", mvpMat);
-		//
-		//m_Shader->SetUniformMat4f("ModelMat", m_WorldMatrix);
-
-		auto normalMat = glm::transpose(glm::inverse(m_WorldMatrix));
-		m_Shader->SetUniformMat4f("normalMat", normalMat);
-
-		//m_Shader->SetUniform3fv("viewPos", camera.transform.position);
 
 	}
 	if (m_Model)

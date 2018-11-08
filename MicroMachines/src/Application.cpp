@@ -35,6 +35,7 @@
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
+#include "FrameBuffer.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -42,6 +43,11 @@ bool debug_mode = false;
 bool gameover = false;
 bool fogIsEnabled = true;
 float points = 0;
+
+float debugFloat = 0.0f;
+glm::vec3 debugVec3a(0);
+glm::vec3 debugVec3b(0);
+
 
 int main(int argc, char* argv[]) {
     Window window(1080, 720, "MicroMachines");
@@ -118,9 +124,6 @@ int main(int argc, char* argv[]) {
 	car.SetShader(basicShader);
 	car.SetModel(carModel);
 	car.AddChildNode(&followCamera);
-	car.transform.position = glm::vec3(200, -4.45, 0);
-	float carscale = 0.04f;
-	car.transform.scale = glm::vec3(carscale);
 	car.SetWheelsShader(basicShader);
 	Model wheel("res/models/Lamborginhi/Wheel.obj");
 	car.SetWheelsModel(wheel);
@@ -147,12 +150,20 @@ int main(int argc, char* argv[]) {
 	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
 	colliders.push_back(butter3);
 	
+	SceneNode portal;
+	Model portalModel("res/models/portal.obj");
+	Shader portalShader("res/shaders/portal");
+	portal.SetModel(portalModel);
+	portal.SetShader(portalShader);
+	portal.transform.scale = glm::vec3(25.0f);
+	portal.transform.rotation = glm::rotate(glm::mat4(1), -glm::half_pi<float>(), glm::vec3(1, 0, 0)) * glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 0, 1));
 
 	sceneGraph.AddNode(butter);
 	sceneGraph.AddNode(butter2);
 	sceneGraph.AddNode(butter3);
 	sceneGraph.AddNode(&table);
 	sceneGraph.AddNode(&car);
+	//sceneGraph.AddNode(&portal);
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
 	sceneGraph.AddNode(&debugCamera);
@@ -173,12 +184,6 @@ int main(int argc, char* argv[]) {
 	Model hpHUD("res/models/HUD/heart.obj");
 	Model gameoverHUD("res/models/HUD/gameover.obj");
 
-	//auto* lamp = new SceneNode();
-	//lamp->SetModel(lampModel);
-	//lamp->SetShader(basicShader);
-	//lamp->transform.scale = glm::vec3(25.f);
-	//lamp->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0));
-	//sceneGraph.AddNode(lamp);
 
 	Model cheerioModel("res/models/Cheerio/cheerio.obj");
 	int cheerioCount = 30;
@@ -235,8 +240,8 @@ int main(int argc, char* argv[]) {
 	DirectionalLight sunLight(glm::vec3(1, 1, 0));
 	lights.push_back(&sunLight);
 	SpotLight spotLightL, spotLightR;
-	spotLightL.transform.position = glm::vec3(-2.f, 0, 5);
-	spotLightR.transform.position = glm::vec3(2.f, 0, 5);
+	spotLightL.transform.position = glm::vec3(-35.0f, 30.0f, 85.0f);
+	spotLightR.transform.position = glm::vec3(35.0f, 30.0f, 85.0f);
 	car.AddChildNode(&spotLightL);
 	car.AddChildNode(&spotLightR);
 	lights.push_back(&spotLightL);
@@ -248,8 +253,22 @@ int main(int argc, char* argv[]) {
 	}
 	Timer::Start();
 	auto currentCamera = sceneGraph.GetCamera();
-	glm::vec2 pos(0, 0);
-	glm::vec3 scale(1.0f);
+
+	FrameBuffer portalFB;
+	Texture portalTexture(glm::vec2(window.GetWidth(), window.GetHeight()));
+	portalFB.Bind();
+	GLCall(glEnable(GL_DEPTH_TEST));
+	GLCall(glDepthFunc(GL_LEQUAL));
+	GLCall(glDepthMask(GL_TRUE));
+	GLCall(glDepthRange(0.0, 1.0));
+	GLCall(glClearDepth(1.0));
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_BACK));
+	GLCall(glFrontFace(GL_CCW));
+	GLCall(glEnable(GL_BLEND));
+	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+	portalFB.BindTexture(portalTexture);
+	portalFB.Unbind();
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// GameLoop
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -345,33 +364,20 @@ int main(int argc, char* argv[]) {
 				node->OnCollision(car);
 			}
 		}
-		//lamp->LookAt(car);
 
 		//Render Scene
-		
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_STENCIL_TEST);
+		portalFB.Bind();
+		renderer.Clear();
+		sceneGraph.OnRender();
+		portalFB.Unbind();
 
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
-		glStencilMask(0xFF);
-		car.SetEnabled(false);
 		sceneGraph.OnRender();
 
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
-		car.SetEnabled(true);
-		car.SetShader(basicShader);
-		car.OnRender(*currentCamera);
-		car.transform.scale = glm::vec3(carscale);
-
-		//glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		//glStencilMask(0x00);
-		//glDisable(GL_DEPTH_TEST);
-		//car.SetShader(singleColorShader);
-		//car.transform.scale *= 1.2;
-		//car.OnRender(*currentCamera);
-		//glStencilMask(0xFF);
-		//glEnable(GL_DEPTH_TEST);
+		portalShader.Bind();
+		portalTexture.Bind();
+		portalShader.SetUniform1i("rendered_texture", 0);
+		portal.OnUpdate(*sceneGraph.GetNode("Root"));
+		portal.OnRender(*currentCamera);
 
 		//update HUD
 		hudShader.Bind();
@@ -391,13 +397,13 @@ int main(int argc, char* argv[]) {
 			gameover = true;
 
 		}
-		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f + pos.x, 20 + pos.y, 1.0f);
+		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f, 20, 1.0f);
 
 		if (debug_mode) {
 			ImGui::Begin("Debug Window", &debug_mode);
-			//ImGui::DragFloat2("Position", &pos[0], 1, -1000, 10000);
-			ImGui::DragFloat3("Position", &position[0], 1, -1000, 10000);
-			ImGui::DragFloat("Scale", &carscale, 0.01, 0, 1);
+			ImGui::DragFloat3("debugVec3a", &debugVec3a[0], 1, -1000, 10000);
+			ImGui::DragFloat3("debugVec3b", &debugVec3b[0], 1, -1000, 10000);
+			ImGui::DragFloat("debugFloat", &debugFloat, 0.01f, -100, 100);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::End();
 		}

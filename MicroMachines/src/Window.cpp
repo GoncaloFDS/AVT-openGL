@@ -94,7 +94,7 @@ void Window::OnKey(GLFWwindow* window, int key, int scancode, int action, int mo
 }
 
 void Window::OnMouseMove(GLFWwindow* window, double xpos, double ypos) {
-	m_InputHandler->OnMouseMove(xpos, ypos);
+	m_InputHandler->OnMouseMove((float)xpos, (float)ypos);
 }
 
 void Window::OnMouseClick(GLFWwindow* window, int button, int action, int mods) {
