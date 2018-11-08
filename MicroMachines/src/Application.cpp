@@ -377,6 +377,7 @@ int main(int argc, char* argv[]) {
 
 		//Render Scene	
 		sceneGraph.OnRender();
+
 		sceneGraph.SetCamera(portalCamera);
 		portalImage.RenderToTexture(sceneGraph, renderer);
 		sceneGraph.SetCamera(*currentCamera);

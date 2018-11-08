@@ -59,6 +59,11 @@ void Camera::CalculateProjectionMatrix(float aspectRatio) {
 	}
 }
 
+
+glm::vec3 Camera::GetWorldUpVector() {
+	return m_WorldUp;
+}
+
 void Camera::SetProjectionType(Projection projection) {
 	m_ProjectionType = projection;
 	CalculateProjectionMatrix(m_AspectRatio);

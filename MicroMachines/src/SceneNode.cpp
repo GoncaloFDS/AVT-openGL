@@ -16,11 +16,11 @@ SceneNode::~SceneNode() {
 void SceneNode::OnUpdate(SceneNode& parent) {
 	m_ModelMatrix = glm::translate(glm::mat4(1.0f), transform.position) * glm::mat4_cast(transform.rotation) * glm::scale(glm::mat4(1.0f), transform.scale);
 	m_WorldMatrix = parent.m_WorldMatrix * m_ModelMatrix;
-
+	m_WorldPosition = parent.m_WorldPosition + transform.position;
 	for (const auto& node : m_ChildNodes)
 		node->OnUpdate(*this);
-	glm::vec3 worldPos = m_WorldMatrix * glm::vec4(transform.position, 1);
-	m_AABB.OnUpdate(worldPos);
+	
+	m_AABB.OnUpdate(m_WorldPosition);
 }
 
 void SceneNode::OnRender(Camera& camera) {

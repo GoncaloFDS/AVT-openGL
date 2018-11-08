@@ -3,7 +3,7 @@
 #include "Car.h"
 
 Billboard::Billboard(glm::vec3 position, SceneNode* target) : m_Target(target){
-	m_AABB = AABB(glm::vec3(-1, -8, -1), glm::vec3(1, 8, 1));
+	m_AABB = AABB(glm::vec3(-1, -15, -1), glm::vec3(1, 15, 1));
 	transform.scale = glm::vec3(25.f);
 	transform.position = position;
 	m_DefaultRotation = glm::rotate(glm::mat4(1), glm::half_pi<float>(), glm::vec3(1, 0, 0)) * glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 0, 1));
