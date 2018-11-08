@@ -19,6 +19,7 @@ struct Texture {
 	unsigned int id;
 	TextureType type;
 	std::string path;
+	glm::vec2 size;
 
 	Texture(const std::string& path, const std::string& directory, TextureType type);
 	Texture(glm::vec2 size, TextureType type = TextureType::Other);

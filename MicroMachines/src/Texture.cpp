@@ -36,17 +36,23 @@ Texture::Texture(const std::string& path, const std::string& directory, TextureT
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
+	size = glm::vec2(width, height);
 	type = t;
 }
 
-Texture::Texture(glm::vec2 size, TextureType type /*= TextureType::Other*/) {
+Texture::Texture(glm::vec2 s, TextureType t /*= TextureType::Other*/) {
 	GLCall(glGenTextures(1, &id));
 	GLCall(glBindTexture(GL_TEXTURE_2D, id));
 
-	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, size.x, size.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, nullptr));
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, s.x, s.y, 0, GL_RGBA, GL_FLOAT, nullptr));
 
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+	size = s;
+	type = t;
 }
 
 void Texture::Bind(unsigned int slot /*= 0*/) const {

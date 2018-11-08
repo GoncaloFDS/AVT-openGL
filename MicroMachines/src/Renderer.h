@@ -13,5 +13,11 @@ public:
 	void Clear() const;
 	void SetClearColor(glm::vec4 color) const;
 	void Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader) const;
+
+	void SetStencilMask(GLuint mask);
+	void SetStencilFunc(GLenum action, GLint ref, GLuint mask);
+	void SetStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass);
+	void ClearStencil();
+	void ClearDepth();
 };
 

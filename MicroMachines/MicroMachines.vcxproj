@@ -158,7 +158,9 @@
     <ClCompile Include="src\cameras\FollowCamera.cpp" />
     <ClCompile Include="src\gameobjects\Cheerio.cpp" />
     <ClCompile Include="src\AABB.cpp" />
+    <ClCompile Include="src\gameobjects\Portal.cpp" />
     <ClCompile Include="src\opengl\FrameBuffer.cpp" />
+    <ClCompile Include="src\opengl\RenderBuffer.cpp" />
     <ClCompile Include="src\opengl\vertexBufflerLayout.cpp" />
     <ClCompile Include="src\SpotLight.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
@@ -196,7 +198,9 @@
     <ClInclude Include="src\cameras\FollowCamera.h" />
     <ClInclude Include="src\gameobjects\Cheerio.h" />
     <ClInclude Include="src\AABB.h" />
+    <ClInclude Include="src\gameobjects\Portal.h" />
     <ClInclude Include="src\opengl\FrameBuffer.h" />
+    <ClInclude Include="src\opengl\RenderBuffer.h" />
     <ClInclude Include="src\SpotLight.h" />
     <ClInclude Include="src\DirectionalLight.h" />
     <ClInclude Include="src\PointLight.h" />

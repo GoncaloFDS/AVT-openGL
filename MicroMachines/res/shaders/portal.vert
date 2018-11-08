@@ -21,4 +21,5 @@ void main(void) {
 	vertPos = vec3(vertPos4) /vertPos4.w;
 	normalInterp = vec3(normalMat * vec4(i_normal, 0.0));
 	texCoords = i_texcoords;
+	texCoords.x = -texCoords.x;
 }

@@ -19,8 +19,8 @@ void SceneNode::OnUpdate(SceneNode& parent) {
 
 	for (const auto& node : m_ChildNodes)
 		node->OnUpdate(*this);
-
-	m_AABB.OnUpdate(transform.position);
+	glm::vec3 worldPos = m_WorldMatrix * glm::vec4(transform.position, 1);
+	m_AABB.OnUpdate(worldPos);
 }
 
 void SceneNode::OnRender(Camera& camera) {
@@ -34,7 +34,6 @@ void SceneNode::OnRender(Camera& camera) {
 		m_Shader->SetUniformMat4f("model", m_WorldMatrix);
 		m_Shader->SetUniformMat4f("normalMat", glm::transpose(glm::inverse(m_WorldMatrix)));
 		m_Shader->SetUniform3fv("eyePos", camera.GetPosition());
-
 	}
 	if (m_Model)
 		m_Model->Draw(*m_Shader);

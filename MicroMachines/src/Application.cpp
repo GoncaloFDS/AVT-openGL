@@ -36,6 +36,8 @@
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
 #include "FrameBuffer.h"
+#include "RenderBuffer.h"
+#include "gameobjects/Portal.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -44,9 +46,9 @@ bool gameover = false;
 bool fogIsEnabled = true;
 float points = 0;
 
-float debugFloat = 0.0f;
-glm::vec3 debugVec3a(0);
-glm::vec3 debugVec3b(0);
+float debugFloat = 1.0f;
+glm::vec3 debugVec3a(1);
+glm::vec3 debugVec3b(1);
 
 
 int main(int argc, char* argv[]) {
@@ -96,6 +98,8 @@ int main(int argc, char* argv[]) {
 
 	FollowCamera followCamera(glm::vec3(0.0f, 30.0f, -60.f), glm::vec3(0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 	followCamera.SetAspectRatio(window.GetAspectRatio());
+	Camera portalCamera(glm::vec3(-190, 10, 0), glm::vec3(-190, 9, -10) , glm::vec3(0.0f, 1.0f, 0.0f));
+	portalCamera.SetAspectRatio(window.GetAspectRatio());
 	Camera orthoCamera(glm::vec3(0.0f, 130.0f, 0.0f), glm::vec3(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
 	orthoCamera.SetAspectRatio(window.GetAspectRatio());
 	orthoCamera.SetProjectionType(Projection::Orthographic);
@@ -150,26 +154,40 @@ int main(int argc, char* argv[]) {
 	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
 	colliders.push_back(butter3);
 	
-	SceneNode portal;
+	SceneNode portalFrame;
+	Model portalFrameModel("res/models/Portal/frame.obj");
+	portalFrame.SetModel(portalFrameModel);
+	portalFrame.SetShader(basicShader);
+	portalFrame.transform.position = glm::vec3(200, -4.5, 150);
+	portalFrame.transform.scale = glm::vec3(20);
+	//portalFrame.transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0));
+	SceneNode innerPortal;
+	Model innerPortalModel("res/models/Portal/innerPortal.obj");
+	innerPortal.SetModel(innerPortalModel);
+	innerPortal.SetShader(basicShader);
+	innerPortal.SetEnabled(false);
+	portalFrame.AddChildNode(&innerPortal);
+	Portal portalImage(glm::vec2(window.GetWidth(), window.GetHeight()));
 	Model portalModel("res/models/portal.obj");
 	Shader portalShader("res/shaders/portal");
-	portal.SetModel(portalModel);
-	portal.SetShader(portalShader);
-	portal.transform.scale = glm::vec3(25.0f);
-	portal.transform.rotation = glm::rotate(glm::mat4(1), -glm::half_pi<float>(), glm::vec3(1, 0, 0)) * glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 0, 1));
+	portalImage.SetModel(portalModel);
+	portalImage.SetShader(portalShader);
+	portalImage.SetEnabled(false);
+	portalImage.transform.scale = glm::vec3(1, -1, 1);
+	portalFrame.AddChildNode(&portalImage);
+	colliders.push_back(&portalImage);
 
 	sceneGraph.AddNode(butter);
 	sceneGraph.AddNode(butter2);
 	sceneGraph.AddNode(butter3);
 	sceneGraph.AddNode(&table);
 	sceneGraph.AddNode(&car);
+	sceneGraph.AddNode(&portalFrame);
+
 	//sceneGraph.AddNode(&portal);
 	sceneGraph.AddNode(&orthoCamera);
 	sceneGraph.AddNode(&topViewCamera);
 	sceneGraph.AddNode(&debugCamera);
-	glm::vec3 position(0.f);
-	glm::vec3 scalea(15.f);
-
 
 	Model orangeModel("res/models/Orange/orange.obj");
 	for (int i = 0; i < 10; i++) {
@@ -251,24 +269,10 @@ int main(int argc, char* argv[]) {
 		light->SetupShader(basicShader);
 		//light->SetupShader(tableShader);
 	}
+
 	Timer::Start();
 	auto currentCamera = sceneGraph.GetCamera();
 
-	FrameBuffer portalFB;
-	Texture portalTexture(glm::vec2(window.GetWidth(), window.GetHeight()));
-	portalFB.Bind();
-	GLCall(glEnable(GL_DEPTH_TEST));
-	GLCall(glDepthFunc(GL_LEQUAL));
-	GLCall(glDepthMask(GL_TRUE));
-	GLCall(glDepthRange(0.0, 1.0));
-	GLCall(glClearDepth(1.0));
-	GLCall(glEnable(GL_CULL_FACE));
-	GLCall(glCullFace(GL_BACK));
-	GLCall(glFrontFace(GL_CCW));
-	GLCall(glEnable(GL_BLEND));
-	GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-	portalFB.BindTexture(portalTexture);
-	portalFB.Unbind();
 	//////////////////////////////////////////////////////////////////////////////////////////////////
 	// GameLoop
 	//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -277,6 +281,12 @@ int main(int argc, char* argv[]) {
 		renderer.Clear();
 		window.PollEvents();
 		ImGui_ImplGlfwGL3_NewFrame();
+
+		
+		//portalFrame.transform.position = debugVec3a;
+		//portalImage.transform.position = debugVec3b;
+		portalImage.transform.scale = glm::vec3(window.GetAspectRatio(), 1, 1);
+		// 
 
 		points += Timer::deltaTime;
 		//Input Control
@@ -365,19 +375,25 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		//Render Scene
-		portalFB.Bind();
-		renderer.Clear();
+		//Render Scene	
 		sceneGraph.OnRender();
-		portalFB.Unbind();
-
-		sceneGraph.OnRender();
-
-		portalShader.Bind();
-		portalTexture.Bind();
-		portalShader.SetUniform1i("rendered_texture", 0);
-		portal.OnUpdate(*sceneGraph.GetNode("Root"));
-		portal.OnRender(*currentCamera);
+		sceneGraph.SetCamera(portalCamera);
+		portalImage.RenderToTexture(sceneGraph, renderer);
+		sceneGraph.SetCamera(*currentCamera);
+		renderer.ClearStencil();
+		renderer.SetStencilFunc(GL_NEVER, 1, 1);
+		renderer.SetStencilOp(GL_REPLACE, GL_REPLACE, GL_REPLACE);
+		innerPortal.SetEnabled(true);
+		innerPortal.OnRender(*currentCamera);
+		innerPortal.SetEnabled(false);
+		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+		renderer.SetStencilFunc(GL_EQUAL, 1, 1);
+		portalImage.BindTexture();
+		portalImage.SetEnabled(true);
+		portalImage.OnRender(*currentCamera);
+		portalImage.SetEnabled(false);
+		renderer.SetStencilFunc(GL_ALWAYS, 1, 1);
+		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 		//update HUD
 		hudShader.Bind();
