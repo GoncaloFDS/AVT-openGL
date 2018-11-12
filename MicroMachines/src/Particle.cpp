@@ -1,6 +1,6 @@
 #include "Particle.h"
 
-const float Particle::step = 0.034;
+const float Particle::step = 0.125;
 
 Particle::Particle(SceneNode *target)
 {
@@ -26,16 +26,15 @@ void Particle::respawn()
 	float phi = glm::pi<float>() * (rand() % 100) / 100.0f;
 	float theta = glm::pi<float>() * (rand() % 100) / 50.0f;
 	float rColor = 0.5 + (rand() % 100) / 100.0f;
-	position = glm::vec3(random);
+	position = glm::vec3(0.0f);
 	color = glm::vec4(rColor, rColor, rColor, 1.0f);
-	life = 1.0f;
-	velocity = glm::vec3(0, v_random, 0);
-	acceleration = glm::vec3(0.0f, -0.5f, 0.0f);
+	life = 5.0f;
+	velocity = glm::vec3(v_random * std::sin(phi) * std::cos(theta), v_random * std::cos(phi), v_random * std::sin(phi) * std::sin(theta));
+	acceleration = glm::vec3(0.0f, -1.0f, 0.0f);
 }
 
 void Particle::OnUpdate(SceneNode &parent)
 {
-
 	life -= step;
 
 	if (life > 0.0f)
@@ -46,16 +45,16 @@ void Particle::OnUpdate(SceneNode &parent)
 		velocity.x += step * acceleration.x;
 		velocity.y += step * acceleration.y;
 		velocity.z += step * acceleration.z;
-
-		color -= glm::vec4(step * 2.5);
+		
 		transform.position = position;
-
-		auto shader = GetShader();
-		shader->Bind();
-		shader->SetUniform4fv("color", color);
-		shader->Unbind();
-
+		color -= glm::vec4(step / 5);
 	}
+
+	auto shader = GetShader();
+	shader->Bind();
+	shader->SetUniform4fv("color", color);
+	shader->Unbind();
+	SetShader(*shader);
 
 	LookAt(*m_target);
 	SceneNode::OnUpdate(parent);
