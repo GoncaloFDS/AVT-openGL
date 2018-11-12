@@ -10,7 +10,6 @@ private:
 	float m_TurnSpeed;
 	float m_Breaking;
 
-	glm::vec3 m_Right;
 	int m_HP;
 	int m_MaxHP;
 	SceneNode wheelRF, wheelLF, wheelLB, wheelRB;
@@ -19,7 +18,6 @@ public:
 	Car();
 	~Car();
 
-	glm::vec3 GetRightVector();
 	void SetWheelsModel(Model& wheel);
 	void SetWheelsShader(Shader& shader);
 	float GetSpeed();
@@ -30,5 +28,6 @@ public:
 	void Turn(float amount);
 	void Reset();
 	void Restart();
+	void Teleport();
 };
 

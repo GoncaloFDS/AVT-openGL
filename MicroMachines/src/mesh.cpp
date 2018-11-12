@@ -48,9 +48,9 @@ void Mesh::BindTextures(Shader &shader) {
 
 		}
 		shader.Bind();
+		m_Textures[i]->Bind(i);
 		if (supported)
 			shader.SetUniform1i(name, i);
-		m_Textures[i]->Bind(i);
 
 	}
 }

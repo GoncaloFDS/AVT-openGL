@@ -48,5 +48,7 @@ public:
 
 private:
 	void CalculateProjectionMatrix(float aspectRatio);
+public:
+	glm::vec3 GetWorldUpVector();
 };
 

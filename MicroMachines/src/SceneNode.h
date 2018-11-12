@@ -35,6 +35,7 @@ protected:
 	glm::vec3 m_Right;
 	glm::vec3 m_Up;
 	glm::vec3 m_WorldUp;
+	glm::vec3 m_WorldPosition;
 
 	glm::quat m_DefaultRotation = glm::quat(1, 0, 0, 0);
 

@@ -42,5 +42,6 @@ void DebugCamera::DetachFrom(Camera camera) {
 	m_Forward = camera.GetForwardVector();
 	m_Up = camera.GetUpVector();
 	m_Right = camera.GetRightVector();
+	m_WorldUp = camera.GetWorldUpVector();
 }
 

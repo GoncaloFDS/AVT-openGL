@@ -11,4 +11,6 @@ public:
 	virtual void OnUpdate(SceneNode& parent) override;
 	virtual void OnCollision(SceneNode& other) override;
 
+	void SetTarget(SceneNode* target);
+
 };

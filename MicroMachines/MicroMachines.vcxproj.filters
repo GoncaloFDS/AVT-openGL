@@ -120,7 +120,17 @@
     <ClCompile Include="src\gameobjects\Billboard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="src\gameobjects\ParticleEmitter.cpp">
+=======
+    <ClCompile Include="src\opengl\FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\opengl\RenderBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gameobjects\Portal.cpp">
+>>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -953,7 +963,17 @@
     <ClInclude Include="src\gameobjects\Billboard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="src\gameobjects\ParticleEmitter.h">
+=======
+    <ClInclude Include="src\opengl\FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\opengl\RenderBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gameobjects\Portal.h">
+>>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1355,7 +1375,12 @@
     <None Include="res\shaders\singleColor.vert" />
     <None Include="res\shaders\text.frag" />
     <None Include="res\shaders\text.vert" />
+<<<<<<< HEAD
     <None Include="res\shaders\particle.vert" />
     <None Include="res\shaders\particle.frag" />
+=======
+    <None Include="res\shaders\portal.frag" />
+    <None Include="res\shaders\portal.vert" />
+>>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
   </ItemGroup>
 </Project>

@@ -159,6 +159,9 @@
     <ClCompile Include="src\cameras\FollowCamera.cpp" />
     <ClCompile Include="src\gameobjects\Cheerio.cpp" />
     <ClCompile Include="src\AABB.cpp" />
+    <ClCompile Include="src\gameobjects\Portal.cpp" />
+    <ClCompile Include="src\opengl\FrameBuffer.cpp" />
+    <ClCompile Include="src\opengl\RenderBuffer.cpp" />
     <ClCompile Include="src\opengl\vertexBufflerLayout.cpp" />
     <ClCompile Include="src\SpotLight.cpp" />
     <ClCompile Include="src\DirectionalLight.cpp" />
@@ -197,6 +200,9 @@
     <ClInclude Include="src\cameras\FollowCamera.h" />
     <ClInclude Include="src\gameobjects\Cheerio.h" />
     <ClInclude Include="src\AABB.h" />
+    <ClInclude Include="src\gameobjects\Portal.h" />
+    <ClInclude Include="src\opengl\FrameBuffer.h" />
+    <ClInclude Include="src\opengl\RenderBuffer.h" />
     <ClInclude Include="src\SpotLight.h" />
     <ClInclude Include="src\DirectionalLight.h" />
     <ClInclude Include="src\PointLight.h" />
@@ -475,8 +481,13 @@
     <None Include="res\shaders\multipleLights.vert" />
     <None Include="res\shaders\multiTexture.frag" />
     <None Include="res\shaders\multiTexture.vert" />
+<<<<<<< HEAD
     <None Include="res\shaders\particle.frag" />
     <None Include="res\shaders\particle.vert" />
+=======
+    <None Include="res\shaders\portal.frag" />
+    <None Include="res\shaders\portal.vert" />
+>>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
     <None Include="res\shaders\singleColor.frag" />
     <None Include="res\shaders\singleColor.vert" />
     <None Include="res\shaders\text.frag" />

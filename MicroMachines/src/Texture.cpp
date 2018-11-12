@@ -7,8 +7,8 @@ Texture::Texture(const std::string& path, const std::string& directory, TextureT
 	std::string filename = path;
 	filename = directory + '/' + filename;
 
-	unsigned int textureID;
-	glGenTextures(1, &textureID);
+	
+	GLCall(glGenTextures(1, &id));
 
 	int width, height, nrComponents;
 	unsigned char *data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
@@ -21,7 +21,7 @@ Texture::Texture(const std::string& path, const std::string& directory, TextureT
 		else if (nrComponents == 4)
 			format = GL_RGBA;
 
-		GLCall(glBindTexture(GL_TEXTURE_2D, textureID));
+		GLCall(glBindTexture(GL_TEXTURE_2D, id));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data));
 		GLCall(glGenerateMipmap(GL_TEXTURE_2D));
 
@@ -36,8 +36,23 @@ Texture::Texture(const std::string& path, const std::string& directory, TextureT
 		std::cout << "Texture failed to load at path: " << path << std::endl;
 		stbi_image_free(data);
 	}
+	size = glm::vec2(width, height);
 	type = t;
-	id = textureID;
+}
+
+Texture::Texture(glm::vec2 s, TextureType t /*= TextureType::Other*/) {
+	GLCall(glGenTextures(1, &id));
+	GLCall(glBindTexture(GL_TEXTURE_2D, id));
+
+	GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, s.x, s.y, 0, GL_RGBA, GL_FLOAT, nullptr));
+
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+	GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+
+	size = s;
+	type = t;
 }
 
 void Texture::Bind(unsigned int slot /*= 0*/) const {

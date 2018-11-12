@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "GL\glew.h"
+#include <glm/glm.hpp>
 
 #define ASSERT(expr) \
 	if (expr) {} \
