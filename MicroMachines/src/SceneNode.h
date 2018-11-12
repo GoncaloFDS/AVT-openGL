@@ -55,6 +55,8 @@ public:
 	void SetEnabled(bool b);
 	bool GetEnabled();
 	AABB& GetAABB();
+	Shader* GetShader();
+
 
 	glm::vec3 GetForwardVector(); 
 	glm::vec3 GetRightVector();

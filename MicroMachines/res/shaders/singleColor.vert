@@ -10,7 +10,6 @@ uniform mat4 MVPMat;
 uniform mat4 ModelMat;
 uniform mat3 NormalMat; // to transform normals, pre-perspective
 
-
 // data for fragment shader
 out vec3 FragPosition;
 out vec3 Normal;

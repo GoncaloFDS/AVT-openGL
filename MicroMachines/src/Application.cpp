@@ -42,7 +42,7 @@
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
-bool debug_mode = false;
+bool debug_mode = true;
 bool gameover = false;
 bool fogIsEnabled = true;
 float points = 0;
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
 	//Shader tableShader("res/shaders/multiTexture");
 	Shader singleColorShader("res/shaders/singleColor");
 	Shader hudShader("res/shaders/hud");
-	Shader particleShader("res/shader/particle");
+	Shader particleShader("res/shaders/particle");
 
 	SceneNode table;
 	Model tableModel("res/models/Table/table.obj");
@@ -192,7 +192,8 @@ int main(int argc, char* argv[]) {
 	sceneGraph.AddNode(&debugCamera);
 
 	Model sprite("res/models/Sprite/Sprite.obj");
-	ParticleEmitter particle_gen(&followCamera, sprite, basicShader);
+	ParticleEmitter particle_gen(&followCamera, sprite, particleShader);
+	particle_gen.transform.position = glm::vec3(0, 20, 0);
 	sceneGraph.AddNode(&particle_gen);
 
 	Model orangeModel("res/models/Orange/orange.obj");
@@ -207,7 +208,6 @@ int main(int argc, char* argv[]) {
 
 	Model hpHUD("res/models/HUD/heart.obj");
 	Model gameoverHUD("res/models/HUD/gameover.obj");
-
 
 	Model cheerioModel("res/models/Cheerio/cheerio.obj");
 	int cheerioCount = 30;
@@ -288,7 +288,6 @@ int main(int argc, char* argv[]) {
 		window.PollEvents();
 		ImGui_ImplGlfwGL3_NewFrame();
 
-		
 		//portalFrame.transform.position = debugVec3a;
 		//portalImage.transform.position = debugVec3b;
 		portalImage.transform.scale = glm::vec3(window.GetAspectRatio(), 1, 1);
@@ -307,18 +306,21 @@ int main(int argc, char* argv[]) {
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
 			currentCamera = sceneGraph.GetCamera();
+			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
+			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
+			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}		
@@ -326,6 +328,7 @@ int main(int argc, char* argv[]) {
 			debugCamera.DetachFrom(*currentCamera);
 			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
+			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}
@@ -382,6 +385,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		//Render Scene	
+		particle_gen.SetEnabled(false);
 		sceneGraph.OnRender();
 
 		sceneGraph.SetCamera(portalCamera);
@@ -401,6 +405,13 @@ int main(int argc, char* argv[]) {
 		portalImage.SetEnabled(false);
 		renderer.SetStencilFunc(GL_ALWAYS, 1, 1);
 		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
+
+		glDisable(GL_DEPTH_TEST);
+		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		particle_gen.SetEnabled(true);
+		particle_gen.OnRender(followCamera);;
+		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		glEnable(GL_DEPTH_TEST);
 
 		//update HUD
 		hudShader.Bind();

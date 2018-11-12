@@ -63,6 +63,11 @@ void Renderer::SetStencilOp(GLenum sfail, GLenum dpfail, GLenum dppass) {
 	GLCall(glStencilOp(sfail, dpfail, dppass));
 }
 
+void Renderer::SetBlendFunc(GLenum sfactor, GLenum dfactor)
+{
+	GLCall(glBlendFunc(sfactor, dfactor));
+}
+
 void Renderer::ClearStencil() {
 	GLCall(glClearStencil(0x00));
 	GLCall(glClear(GL_STENCIL_BUFFER_BIT));
