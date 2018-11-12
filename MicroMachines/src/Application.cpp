@@ -35,13 +35,10 @@
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
-<<<<<<< HEAD
 #include "gameobjects/ParticleEmitter.h"
-=======
 #include "FrameBuffer.h"
 #include "RenderBuffer.h"
 #include "gameobjects/Portal.h"
->>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -159,8 +156,6 @@ int main(int argc, char* argv[]) {
 	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
 	colliders.push_back(butter3);
 	
-<<<<<<< HEAD
-=======
 	SceneNode portalFrame;
 	Model portalFrameModel("res/models/Portal/frame.obj");
 	portalFrame.SetModel(portalFrameModel);
@@ -184,7 +179,6 @@ int main(int argc, char* argv[]) {
 	portalFrame.AddChildNode(&portalImage);
 	colliders.push_back(&portalImage);
 
->>>>>>> 55c9d5ed21427f4dce005bef8efbec154a270777
 	sceneGraph.AddNode(butter);
 	sceneGraph.AddNode(butter2);
 	sceneGraph.AddNode(butter3);
