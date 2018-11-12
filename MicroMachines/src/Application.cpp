@@ -35,6 +35,7 @@
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
+#include "gameobjects/ParticleEmitter.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -105,6 +106,7 @@ int main(int argc, char* argv[]) {
 	//Shader tableShader("res/shaders/multiTexture");
 	Shader singleColorShader("res/shaders/singleColor");
 	Shader hudShader("res/shaders/hud");
+	Shader particleShader("res/shader/particle");
 
 	SceneNode table;
 	Model tableModel("res/models/Table/table.obj");
@@ -147,7 +149,6 @@ int main(int argc, char* argv[]) {
 	butter3->transform.rotation = glm::rotate(glm::mat4(1), glm::half_pi<float>() / 2.f, glm::vec3(0, 1, 0));
 	colliders.push_back(butter3);
 	
-
 	sceneGraph.AddNode(butter);
 	sceneGraph.AddNode(butter2);
 	sceneGraph.AddNode(butter3);
@@ -159,6 +160,10 @@ int main(int argc, char* argv[]) {
 	glm::vec3 position(0.f);
 	glm::vec3 scalea(15.f);
 
+
+	Model sprite("res/models/Sprite/Sprite.obj");
+	ParticleEmitter particle_gen(&followCamera, sprite, basicShader);
+	sceneGraph.AddNode(&particle_gen);
 
 	Model orangeModel("res/models/Orange/orange.obj");
 	for (int i = 0; i < 10; i++) {

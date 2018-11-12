@@ -2,7 +2,6 @@
 #include <glm/vec3.hpp> 
 #include "SceneNode.h"
 
-
 class Car : public SceneNode {
 private:
 	float m_Speed;

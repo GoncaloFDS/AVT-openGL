@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\gameobjects\ParticleEmitter.cpp" />
     <ClCompile Include="src\cameras\DebugCamera.cpp" />
     <ClCompile Include="src\gameobjects\Billboard.cpp" />
     <ClCompile Include="src\gameobjects\Butter.cpp" />
@@ -189,6 +190,7 @@
     <ClCompile Include="src\TextRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\gameobjects\ParticleEmitter.h" />
     <ClInclude Include="src\cameras\DebugCamera.h" />
     <ClInclude Include="src\gameobjects\Billboard.h" />
     <ClInclude Include="src\gameobjects\Butter.h" />
@@ -473,6 +475,8 @@
     <None Include="res\shaders\multipleLights.vert" />
     <None Include="res\shaders\multiTexture.frag" />
     <None Include="res\shaders\multiTexture.vert" />
+    <None Include="res\shaders\particle.frag" />
+    <None Include="res\shaders\particle.vert" />
     <None Include="res\shaders\singleColor.frag" />
     <None Include="res\shaders\singleColor.vert" />
     <None Include="res\shaders\text.frag" />
