@@ -306,21 +306,18 @@ int main(int argc, char* argv[]) {
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
 			currentCamera = sceneGraph.GetCamera();
-			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
-			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
-			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}		
@@ -328,7 +325,6 @@ int main(int argc, char* argv[]) {
 			debugCamera.DetachFrom(*currentCamera);
 			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
-			particle_gen.setCamera(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 		}

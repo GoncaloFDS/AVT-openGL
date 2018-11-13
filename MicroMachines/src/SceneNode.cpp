@@ -40,8 +40,9 @@ void SceneNode::OnRender(Camera& camera) {
 	if (m_Model)
 		m_Model->Draw(*m_Shader);
 
-	for (auto& node : m_ChildNodes)
+	for (const auto& node : m_ChildNodes)
 		node->OnRender(camera);
+
 }
 
 void SceneNode::OnCollision(SceneNode& other) {
@@ -84,6 +85,7 @@ Shader* SceneNode::GetShader()
 {
 	return m_Shader;
 }
+
 
 glm::vec3 SceneNode::GetForwardVector() {
 	return m_Forward;

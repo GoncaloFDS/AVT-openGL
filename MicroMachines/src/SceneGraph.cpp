@@ -33,3 +33,4 @@ void SceneGraph::OnUpdate() {
 void SceneGraph::OnRender() {
 	m_Root->OnRender(*m_Camera);
 }
+

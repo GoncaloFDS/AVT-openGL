@@ -29,6 +29,7 @@ public:
 	float getLife();
 	void setCamera(SceneNode *target);
 	virtual void OnUpdate(SceneNode &parent) override;
+	virtual void OnRender(Camera &camera);
 	
 };
 

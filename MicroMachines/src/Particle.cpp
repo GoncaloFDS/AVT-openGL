@@ -28,7 +28,7 @@ void Particle::respawn()
 	float rColor = 0.5 + (rand() % 100) / 100.0f;
 	position = glm::vec3(0.0f);
 	color = glm::vec4(rColor, rColor, rColor, 1.0f);
-	life = 5.0f;
+	life = 10.0f;
 	velocity = glm::vec3(v_random * std::sin(phi) * std::cos(theta), v_random * std::cos(phi), v_random * std::sin(phi) * std::sin(theta));
 	acceleration = glm::vec3(0.0f, -1.0f, 0.0f);
 }
@@ -47,17 +47,23 @@ void Particle::OnUpdate(SceneNode &parent)
 		velocity.z += step * acceleration.z;
 		
 		transform.position = position;
-		color -= glm::vec4(step / 5);
+		color -= glm::vec4(step / 10);
 	}
+
+	LookAt(*m_target);
+	SceneNode::OnUpdate(parent);
+}
+
+void Particle::OnRender(Camera &camera)
+{
+	if (life <= 0.0f) return;
 
 	auto shader = GetShader();
 	shader->Bind();
 	shader->SetUniform4fv("color", color);
 	shader->Unbind();
-	SetShader(*shader);
 
-	LookAt(*m_target);
-	SceneNode::OnUpdate(parent);
+	SceneNode::OnRender(camera);
 }
 
 float Particle::getLife()

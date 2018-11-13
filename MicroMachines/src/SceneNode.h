@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <future>
+
 #include "AABB.h"
 
 class Model;
@@ -56,7 +58,6 @@ public:
 	bool GetEnabled();
 	AABB& GetAABB();
 	Shader* GetShader();
-
 
 	glm::vec3 GetForwardVector(); 
 	glm::vec3 GetRightVector();

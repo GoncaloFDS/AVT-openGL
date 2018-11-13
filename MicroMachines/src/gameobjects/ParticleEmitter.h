@@ -6,8 +6,8 @@
 class ParticleEmitter : public SceneNode
 {
 	std::vector<Particle> particles;
-	const unsigned int n_particles = 300;
-	const unsigned int n_new_particles = 10;
+	const unsigned int n_particles = 1000;
+	const unsigned int n_new_particles = 20;
 	unsigned int lastUsedParticle;
 
 public:
