@@ -21,14 +21,13 @@ Particle::~Particle()
 
 void Particle::respawn()
 {
-	float random = (rand() % 100 - 50.0) / 10.0f;
 	float v_random = (rand() % 50 - 75) / 5.0f;
 	float phi = glm::pi<float>() * (rand() % 100) / 100.0f;
 	float theta = glm::pi<float>() * (rand() % 100) / 50.0f;
 	float rColor = 0.5 + (rand() % 100) / 100.0f;
 	position = glm::vec3(0.0f);
 	color = glm::vec4(rColor, rColor, rColor, 1.0f);
-	life = 10.0f;
+	life = 5.0f + (rand() % 8 - 2);
 	velocity = glm::vec3(v_random * std::sin(phi) * std::cos(theta), v_random * std::cos(phi), v_random * std::sin(phi) * std::sin(theta));
 	acceleration = glm::vec3(0.0f, -1.0f, 0.0f);
 }
@@ -47,7 +46,7 @@ void Particle::OnUpdate(SceneNode &parent)
 		velocity.z += step * acceleration.z;
 		
 		transform.position = position;
-		color -= glm::vec4(step / 10);
+		color -= glm::vec4(step / 7);
 	}
 
 	LookAt(*m_target);

@@ -42,7 +42,7 @@
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool gameover = false;
 bool fogIsEnabled = true;
 float points = 0;
@@ -402,12 +402,10 @@ int main(int argc, char* argv[]) {
 		renderer.SetStencilFunc(GL_ALWAYS, 1, 1);
 		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-		glDisable(GL_DEPTH_TEST);
 		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE);
 		particle_gen.SetEnabled(true);
 		particle_gen.OnRender(followCamera);;
 		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_DEPTH_TEST);
 
 		//update HUD
 		hudShader.Bind();
