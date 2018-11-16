@@ -81,8 +81,7 @@ AABB& SceneNode::GetAABB() {
 }
 
 
-Shader* SceneNode::GetShader()
-{
+Shader* SceneNode::GetShader() {
 	return m_Shader;
 }
 

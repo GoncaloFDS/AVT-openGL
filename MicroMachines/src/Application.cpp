@@ -409,7 +409,7 @@ int main(int argc, char* argv[]) {
 		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 		particleEmitter.SetEnabled(true);
-		particleEmitter.OnRender(followCamera);
+		particleEmitter.OnRender(*currentCamera);
 
 		//update HUD
 		hudShader.Bind();

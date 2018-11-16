@@ -5,7 +5,7 @@
 
 class ParticleEmitter : public SceneNode {
 	std::vector<Particle*> m_Particles;
-	unsigned int m_ParticleCount = 1000;
+	unsigned int m_ParticleCount = 200;
 	unsigned int m_RespawnsPerFrame = 20;
 	unsigned int m_LatestRespawn;
 

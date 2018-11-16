@@ -28,7 +28,7 @@ public:
 	void SetTarget(SceneNode* target);
 
 	virtual void OnUpdate(SceneNode &parent) override;
-	virtual void OnRender(Camera &camera);
+	virtual void OnRender(Camera &camera) override;
 	
 };
 
