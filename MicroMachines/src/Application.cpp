@@ -39,6 +39,7 @@
 #include "FrameBuffer.h"
 #include "RenderBuffer.h"
 #include "gameobjects/Portal.h"
+#include "LensFlare.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -205,6 +206,19 @@ int main(int argc, char* argv[]) {
 		colliders.push_back(orange);
 	}
 
+	Model len1_model("res/models/lens flare/lens1.obj");
+	Model len2_model("res/models/lens flare/lens2.obj");
+	Model len3_model("res/models/lens flare/lens3.obj");
+	Model len4_model("res/models/lens flare/lens4.obj");
+	Model len5_model("res/models/lens flare/lens5.obj");
+	Model len6_model("res/models/lens flare/lens6.obj");
+	Model len7_model("res/models/lens flare/lens7.obj");
+	Model len8_model("res/models/lens flare/lens8.obj");
+	Model len9_model("res/models/lens flare/lens9.obj");
+
+	std::vector<lens_flare_model> flares(0);
+	flares.reserve(9);
+	flares.emplace_back(lens_flare_model(len1_model, 0.1f));
 
 	Model hpHUD("res/models/HUD/heart.obj");
 	Model gameoverHUD("res/models/HUD/gameover.obj");
