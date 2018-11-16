@@ -35,7 +35,7 @@
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
-#include "gameobjects/ParticleEmitter.h"
+#include "particles/ParticleEmitter.h"
 #include "FrameBuffer.h"
 #include "RenderBuffer.h"
 #include "gameobjects/Portal.h"
@@ -192,9 +192,9 @@ int main(int argc, char* argv[]) {
 	sceneGraph.AddNode(&debugCamera);
 
 	Model sprite("res/models/Sprite/Sprite.obj");
-	ParticleEmitter particle_gen(&followCamera, sprite, particleShader);
-	particle_gen.transform.position = glm::vec3(0, 20, 0);
-	sceneGraph.AddNode(&particle_gen);
+	ParticleEmitter particleEmitter(&followCamera, sprite, particleShader);
+	particleEmitter.transform.position = glm::vec3(0, 20, 0);
+	sceneGraph.AddNode(&particleEmitter);
 
 	Model orangeModel("res/models/Orange/orange.obj");
 	for (int i = 0; i < 10; i++) {
@@ -308,18 +308,22 @@ int main(int argc, char* argv[]) {
 			currentCamera = sceneGraph.GetCamera();
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
+			particleEmitter.SetTarget(currentCamera);
+
 		}
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
+			particleEmitter.SetTarget(currentCamera);
 		}
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
+			particleEmitter.SetTarget(currentCamera);
 		}		
 		if (keyESC.isPressed()) {
 			debugCamera.DetachFrom(*currentCamera);
@@ -327,6 +331,8 @@ int main(int argc, char* argv[]) {
 			currentCamera = sceneGraph.GetCamera();
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
+			particleEmitter.SetTarget(currentCamera);
+
 		}
 		if (key0.isPressed()) {
 			debug_mode = !debug_mode;
@@ -381,7 +387,7 @@ int main(int argc, char* argv[]) {
 		}
 
 		//Render Scene	
-		particle_gen.SetEnabled(false);
+		particleEmitter.SetEnabled(false);
 		sceneGraph.OnRender();
 
 		sceneGraph.SetCamera(portalCamera);
@@ -402,12 +408,8 @@ int main(int argc, char* argv[]) {
 		renderer.SetStencilFunc(GL_ALWAYS, 1, 1);
 		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-		glDisable(GL_DEPTH_TEST);
-		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		particle_gen.SetEnabled(true);
-		particle_gen.OnRender(followCamera);;
-		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		glEnable(GL_DEPTH_TEST);
+		particleEmitter.SetEnabled(true);
+		particleEmitter.OnRender(followCamera);
 
 		//update HUD
 		hudShader.Bind();

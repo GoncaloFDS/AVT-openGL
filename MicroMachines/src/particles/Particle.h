@@ -8,26 +8,25 @@
 #include "Shader.h"
 #include "Timer.h"
 
-class Particle :
-	public SceneNode
-{
+class Particle : public SceneNode {
 private:
 
-	static const float step;
 
-	SceneNode *m_target;
-	glm::vec3 position;
-	glm::vec3 velocity;
-	glm::vec3 acceleration;
-	glm::vec4 color;
-	float life;
+	SceneNode* m_Target;
+	
+	glm::vec3 m_Velocity;
+	glm::vec3 m_Acceleration;
+	glm::vec4 m_Color;
+	float m_LifeTime;
 
 public:
 	Particle(SceneNode *target);
-	~Particle();
-	void respawn();
-	float getLife();
-	void setCamera(SceneNode *target);
+	~Particle() = default;
+	
+	void Respawn();
+	bool IsAlive();
+	void SetTarget(SceneNode* target);
+
 	virtual void OnUpdate(SceneNode &parent) override;
 	virtual void OnRender(Camera &camera);
 	

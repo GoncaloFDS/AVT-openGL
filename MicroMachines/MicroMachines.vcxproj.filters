@@ -1,7 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\gameobjects\ParticleEmitter.cpp" />
     <ClCompile Include="src\cameras\DebugCamera.cpp" />
     <ClCompile Include="src\gameobjects\Billboard.cpp" />
     <ClCompile Include="src\gameobjects\Butter.cpp" />
@@ -40,10 +39,10 @@
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
+    <ClCompile Include="src\particles\Particle.cpp" />
+    <ClCompile Include="src\particles\ParticleEmitter.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\gameobjects\ParticleEmitter.h" />
     <ClInclude Include="src\cameras\DebugCamera.h" />
     <ClInclude Include="src\gameobjects\Billboard.h" />
     <ClInclude Include="src\gameobjects\Butter.h" />
@@ -323,7 +322,8 @@
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextRenderer.h" />
-    <ClInclude Include="src\Particle.h" />
+    <ClInclude Include="src\particles\Particle.h" />
+    <ClInclude Include="src\particles\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\hud.frag" />
