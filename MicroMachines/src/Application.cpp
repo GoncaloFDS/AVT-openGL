@@ -42,7 +42,7 @@
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
-bool debug_mode = true;
+bool debug_mode = false;
 bool gameover = false;
 bool fogIsEnabled = true;
 float points = 0;
