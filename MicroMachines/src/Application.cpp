@@ -39,6 +39,7 @@
 #include "FrameBuffer.h"
 #include "RenderBuffer.h"
 #include "gameobjects/Portal.h"
+#include "LensFlareManager.h"
 
 extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x00000001; }
 
@@ -205,6 +206,42 @@ int main(int argc, char* argv[]) {
 		colliders.push_back(orange);
 	}
 
+// 	Model sun_model("res/models/lens flare/sun.obj");
+// 	Billboard sun(glm::vec3(100.0f), &followCamera);
+// 	sun.SetModel(sun_model);
+// 	sun.SetShader(basicShader);
+// 	sceneGraph.AddNode(&sun);
+
+	Model lens1_model("res/models/lens flare/lens1.obj");
+	Model lens2_model("res/models/lens flare/lens2.obj");
+	Model lens3_model("res/models/lens flare/lens3.obj");
+	Model lens4_model("res/models/lens flare/lens4.obj");
+	Model lens5_model("res/models/lens flare/lens5.obj");
+	Model lens6_model("res/models/lens flare/lens6.obj");
+	Model lens7_model("res/models/lens flare/lens7.obj");
+	Model lens8_model("res/models/lens flare/lens8.obj");
+	Model lens9_model("res/models/lens flare/lens9.obj");
+
+	std::vector<LensFlare*> flares(0);
+	flares.reserve(9);
+
+	flares.emplace_back(new LensFlare(lens6_model, 5.f));
+	flares.emplace_back(new LensFlare(lens4_model, 2.3f));
+	flares.emplace_back(new LensFlare(lens2_model, 1.0f));
+	flares.emplace_back(new LensFlare(lens7_model, 0.5f));
+	flares.emplace_back(new LensFlare(lens1_model, 0.2f));
+	flares.emplace_back(new LensFlare(lens3_model, 0.6f));
+	flares.emplace_back(new LensFlare(lens9_model, 1.2f));
+	flares.emplace_back(new LensFlare(lens5_model, 0.7f));
+	flares.emplace_back(new LensFlare(lens1_model, 0.12f));
+	flares.emplace_back(new LensFlare(lens7_model, 2.0f));
+	flares.emplace_back(new LensFlare(lens9_model, 1.0f));
+	flares.emplace_back(new LensFlare(lens3_model, 0.7f));
+	flares.emplace_back(new LensFlare(lens5_model, 3.0f));
+	flares.emplace_back(new LensFlare(lens4_model, 4.0f));
+	flares.emplace_back(new LensFlare(lens8_model, 6.0f));
+
+	LensFlareManager flareManager(0.1f, &hudShader, flares);
 
 	Model hpHUD("res/models/HUD/heart.obj");
 	Model gameoverHUD("res/models/HUD/gameover.obj");
@@ -306,6 +343,7 @@ int main(int argc, char* argv[]) {
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
 			currentCamera = sceneGraph.GetCamera();
+			//sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -314,6 +352,7 @@ int main(int argc, char* argv[]) {
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
+			//sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -321,6 +360,7 @@ int main(int argc, char* argv[]) {
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
+			//sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -329,6 +369,7 @@ int main(int argc, char* argv[]) {
 			debugCamera.DetachFrom(*currentCamera);
 			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
+			//sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -418,18 +459,25 @@ int main(int argc, char* argv[]) {
 			p.x += 50;
 			auto mvp = HUDCamera.GetProjMatrix() * HUDCamera.GetViewMatrix() * glm::translate(glm::mat4(1), p) * glm::scale(glm::mat4(1), glm::vec3(20));
 			hudShader.SetUniformMat4f("MVPMat", mvp);
+			hudShader.SetUniform1f("brightness", 1.0f);
 			hpHUD.Draw(hudShader);
 		}
+
+		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f, 20, 1.0f);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+		flareManager.onRender(&followCamera, &HUDCamera, glm::vec3(100.0f), &window);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		if (car.GetHP() == 0) {
 			auto mvp = HUDCamera.GetProjMatrix() * HUDCamera.GetViewMatrix() * glm::scale(glm::mat4(1), glm::vec3(210));
 			hudShader.SetUniformMat4f("MVPMat", mvp);
+			hudShader.SetUniform1f("brightness", 1.0f);
 			gameoverHUD.Draw(hudShader);
 			Timer::Pause();
 			gameover = true;
 
 		}
-		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f, 20, 1.0f);
 
 		if (debug_mode) {
 			ImGui::Begin("Debug Window", &debug_mode);
