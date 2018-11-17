@@ -36,7 +36,7 @@ void LensFlareManager::onRender(Camera *camera, Camera *hudCamera, glm::vec3 sun
 	if (sun_coords.x == NULL || sun_coords.y == NULL) return;
 
 	glm::vec2 dist = glm::vec2(0.5) - sun_coords;
-	float brightness = 1 - (std::sqrt(std::pow(dist.x, 2) + std::pow(dist.y, 2)) / 0.7f);
+	float brightness = 1 - (glm::length(dist) / 0.7f);
 
 	if (brightness > 0)
 	{
