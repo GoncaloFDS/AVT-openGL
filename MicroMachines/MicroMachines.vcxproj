@@ -155,8 +155,8 @@
   <ItemGroup>
     <ClCompile Include="src\LensFlareManager.cpp" />
     <ClCompile Include="src\gameobjects\LensFlare.cpp" />
-    <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\gameobjects\ParticleEmitter.cpp" />
+    <ClCompile Include="src\particles\Particle.cpp" />
+    <ClCompile Include="src\particles\ParticleEmitter.cpp" />
     <ClCompile Include="src\cameras\DebugCamera.cpp" />
     <ClCompile Include="src\gameobjects\Billboard.cpp" />
     <ClCompile Include="src\gameobjects\Butter.cpp" />
@@ -199,8 +199,8 @@
   <ItemGroup>
     <ClInclude Include="src\LensFlareManager.h" />
     <ClInclude Include="src\gameobjects\LensFlare.h" />
-    <ClInclude Include="src\Particle.h" />
-    <ClInclude Include="src\gameobjects\ParticleEmitter.h" />
+    <ClInclude Include="src\particles\Particle.h" />
+    <ClInclude Include="src\particles\ParticleEmitter.h" />
     <ClInclude Include="src\cameras\DebugCamera.h" />
     <ClInclude Include="src\gameobjects\Billboard.h" />
     <ClInclude Include="src\gameobjects\Butter.h" />

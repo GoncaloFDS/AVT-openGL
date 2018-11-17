@@ -9,5 +9,8 @@ in vec4 ParticleColor;
 out vec4 FragColor;
 
 void main(){
-	FragColor = (texture(texture_diffuse1, TexCoords)) * ParticleColor;
+	vec4 tex = (texture(texture_diffuse1, TexCoords)) * ParticleColor;
+	if(tex.a == 0)
+		discard;
+	FragColor = tex;
 }
