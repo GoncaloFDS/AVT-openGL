@@ -41,7 +41,8 @@
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
     <ClCompile Include="src\Particle.cpp" />
-    <ClCompile Include="src\LensFlare.cpp" />
+    <ClCompile Include="src\LensFlareManager.cpp" />
+    <ClCompile Include="src\gameobjects\LensFlare.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\gameobjects\ParticleEmitter.h" />
@@ -325,7 +326,8 @@
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextRenderer.h" />
     <ClInclude Include="src\Particle.h" />
-    <ClInclude Include="src\LensFlare.h" />
+    <ClInclude Include="src\LensFlareManager.h" />
+    <ClInclude Include="src\gameobjects\LensFlare.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\hud.frag" />
