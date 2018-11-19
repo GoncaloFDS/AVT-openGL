@@ -43,6 +43,7 @@
     <ClCompile Include="src\gameobjects\LensFlare.cpp" />
     <ClCompile Include="src\particles\Particle.cpp" />
     <ClCompile Include="src\particles\ParticleEmitter.cpp" />
+    <ClCompile Include="src\gameobjects\Sun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cameras\DebugCamera.h" />
@@ -328,6 +329,7 @@
     <ClInclude Include="src\gameobjects\LensFlare.h" />
     <ClInclude Include="src\particles\Particle.h" />
     <ClInclude Include="src\particles\ParticleEmitter.h" />
+    <ClInclude Include="src\gameobjects\Sun.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\hud.frag" />

@@ -20,6 +20,11 @@ void DirectionalLight::SetDirection(glm::vec3 dir) {
 	m_Direction = dir;
 }
 
+glm::vec3 DirectionalLight::getDirection()
+{
+	return m_Direction;
+}
+
 void DirectionalLight::SetupShader(Shader& shader) {
 	shader.Bind();
 	shader.SetUniform1i("Lights[" + std::to_string(ID) + "].isEnabled", isEnabled);

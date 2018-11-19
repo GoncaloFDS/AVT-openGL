@@ -35,6 +35,7 @@
 #include "gameobjects/Cheerio.h"
 #include "gameobjects/Orange.h"
 #include "gameobjects/Billboard.h"
+#include "gameobjects/Sun.h"
 #include "particles/ParticleEmitter.h"
 #include "FrameBuffer.h"
 #include "RenderBuffer.h"
@@ -69,7 +70,7 @@ int main(int argc, char* argv[]) {
 	InputHandler inputHandler;
 	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
-	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR, keyF;
+	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR, keyF, keyL;
 
 	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
@@ -94,6 +95,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_P, keyP);
 	inputHandler.AddKeyControl(GLFW_KEY_R, keyR);
 	inputHandler.AddKeyControl(GLFW_KEY_F, keyF);
+	inputHandler.AddKeyControl(GLFW_KEY_L, keyL);
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
@@ -206,38 +208,6 @@ int main(int argc, char* argv[]) {
 		colliders.push_back(orange);
 	}
 
-	Model sun_model("res/models/lens flare/sun.obj");
-	Model lens1_model("res/models/lens flare/lens1.obj");
-	Model lens2_model("res/models/lens flare/lens2.obj");
-	Model lens3_model("res/models/lens flare/lens3.obj");
-	Model lens4_model("res/models/lens flare/lens4.obj");
-	Model lens5_model("res/models/lens flare/lens5.obj");
-	//Model lens6_model("res/models/lens flare/lens6.obj");
-	Model lens7_model("res/models/lens flare/lens7.obj");
-	Model lens8_model("res/models/lens flare/lens8.obj");
-	Model lens9_model("res/models/lens flare/lens9.obj");
-
-	std::vector<LensFlare*> flares(0);
-	flares.reserve(9);
-
-	flares.emplace_back(new LensFlare(sun_model, 5.0f));
-	flares.emplace_back(new LensFlare(lens4_model, 2.3f));
-	flares.emplace_back(new LensFlare(lens2_model, 1.0f));
-	flares.emplace_back(new LensFlare(lens7_model, 0.5f));
-	flares.emplace_back(new LensFlare(lens1_model, 0.2f));
-	flares.emplace_back(new LensFlare(lens3_model, 0.6f));
-	flares.emplace_back(new LensFlare(lens9_model, 1.2f));
-	flares.emplace_back(new LensFlare(lens5_model, 0.7f));
-	flares.emplace_back(new LensFlare(lens1_model, 0.12f));
-	flares.emplace_back(new LensFlare(lens7_model, 2.0f));
-	flares.emplace_back(new LensFlare(lens9_model, 1.0f));
-	flares.emplace_back(new LensFlare(lens3_model, 0.7f));
-	flares.emplace_back(new LensFlare(lens5_model, 3.0f));
-	flares.emplace_back(new LensFlare(lens4_model, 4.0f));
-	flares.emplace_back(new LensFlare(lens8_model, 6.0f));
-
-	LensFlareManager flareManager(0.1f, &hudShader, flares);
-
 	Model hpHUD("res/models/HUD/heart.obj");
 	Model gameoverHUD("res/models/HUD/gameover.obj");
 
@@ -293,8 +263,14 @@ int main(int argc, char* argv[]) {
 		sceneGraph.AddNode(lamp);
 	}
 
-	DirectionalLight sunLight(glm::vec3(-1, 0.5, 1));
-	lights.push_back(&sunLight);
+	Model sun_model("res/models/lens flare/sun.obj");
+	Sun sun(5.0f, glm::vec3(2, 0.4, 2), &followCamera);
+	sun.transform.scale = glm::vec3(150.0f);
+	sun.SetModel(sun_model);
+	sun.SetShader(singleColorShader);
+	sceneGraph.AddNode(&sun);
+
+	lights.push_back(sun.getLight());
 	SpotLight spotLightL, spotLightR;
 	spotLightL.transform.position = glm::vec3(-35.0f, 30.0f, 85.0f);
 	spotLightR.transform.position = glm::vec3(35.0f, 30.0f, 85.0f);
@@ -307,6 +283,38 @@ int main(int argc, char* argv[]) {
 		light->SetupShader(basicShader);
 		//light->SetupShader(tableShader);
 	}
+
+	Model lens1_model("res/models/lens flare/lens1.obj");
+	Model lens2_model("res/models/lens flare/lens2.obj");
+	Model lens3_model("res/models/lens flare/lens3.obj");
+	Model lens4_model("res/models/lens flare/lens4.obj");
+	Model lens5_model("res/models/lens flare/lens5.obj");
+	Model lens6_model("res/models/lens flare/lens6.obj");
+	Model lens7_model("res/models/lens flare/lens7.obj");
+	Model lens8_model("res/models/lens flare/lens8.obj");
+	Model lens9_model("res/models/lens flare/lens9.obj");
+
+	std::vector<LensFlare*> flares(0);
+	flares.reserve(9);
+
+	flares.emplace_back(new LensFlare(lens6_model, 5.0f));
+	flares.emplace_back(new LensFlare(lens4_model, 2.3f));
+	flares.emplace_back(new LensFlare(lens2_model, 1.0f));
+	flares.emplace_back(new LensFlare(lens7_model, 0.5f));
+	flares.emplace_back(new LensFlare(lens1_model, 0.2f));
+	flares.emplace_back(new LensFlare(lens3_model, 0.6f));
+	flares.emplace_back(new LensFlare(lens9_model, 1.2f));
+	flares.emplace_back(new LensFlare(lens5_model, 0.7f));
+	flares.emplace_back(new LensFlare(lens1_model, 0.12f));
+	flares.emplace_back(new LensFlare(lens7_model, 2.0f));
+	flares.emplace_back(new LensFlare(lens9_model, 1.0f));
+	flares.emplace_back(new LensFlare(lens3_model, 0.7f));
+	flares.emplace_back(new LensFlare(lens5_model, 3.0f));
+	flares.emplace_back(new LensFlare(lens4_model, 4.0f));
+	flares.emplace_back(new LensFlare(lens8_model, 6.0f));
+
+	LensFlareManager flareManager(0.07f, &hudShader, flares);
+	bool LensFlareEnable = true;
 
 	Timer::Start();
 	auto currentCamera = sceneGraph.GetCamera();
@@ -338,7 +346,7 @@ int main(int argc, char* argv[]) {
 		if (key1.isPressed()) {
 			sceneGraph.SetCamera(followCamera);
 			currentCamera = sceneGraph.GetCamera();
-			//sun.SetTarget(currentCamera);
+			sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -347,7 +355,7 @@ int main(int argc, char* argv[]) {
 		if (key2.isPressed()) {
 			sceneGraph.SetCamera(orthoCamera);
 			currentCamera = sceneGraph.GetCamera();
-			//sun.SetTarget(currentCamera);
+			sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -355,7 +363,7 @@ int main(int argc, char* argv[]) {
 		if (key3.isPressed()) {
 			sceneGraph.SetCamera(topViewCamera);
 			currentCamera = sceneGraph.GetCamera();
-			//sun.SetTarget(currentCamera);
+			sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -364,7 +372,7 @@ int main(int argc, char* argv[]) {
 			debugCamera.DetachFrom(*currentCamera);
 			sceneGraph.SetCamera(debugCamera);
 			currentCamera = sceneGraph.GetCamera();
-			//sun.SetTarget(currentCamera);
+			sun.SetTarget(currentCamera);
 			for (auto lamp : lamps)
 				lamp->SetTarget(currentCamera);
 			particleEmitter.SetTarget(currentCamera);
@@ -387,7 +395,7 @@ int main(int argc, char* argv[]) {
 			basicShader.Unbind();
 		}
 		if (keyN.isPressed()) {
-			sunLight.ToogleLight();
+			sun.toogleLight();
 		}
 		if (keyH.isPressed()) {
 			spotLightL.ToogleLight();
@@ -398,6 +406,17 @@ int main(int argc, char* argv[]) {
 			car.Restart();
 			Timer::Unpause();
 			points = 0;
+		}
+		if (keyL.isPressed())
+		{
+			if (LensFlareEnable)
+			{
+				LensFlareEnable = false;
+			}
+			else
+			{
+				LensFlareEnable = true;
+			}
 		}
 
 		car.Move(up.GetAmt());
@@ -424,6 +443,7 @@ int main(int argc, char* argv[]) {
 
 		//Render Scene	
 		particleEmitter.SetEnabled(false);
+		sun.transform.position = sun.getWorldPosition(currentCamera->GetPosition());
 		sceneGraph.OnRender();
 
 		sceneGraph.SetCamera(portalCamera);
@@ -460,9 +480,12 @@ int main(int argc, char* argv[]) {
 
 		Text->RenderText("Points: " + std::to_string(static_cast<int>(points)), window.GetWidth() * 0.88f, 20, 1.0f);
 
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-		flareManager.onRender(&followCamera, &HUDCamera, glm::vec3(100, 50, 100), &window);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		if (LensFlareEnable)
+		{
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			flareManager.onRender(&followCamera, &HUDCamera, sun.getWorldPosition(followCamera.GetPosition()), &window);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		}
 
 		if (car.GetHP() == 0) {
 			auto mvp = HUDCamera.GetProjMatrix() * HUDCamera.GetViewMatrix() * glm::scale(glm::mat4(1), glm::vec3(210));

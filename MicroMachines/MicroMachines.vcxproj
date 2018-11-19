@@ -195,6 +195,7 @@
     <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
+    <ClCompile Include="src\gameobjects\Sun.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\LensFlareManager.h" />
@@ -480,6 +481,7 @@
     <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextRenderer.h" />
+    <ClInclude Include="src\gameobjects\Sun.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\hud.frag" />

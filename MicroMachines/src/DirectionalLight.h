@@ -16,8 +16,6 @@ public:
 	virtual void SetupShader(Shader& shader) override;
 
 	void SetDirection(glm::vec3 dir);
-
-
-
+	glm::vec3 getDirection();
 };
 

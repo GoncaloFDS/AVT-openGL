@@ -36,18 +36,19 @@ void LensFlareManager::onRender(Camera *camera, Camera *hudCamera, glm::vec3 sun
 	if (sun_coords.x == NULL || sun_coords.y == NULL) return;
 
 	glm::vec2 dist = glm::vec2(0.5) - sun_coords;
-	float brightness = 1 - (glm::length(dist) / 0.7f);
+	float brightness = 1 - (glm::length(dist) / 0.6f);
+	glm::vec3 cameraFW = camera->GetForwardVector();
 
-	if (brightness > 0)
+	if (brightness > 0 && cameraFW.x > 0 && cameraFW.z > 0)
 	{
 		m_Shader->Bind();
 		for (unsigned int i = 0; i < flares.size(); i++)
 		{
-			glm::vec2 pos = i * spacing * dist + sun_coords;
+			glm::vec2 pos = (i + 6) * spacing * dist + sun_coords;
 			pos.x = (pos.x * window->GetWidth()) - window->GetWidth() / 2;
 			pos.y = (pos.y * window->GetHeight()) - window->GetHeight() / 2;
-	
-			auto mvp = hudCamera->GetProjMatrix() * hudCamera->GetViewMatrix() * glm::translate(glm::mat4(1), glm::vec3(pos.x, 0, pos.y)) * glm::scale(glm::mat4(1), glm::vec3(20 * flares[i]->getScale()));
+
+			auto mvp = hudCamera->GetProjMatrix() * hudCamera->GetViewMatrix() * glm::translate(glm::mat4(1), glm::vec3(pos.x, 0, pos.y)) * glm::scale(glm::mat4(1), glm::vec3(30 * flares[i]->getScale()));
 			m_Shader->SetUniformMat4f("MVPMat", mvp);
 			m_Shader->SetUniform1f("brightness", brightness);
 			flares[i]->drawLensFlare(m_Shader);
