@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 
 #include "Common.h"
-#include "InputHandler.h"
 
 int Window::m_Width = 500;
 int Window::m_Height = 500;

@@ -15,15 +15,15 @@
 #include <glm/vec4.hpp>
 
 #include "Common.h"
-#include "DirectionalLight.h"
-#include "InputBind.h"
-#include "InputHandler.h"
+#include "lights/DirectionalLight.h"
+#include "lights/PointLight.h"
+#include "lights/SpotLight.h"
+#include "input/InputBind.h"
+#include "input/InputHandler.h"
 #include "Model.h"
-#include "PointLight.h"
 #include "Renderer.h"
 #include "SceneGraph.h"
 #include "Shader.h"
-#include "SpotLight.h"
 #include "TextRenderer.h"
 #include "Timer.h"
 #include "Window.h"
@@ -270,7 +270,7 @@ int main(int argc, char* argv[]) {
 	sun.SetShader(singleColorShader);
 	sceneGraph.AddNode(&sun);
 
-	lights.push_back(sun.getLight());
+	lights.push_back(sun.GetLight());
 	SpotLight spotLightL, spotLightR;
 	spotLightL.transform.position = glm::vec3(-35.0f, 30.0f, 85.0f);
 	spotLightR.transform.position = glm::vec3(35.0f, 30.0f, 85.0f);
@@ -395,7 +395,7 @@ int main(int argc, char* argv[]) {
 			basicShader.Unbind();
 		}
 		if (keyN.isPressed()) {
-			sun.toogleLight();
+			sun.ToogleLight();
 		}
 		if (keyH.isPressed()) {
 			spotLightL.ToogleLight();
@@ -443,7 +443,7 @@ int main(int argc, char* argv[]) {
 
 		//Render Scene	
 		particleEmitter.SetEnabled(false);
-		sun.transform.position = sun.getWorldPosition(currentCamera->GetPosition());
+		sun.transform.position = sun.GetWorldPosition(currentCamera->GetPosition());
 		sceneGraph.OnRender();
 
 		sceneGraph.SetCamera(portalCamera);
@@ -483,7 +483,7 @@ int main(int argc, char* argv[]) {
 		if (LensFlareEnable)
 		{
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-			flareManager.onRender(&followCamera, &HUDCamera, sun.getWorldPosition(followCamera.GetPosition()), &window);
+			flareManager.onRender(currentCamera, &HUDCamera, sun.GetWorldPosition(currentCamera->GetPosition()), &window);
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SceneNode.h"
-#include "DirectionalLight.h"
+#include "lights/DirectionalLight.h"
 
 class Sun : public SceneNode {
 private:
@@ -14,7 +14,7 @@ public:
 
 	virtual void OnUpdate(SceneNode& parent) override;
 	void SetTarget(SceneNode* target);
-	glm::vec3 getWorldPosition(glm::vec3 camPos);
-	DirectionalLight* getLight();
-	void toogleLight();
+	glm::vec3 GetWorldPosition(glm::vec3 camPos);
+	DirectionalLight* GetLight();
+	void ToogleLight();
 };

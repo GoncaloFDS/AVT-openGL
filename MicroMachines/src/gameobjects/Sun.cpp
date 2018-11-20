@@ -20,17 +20,17 @@ void Sun::SetTarget(SceneNode* target)
 	m_Target = target;
 }
 
-glm::vec3 Sun::getWorldPosition(glm::vec3 camPos)
+glm::vec3 Sun::GetWorldPosition(glm::vec3 camPos)
 {
 	return sun_dist * light->getDirection() + camPos;
 }
 
-DirectionalLight* Sun::getLight()
+DirectionalLight* Sun::GetLight()
 {
 	return light;
 }
 
-void Sun::toogleLight()
+void Sun::ToogleLight()
 {
 	light->ToogleLight();
 }
