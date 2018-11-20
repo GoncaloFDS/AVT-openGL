@@ -46,7 +46,7 @@ void main(){
 	float distance2 = 1;
 	vec3 resultingColor = vec3(0.0, 0.0, 0.0);
 
-	if(diffuseColor.a == 0)
+	if(diffuseColor.a < 0.1)
 		discard;
 
 	//Fog

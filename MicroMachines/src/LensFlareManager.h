@@ -13,11 +13,14 @@ private:
 	Shader *m_Shader;
 	std::vector <LensFlare*> flares;
 	float spacing;
+	bool isEnabled;
 
 	glm::vec2 convertToScreenSpace(glm::vec3 Worldpos, glm::mat4 viewProjMatrix);
 
 public:
-	LensFlareManager(float space, Shader *shader, std::vector<LensFlare*> &lens_flares);
+	LensFlareManager(float space, Shader *shader);
 	~LensFlareManager();
-	void onRender(Camera *camera, Camera *hudCamera, glm::vec3 sunPos, Window *window);
+	void OnRender(Camera *camera, Camera *hudCamera, glm::vec3 sunPos, Window *window);
+	void Toogle();
+	bool IsEnabled();
 };

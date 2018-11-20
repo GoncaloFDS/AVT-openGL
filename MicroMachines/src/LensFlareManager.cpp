@@ -1,14 +1,36 @@
 #include "LensFlareManager.h"
 
-LensFlareManager::LensFlareManager(float space, Shader *shader, std::vector<LensFlare*> &lens_flares)
+LensFlareManager::LensFlareManager(float space, Shader *shader)
 {
 	m_Shader = shader;
 	spacing = space;
+	isEnabled = true;
 
-	flares.clear();
-	flares.reserve(lens_flares.size());
+	Model* lens1_model = new Model("res/models/lens flare/lens1.obj");
+	Model* lens2_model = new Model("res/models/lens flare/lens2.obj");
+	Model* lens3_model = new Model("res/models/lens flare/lens3.obj");
+	Model* lens4_model = new Model("res/models/lens flare/lens4.obj");
+	Model* lens5_model = new Model("res/models/lens flare/lens5.obj");
+	Model* lens6_model = new Model("res/models/lens flare/lens6.obj");
+	Model* lens7_model = new Model("res/models/lens flare/lens7.obj");
+	Model* lens8_model = new Model("res/models/lens flare/lens8.obj");
+	Model* lens9_model = new Model("res/models/lens flare/lens9.obj");
 
-	for (auto p : lens_flares) flares.emplace_back(p);
+	flares.emplace_back(new LensFlare(*lens6_model, 5.0f));
+	flares.emplace_back(new LensFlare(*lens4_model, 2.3f));
+	flares.emplace_back(new LensFlare(*lens2_model, 1.0f));
+	flares.emplace_back(new LensFlare(*lens7_model, 0.5f));
+	flares.emplace_back(new LensFlare(*lens1_model, 0.2f));
+	flares.emplace_back(new LensFlare(*lens3_model, 0.6f));
+	flares.emplace_back(new LensFlare(*lens9_model, 1.2f));
+	flares.emplace_back(new LensFlare(*lens5_model, 0.7f));
+	flares.emplace_back(new LensFlare(*lens1_model, 0.12f));
+	flares.emplace_back(new LensFlare(*lens7_model, 2.0f));
+	flares.emplace_back(new LensFlare(*lens9_model, 1.0f));
+	flares.emplace_back(new LensFlare(*lens3_model, 0.7f));
+	flares.emplace_back(new LensFlare(*lens5_model, 3.0f));
+	flares.emplace_back(new LensFlare(*lens4_model, 4.0f));
+	flares.emplace_back(new LensFlare(*lens8_model, 6.0f));
 }
 
 LensFlareManager::~LensFlareManager()
@@ -30,7 +52,7 @@ glm::vec2 LensFlareManager::convertToScreenSpace(glm::vec3 Worldpos, glm::mat4 v
 	return glm::vec2(x, y);
 }
 
-void LensFlareManager::onRender(Camera *camera, Camera *hudCamera, glm::vec3 sunPos, Window *window)
+void LensFlareManager::OnRender(Camera *camera, Camera *hudCamera, glm::vec3 sunPos, Window *window)
 {
 	glm::vec2 sun_coords = convertToScreenSpace(sunPos, camera->GetViewProjMatrix());
 	if (sun_coords.x == NULL || sun_coords.y == NULL) return;
@@ -56,4 +78,13 @@ void LensFlareManager::onRender(Camera *camera, Camera *hudCamera, glm::vec3 sun
 
 		m_Shader->Unbind();
 	}
+}
+
+void LensFlareManager::Toogle() {
+	isEnabled = !isEnabled;
+}
+
+bool LensFlareManager::IsEnabled()
+{
+	return isEnabled;
 }

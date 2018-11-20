@@ -13,8 +13,11 @@ public:
 	~Sun() = default;
 
 	virtual void OnUpdate(SceneNode& parent) override;
+
 	void SetTarget(SceneNode* target);
 	glm::vec3 GetWorldPosition(glm::vec3 camPos);
 	DirectionalLight* GetLight();
 	void ToogleLight();
+
+
 };

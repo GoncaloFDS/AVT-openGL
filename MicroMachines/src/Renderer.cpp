@@ -33,7 +33,7 @@ Renderer::Renderer() {
 	//GLCall(glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE));
 
 	SetClearColor(glm::vec4(0.5f, 0.5f, 0.5f, 1.0f));
-	
+
 }
 
 void Renderer::Clear() const {
@@ -75,4 +75,12 @@ void Renderer::ClearStencil() {
 
 void Renderer::ClearDepth() {
 	GLCall(glClear(GL_DEPTH_BUFFER_BIT));
+}
+
+void Renderer::DisableStencilTest() {
+	GLCall(glDisable(GL_STENCIL_TEST));
+}
+
+void Renderer::EnableStencilTest() {
+	GLCall(glEnable(GL_STENCIL_TEST));
 }

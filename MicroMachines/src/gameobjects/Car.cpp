@@ -13,7 +13,7 @@ Car::Car()
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
 	m_AABB = AABB(glm::vec3(-7), glm::vec3(7));
 	m_HP = m_MaxHP = 3;
-	transform.position = glm::vec3(200.0f, -4.44f, 0.0f);
+	transform.position = glm::vec3(200.0f, 0, 0.0f);
 	transform.scale = glm::vec3(0.04f);
 }
 
@@ -103,7 +103,7 @@ void Car::Turn(float amount) {
 }
 
 void Car::Reset() {
-	transform.position = glm::vec3(200.0f, -4.44f, 0.0f);
+	transform.position = glm::vec3(200.0f, 0, 0.0f);
 	transform.rotation = glm::quat();
 	m_Forward = glm::vec3(0.0f, 0.0f, 1.0f);
 	m_Right = glm::vec3(1.0f, 0.0f, 0.0f);
@@ -116,7 +116,7 @@ void Car::Restart() {
 }
 
 void Car::Teleport() {
-	transform.position = glm::vec3(-190, -4.44f, 0);
+	transform.position = glm::vec3(-190, 0, 0);
 	transform.rotation = glm::rotate(glm::mat4(1), glm::pi<float>(), glm::vec3(0, 1, 0)) * glm::mat4_cast(transform.rotation);
 	m_Forward = -m_Forward;
 	m_Right = -m_Right;

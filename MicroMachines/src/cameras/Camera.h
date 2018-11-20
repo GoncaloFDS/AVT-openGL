@@ -37,7 +37,7 @@ public:
 
 	void SetProjectionType(Projection projection);
 	virtual void Translate(Direction dir, float amount);
-
+	void InvertPitch();
 
 	glm::mat4 GetViewProjMatrix();
 	glm::mat4 GetViewMatrix();

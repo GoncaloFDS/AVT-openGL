@@ -20,5 +20,7 @@ public:
 	void SetBlendFunc(GLenum sfactor, GLenum dfactor);
 	void ClearStencil();
 	void ClearDepth();
+	void DisableStencilTest();
+	void EnableStencilTest();
 };
 

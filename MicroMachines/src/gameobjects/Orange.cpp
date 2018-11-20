@@ -13,8 +13,8 @@ Orange::Orange() {
 	m_Speed = 15.0f;
 	m_TurnSpeed = -2.0f;
 	transform.scale = glm::vec3(1);
-	glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
-	glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+	glm::vec3 orig(rand() % 700 - 350, 3.0f, rand() % 700 - 350);
+	glm::vec3 dest(rand() % 700 - 350, 3.0f, rand() % 700 - 350);
 	if (dest != orig)
 		m_Forward = glm::normalize(dest - orig);
 	else
@@ -44,8 +44,8 @@ void Orange::OnUpdate(SceneNode& parent) {
 void Orange::Reset() {
 	m_Speed += 1.5f;
 	m_TurnSpeed -= 1.5f;
-	glm::vec3 orig(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
-	glm::vec3 dest(rand() % 700 - 350, 0.0f, rand() % 700 - 350);
+	glm::vec3 orig(rand() % 700 - 350, 3.0f, rand() % 700 - 350);
+	glm::vec3 dest(rand() % 700 - 350, 3.0f, rand() % 700 - 350);
 	if (dest != orig)
 		m_Forward = glm::normalize(dest - orig);
 	else

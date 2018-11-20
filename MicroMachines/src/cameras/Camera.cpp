@@ -85,6 +85,19 @@ void Camera::Translate(Direction dir, float amount = 1.0f) {
 	transform.position += directionVec * amount * m_MovementSpeed;
 }
 
+
+void Camera::InvertPitch() {
+// 	transform.position.y = -transform.position.y;
+// 	m_Forward.y = -m_Forward.y;
+// 	m_Right = -m_Right;
+// 	m_Up.x = -m_Up.x;
+// 	m_Up.z = -m_Up.z;
+	
+	//m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_WorldUp);
+	m_ViewMatrix = glm::scale(m_ViewMatrix, glm::vec3(1, -1, 1));
+	m_ViewProjMatrix = m_ProjMatrix * m_ViewMatrix;
+}
+
 glm::mat4 Camera::GetViewProjMatrix() {
 	return m_ViewProjMatrix;
 }

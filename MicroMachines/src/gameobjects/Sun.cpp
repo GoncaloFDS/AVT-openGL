@@ -1,4 +1,5 @@
 #include "Sun.h"
+#include "cameras/Camera.h"
 
 const float Sun::sun_dist = 300.0f;
 
