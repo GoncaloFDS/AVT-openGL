@@ -8,6 +8,7 @@ private:
 	const static float sun_dist;
 	SceneNode* m_Target;
 	DirectionalLight *light;
+	glm::mat4 m_ShadowMatrix;
 public:
 	Sun(float scale, glm::vec3 direction, SceneNode* target);
 	~Sun() = default;
@@ -19,5 +20,7 @@ public:
 	DirectionalLight* GetLight();
 	void ToogleLight();
 
-
+	glm::mat4 GetShadowMatrix();
+private:
+	glm::vec3 m_lightPos;
 };

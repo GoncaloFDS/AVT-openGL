@@ -47,6 +47,7 @@ extern "C" { __declspec(dllexport) unsigned long NvOptimusEnablement = 0x0000000
 bool debug_mode = false;
 bool gameover = false;
 bool fogIsEnabled = true;
+bool particleEnabled = false;
 float points = 0;
 bool inverted;
 
@@ -71,7 +72,7 @@ int main(int argc, char* argv[]) {
 	InputHandler inputHandler;
 	InputBind horizontal, frontal, vertical;
 	InputBind up, right;
-	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR, keyF, keyL;
+	InputBind key0, key1, key2, key3, keyESC, keyP, keyC, keyN, keyH, keyR, keyF, keyL, keyZ;
 
 	//Axis
 	inputHandler.AddKeyControl(GLFW_KEY_A, horizontal, -1.0f);
@@ -97,6 +98,7 @@ int main(int argc, char* argv[]) {
 	inputHandler.AddKeyControl(GLFW_KEY_R, keyR);
 	inputHandler.AddKeyControl(GLFW_KEY_F, keyF);
 	inputHandler.AddKeyControl(GLFW_KEY_L, keyL);
+	inputHandler.AddKeyControl(GLFW_KEY_Z, keyZ);
 
 	window.SetInputHandler(&inputHandler);
 	window.SetCallbacks();
@@ -393,6 +395,10 @@ int main(int argc, char* argv[]) {
 		if (keyL.isPressed()) {
 			flareManager.Toogle();
 		}
+		if (keyZ.isPressed()) {
+			particleEnabled = !particleEnabled;
+			particleEmitter.SetEnabled(particleEnabled);
+		}
 
 		car.Move(up.GetAmt());
 		car.Turn(right.GetAmt());
@@ -420,7 +426,7 @@ int main(int argc, char* argv[]) {
 		
 		//Render Scene
 
-		//Miror Stencil
+		//Mirror Stencil
  		renderer.EnableStencilTest();
  		renderer.ClearStencil();
   		renderer.SetStencilFunc(GL_NEVER, 1, 1);
@@ -430,7 +436,7 @@ int main(int argc, char* argv[]) {
 		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
   		renderer.SetStencilFunc(GL_EQUAL, 1, 1);
   		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-  		// Render refelctions
+  		// Render reflections
   		currentCamera->InvertPitch();
   		glCullFace(GL_FRONT);
  		table.SetEnabled(false);
@@ -440,26 +446,46 @@ int main(int argc, char* argv[]) {
  		table.SetEnabled(true);
   		currentCamera->InvertPitch();
  		glCullFace(GL_BACK);
-		
+
+		//Render Shadows
+		renderer.SetBlendFunc(GL_ZERO, GL_SRC_COLOR);
+		renderer.SetStencilFunc(GL_EQUAL, 1, 1);
+		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_ZERO);
 		renderer.DisableStencilTest();
+		currentCamera->SetIsRenderingShadows(true);
+		currentCamera->SetShadowMatrix(sun.GetShadowMatrix());
+		//render
+		table.SetEnabled(false);
+		mirror.SetEnabled(false);
+		sun.SetEnabled(false);
+		glDisable(GL_DEPTH_TEST);
+		sceneGraph.OnRender();
+		sun.SetEnabled(true);
+		mirror.SetEnabled(true);
+		table.SetEnabled(true);
+		currentCamera->SetIsRenderingShadows(false);
 
-
+		glEnable(GL_DEPTH_TEST);
 		//Scene clipping y > 0
+		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		renderer.DisableStencilTest();
 		table.SetEnabled(false);
 		mirror.SetEnabled(false);
 		sceneGraph.OnRender();
 		mirror.SetEnabled(true);
 		table.SetEnabled(true);
-
-
-		//Render Table
+		//
+		//
+		////Render Table
 		renderer.EnableStencilTest();
 		renderer.SetStencilFunc(GL_EQUAL, 0, 1);
 		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 		table.OnRender(*currentCamera);
-
-
- 		// Render Portal
+		renderer.ClearStencil();
+		renderer.SetStencilFunc(GL_ALWAYS, 0, 1);
+		//
+		//
+ 		//// Render Portal
  		renderer.EnableStencilTest();
  		sceneGraph.SetCamera(portalCamera);
  		portalImage.RenderToTexture(sceneGraph, renderer);
@@ -480,8 +506,10 @@ int main(int argc, char* argv[]) {
  		renderer.SetStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
 		//Render Particles
-		//particleEmitter.SetEnabled(true);
-		//particleEmitter.OnRender(*currentCamera);
+		renderer.DisableStencilTest();
+		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+		particleEmitter.SetEnabled(particleEnabled);
+		particleEmitter.OnRender(*currentCamera);
 		particleEmitter.SetEnabled(false);
 
 		//update HUD

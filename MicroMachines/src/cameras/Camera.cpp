@@ -64,6 +64,12 @@ glm::vec3 Camera::GetWorldUpVector() {
 	return m_WorldUp;
 }
 
+
+void Camera::SetIsRenderingShadows(bool b)
+{
+	m_IsRenderingShadows = b;
+}
+
 void Camera::SetProjectionType(Projection projection) {
 	m_ProjectionType = projection;
 	CalculateProjectionMatrix(m_AspectRatio);
@@ -110,8 +116,21 @@ glm::mat4 Camera::GetProjMatrix() {
 	return m_ProjMatrix;
 }
 
+
+glm::mat4 Camera::GetShadowMatrix()
+{
+	if (m_IsRenderingShadows)
+		return m_ShadowMatrix;
+	return glm::mat4(1);
+}
+
 glm::vec3 Camera::GetPosition() {
 	return transform.position;
+}
+
+
+void Camera::SetShadowMatrix(glm::mat4 mat) {
+	m_ShadowMatrix = mat;
 }
 
 void Camera::ProcessMouseMovement(float deltaX, float deltaY) {

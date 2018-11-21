@@ -51,6 +51,6 @@ Particle* ParticleEmitter::GetADeadParticle() {
 }
 
 void ParticleEmitter::SetTarget(SceneNode* target) {
-	for (auto& particle : m_Particles)
+	for (auto particle : m_Particles)
 		particle->SetTarget(target);
 }

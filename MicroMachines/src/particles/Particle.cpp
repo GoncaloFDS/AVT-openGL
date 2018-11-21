@@ -1,4 +1,5 @@
 #include "Particle.h"
+#include "cameras/Camera.h"
 
 Particle::Particle(SceneNode *target)
 {
@@ -21,7 +22,7 @@ void Particle::Respawn() {
 	float rColor = 0.5 + (rand() % 100) / 100.0f;
 	transform.position = glm::vec3(0.0f);
 	m_Color = glm::vec4(rColor, rColor, rColor, 1.0f);
-	m_LifeTime = 3.0f + rand() % (5 - 0 + 1) + 0;
+	m_LifeTime = .5f + rand() % (2 - 0 + 1) + 0;
 	m_Velocity = glm::vec3(v_random * std::sin(phi) * std::cos(theta), v_random * std::cos(phi), v_random * std::sin(phi) * std::sin(theta));
 	//m_Velocity = 0.1f * glm::vec3(v_random);
 	m_Acceleration = glm::vec3(0.0f, -8.0f, 0.0f);

@@ -25,6 +25,8 @@ protected:
 	float m_MouseSensivity;
 
 	glm::mat4 m_ViewProjMatrix;
+	bool m_IsRenderingShadows;
+	glm::mat4 m_ShadowMatrix;
 public:
 	Camera(glm::vec3 startingPosition, glm::vec3 center, glm::vec3 up);
 	~Camera();
@@ -42,13 +44,14 @@ public:
 	glm::mat4 GetViewProjMatrix();
 	glm::mat4 GetViewMatrix();
 	glm::mat4 GetProjMatrix();
+	glm::mat4 GetShadowMatrix();
 	glm::vec3 GetPosition();
-
+	void SetShadowMatrix(glm::mat4 mat);
 	virtual void ProcessMouseMovement(float deltaX, float deltaY);
+	glm::vec3 GetWorldUpVector();
+	void SetIsRenderingShadows(bool b);
 
 private:
 	void CalculateProjectionMatrix(float aspectRatio);
-public:
-	glm::vec3 GetWorldUpVector();
 };
 
