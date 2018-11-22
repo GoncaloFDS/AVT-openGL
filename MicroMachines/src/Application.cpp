@@ -314,6 +314,8 @@ int main(int argc, char* argv[]) {
 		// 
 
 		points += Timer::deltaTime;
+		if (points > 50)
+			particleEnabled = true;
 		//Input Control
 		if (window.WasResized()) {
 			followCamera.SetAspectRatio(window.GetAspectRatio());
@@ -464,7 +466,7 @@ int main(int argc, char* argv[]) {
 		mirror.SetEnabled(true);
 		table.SetEnabled(true);
 		currentCamera->SetIsRenderingShadows(false);
-
+		//
 		glEnable(GL_DEPTH_TEST);
 		//Scene clipping y > 0
 		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -484,7 +486,7 @@ int main(int argc, char* argv[]) {
 		renderer.ClearStencil();
 		renderer.SetStencilFunc(GL_ALWAYS, 0, 1);
 		//
-		//
+
  		//// Render Portal
  		renderer.EnableStencilTest();
  		sceneGraph.SetCamera(portalCamera);
@@ -507,6 +509,7 @@ int main(int argc, char* argv[]) {
 
 		//Render Particles
 		renderer.DisableStencilTest();
+		glEnable(GL_DEPTH_TEST);
 		renderer.SetBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		particleEmitter.SetEnabled(particleEnabled);
 		particleEmitter.OnRender(*currentCamera);

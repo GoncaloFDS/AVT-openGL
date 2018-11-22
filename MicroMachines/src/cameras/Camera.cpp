@@ -100,7 +100,7 @@ void Camera::InvertPitch() {
 // 	m_Up.z = -m_Up.z;
 	
 	//m_ViewMatrix = glm::lookAt(transform.position, transform.position + m_Forward, m_WorldUp);
-	m_ViewMatrix = glm::scale(m_ViewMatrix, glm::vec3(1, -1, 1));
+	m_ViewMatrix = m_ViewMatrix * glm::scale(glm::mat4(1), glm::vec3(1, -1, 1));
 	m_ViewProjMatrix = m_ProjMatrix * m_ViewMatrix;
 }
 
@@ -120,7 +120,7 @@ glm::mat4 Camera::GetProjMatrix() {
 glm::mat4 Camera::GetShadowMatrix()
 {
 	if (m_IsRenderingShadows)
-		return m_ShadowMatrix;
+		return m_ShadowMatrix ;
 	return glm::mat4(1);
 }
 
